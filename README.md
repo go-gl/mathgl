@@ -20,3 +20,7 @@ As for why there's so much terrible code duplication, blame that on Go's lack of
 This is why I have the makefile (which, if you can clean that up into something with fewer lines with the same functionality) that would be grand. It's basically just so I only have to write each package for float32, then the Makefile automagically generates the matching, near-identical code needed for the corresponding matrix and vector files.
 
 I also have a simple program that generates multiplcation functions (that I may upload if desired) for matrices of various sized, because it is REALLY tedious to write them out longhand. especially since my brain seems to not agree with Row Major Order intuitively.
+
+### I still don't like it...
+
+Yeah, I'm not particularly fond of it either. There are other ideas that may be slower (and hopefully not by much). They still involve some tricks, though. For instance, get rid off all of the Matrix<n> types, and just have Vec/Matrix[f|d|i|l|ul|ui]. Since go-gl's Uniform <blahblah> methods take in arrays, we can have a method called AsArray, which would basically be a giant switch statement that returns the correct sized vector/array (up to 4x4) as an interface{}. It's still messy, but it's way LESS messy.
