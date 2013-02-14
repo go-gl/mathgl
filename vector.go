@@ -59,6 +59,7 @@ func (v *Vector) AddElements(el []interface{}) error {
 		}
 	}
 	
+	v.dat = append(v.dat, el...)
 	return nil
 }
 
@@ -147,6 +148,17 @@ func (v Vector) AsArray() interface{} {
 	}
 	
 	return nil
+}
+
+// If row is true, it's a row vector (1xn) else a column vector (nx1)
+func (v Vector) AsMatrix(row bool) (m Matrix, err error) {
+		if row {
+			mat, err := MatrixFromSlice(v.typ, v.dat, 1, len(v.dat))
+			return *mat, err
+		}
+		
+		mat, err := MatrixFromSlice(v.typ, v.dat, len(v.dat), 1)
+		return *mat, err
 }
 
 func (v1 Vector) Add(v2 Vector) (v3 Vector) {
