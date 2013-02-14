@@ -102,7 +102,7 @@ func unsafeMatrixFromSlice(typ VecType, el []VecNum, m,n int) (mat *Matrix, err 
 	return mat,nil
 }
 
-// TODO: "Add" or "Append" data method
+// TODO: "Add" or "Append" data method (expand the matrix)
 
 func (mat *Matrix) SetElement(i, j int, el VecNum) error {
 	if i < mat.m || j < mat.n {

@@ -19,7 +19,7 @@ type Vector struct {
 }
 
 func NewVector(t VecType) *Vector {
-	return &Vector{typ: t, dat: make([]VecNum, 2)}
+	return &Vector{typ: t, dat: make([]VecNum, 0, 2)}
 }
 
 func VectorOf(t VecType, el []VecNum) (v *Vector, err error) {
@@ -39,13 +39,13 @@ func VectorOf(t VecType, el []VecNum) (v *Vector, err error) {
 func checkType(typ VecType, i interface{}) bool {
 	switch typ {
 	case INT32:
-		return reflect.TypeOf(i).Name() == "int32"
+		return reflect.TypeOf(i).Name() == "VecInt32"
 	case UINT32:
-		return reflect.TypeOf(i).Name() == "uint32"
+		return reflect.TypeOf(i).Name() == "VecUint32"
 	case FLOAT32:
-		return reflect.TypeOf(i).Name() == "float32"
+		return reflect.TypeOf(i).Name() == "VecFloat32"
 	case FLOAT64:
-		return reflect.TypeOf(i).Name() == "float64"
+		return reflect.TypeOf(i).Name() == "VecFloat64"
 	}
 	
 	return false
@@ -74,6 +74,14 @@ func (v *Vector) SetElement(loc int, el VecNum) error {
 	v.dat[loc] = el
 	
 	return nil
+}
+
+func (v *Vector) GetElement(loc int) VecNum {
+	if loc < 0 || loc > len(v.dat) - 1 {
+		return nil
+	}
+	
+	return v.dat[loc]
 }
 
 // Converts a 1-d vector to a scalar
