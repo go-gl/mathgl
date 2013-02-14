@@ -19,6 +19,7 @@ type VecNum interface {
 	sub(other VecNum) VecNum
 	mul(other VecNum) VecNum
 	div(other VecNum) VecNum
+	equal(other VecNum) bool
 	sqrt() float64
 }
 
@@ -43,6 +44,10 @@ func (i VecInt32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
+func (i VecInt32) equal(other VecNum) bool {
+	return i == other.(VecInt32)
+}
+
 // Begin Uint
 func (i VecUint32) add(other VecNum) VecNum {
 	return i + other.(VecUint32)
@@ -62,6 +67,10 @@ func (i VecUint32) div(other VecNum) VecNum {
 
 func (i VecUint32) sqrt() float64 {
 	return math.Sqrt(float64(i))
+}
+
+func (i VecUint32) equal(other VecNum) bool {
+	return i == other.(VecUint32)
 }
 
 // Begin Float
@@ -85,6 +94,10 @@ func (i VecFloat32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
+func (i VecFloat32) equal(other VecNum) bool {
+	return math.Abs(float64(i - other.(VecFloat32))) < float64(.00000000001)
+}
+
 // Begin Float64
 func (i VecFloat64) add(other VecNum) VecNum {
 	return i + other.(VecFloat64)
@@ -104,6 +117,10 @@ func (i VecFloat64) div(other VecNum) VecNum {
 
 func (i VecFloat64) sqrt() float64 {
 	return math.Sqrt(float64(i))
+}
+
+func (i VecFloat64) equal(other VecNum) bool {
+	return math.Abs(float64(i - other.(VecFloat64))) < float64(.00000000001)
 }
 
 // Helper

@@ -23,17 +23,13 @@ func NewVector(t VecType) *Vector {
 }
 
 func VectorOf(t VecType, el []VecNum) (v *Vector, err error) {
-	v.typ = t
-	
 	for _,e := range el {
-		if !checkType(v.typ, e) {
+		if !checkType(t, e) {
 			return nil, errors.New("Type of at least one element does not match declared type")
 		}
 	}
 	
-	v.dat = el
-	
-	return v,nil
+	return &Vector{t,el}, nil
 }
 
 func checkType(typ VecType, i interface{}) bool {
