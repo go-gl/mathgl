@@ -19,7 +19,7 @@ func NewMatrix(m,n int, typ VecType) *Matrix {
 // 
 // This may seem confusing, but it's because it's easier to type out and visualize things in CMO
 // So it's easier to type write your matrix as a slice in CMO, and pass it into this method
-func MatrixOf(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
+func MatrixFromCols(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
 	mat.typ = typ
 	
 	mat.m = len(el)
@@ -29,6 +29,27 @@ func MatrixOf(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
 	// Row Major Order, like in OpenGL
 	for i := 0; i < mat.n; i++ {
 		for j := 0; j < mat.m; j++ {
+			if !checkType(mat.typ, el[j][i]) {
+				return nil, errors.New("Element type does not match matrix")
+			}
+			mat.dat = append(mat.dat, el[j][i])
+		}
+	}
+	
+	return mat, nil
+}
+
+// This function is MatrixOf, except it takes a list of row "vectors" instead of row "vectors" (really slices)
+func MatrixFromRows(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
+	mat.typ = typ
+	
+	mat.m = len(el)
+	mat.n = len(el[0])
+	mat.dat = make([]VecNum, 0, mat.m * mat.n)
+	
+	// Row Major Order, like in OpenGL
+	for i := 0; i < mat.m; i++ {
+		for j := 0; j < mat.n; j++ {
 			if !checkType(mat.typ, el[j][i]) {
 				return nil, errors.New("Element type does not match matrix")
 			}
