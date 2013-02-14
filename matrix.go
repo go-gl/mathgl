@@ -60,6 +60,27 @@ func MatrixFromSlice(typ VecType, el []VecNum, m,n int) (mat *Matrix, err error)
 	return mat,nil
 }
 
+// Quick and dirty internal function to make a matrix without spending time checking types
+func unsafeMatrixFromSlice(typ VecType, el []VecNum, m,n int) (mat *Matrix, err error) {
+	mat.typ = typ
+	mat.m = m
+	mat.n = n
+	
+	/*if mat.m * mat.n != len(el) {
+		return nil, errors.New("Matrix dimensions do not match data passed in")
+	}
+	
+	for _,e := range el {
+		if !checkType(mat.typ, e) {
+			return nil, errors.New("Type of at least one element does not match declared type")
+		}
+	}*/
+	
+	mat.dat = el
+	
+	return mat,nil
+}
+
 // TODO: "Add" or "Append" data method
 
 func (mat *Matrix) SetElement(i, j int, el VecNum) error {
@@ -206,7 +227,7 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 		}
 	}*/
 	
-	mat,err := MatrixFromSlice(m1.typ, dat, m1.m, m2.n)
+	mat,err := unsafeMatrixFromSlice(m1.typ, dat, m1.m, m2.n)
 	if err != nil {
 		return
 	}
