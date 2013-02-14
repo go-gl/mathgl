@@ -31,4 +31,8 @@ Allow multiplication between matrices and vectors without using AsVector() or As
 
 Documentation
 
+## Performance Ideas:
+
 Test concurrency. Theoretically things like vector addition and matrix multiplication can be done concurrently. In practice I'm fairly sure the overhead for creating channels and spawning goroutines will outweight any benefit. However, some operations may be able to be optimized with concurrency in mind. For instance, matrix multiplication is associative, so if you have 4 matrices that all need to be multiplied at once, it may be possible and worthwhile to break them into a pair of multiplications with four each, and multiply the result.
+
+Make internal (unexported) methods that forego type checking. For instance, when multiplying we can be sure that the new matrix we're constructing has elements all of the correct type, so we don't need to go through and make sure.
