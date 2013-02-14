@@ -20,3 +20,13 @@ It will either go away or replace the current code once a decision is made on wh
 ## Reflection? Really? In a MATH package?
 
 This attempt is basically the polar opposite of the last attempt, forget speed in an attempt to generalize code. This is still very early on in the project's lifecycle, I figure eventually we'll decide on a healthy mix of the two.
+
+# TODO:
+
+Make unit tests, verify column major order stuff is correct on the matrices (especially multiplication). CMO makes my brain overflow for some reason.
+
+Get determinant function working
+
+Allow multiplication between matrices and vectors without using AsVector() or AsMatrix()
+
+Documentation
