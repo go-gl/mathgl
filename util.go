@@ -95,7 +95,7 @@ func (i VecFloat32) sqrt() float64 {
 }
 
 func (i VecFloat32) equal(other VecNum) bool {
-	return math.Abs(float64(i - other.(VecFloat32))) < float64(.00000000001)
+	return math.Abs(float64(i-other.(VecFloat32))) < float64(.00000000001)
 }
 
 // Begin Float64
@@ -120,7 +120,7 @@ func (i VecFloat64) sqrt() float64 {
 }
 
 func (i VecFloat64) equal(other VecNum) bool {
-	return math.Abs(float64(i - other.(VecFloat64))) < float64(.00000000001)
+	return math.Abs(float64(i-other.(VecFloat64))) < float64(.00000000001)
 }
 
 // Helper
@@ -135,6 +135,6 @@ func vecNumZero(typ VecType) VecNum {
 	case FLOAT64:
 		return VecFloat64(0)
 	}
-	
+
 	return VecInt32(0)
 }
