@@ -21,7 +21,7 @@ It will either go away or replace the current code once a decision is made on wh
 
 This attempt is basically the polar opposite of the last attempt, forget speed in an attempt to generalize code. This is still very early on in the project's lifecycle, I figure eventually we'll decide on a healthy mix of the two.
 
-In the current iteration, there's a package with a lot less switches and type-checking that makes use of an interface and wrapper. It makes the math look a LITTLE ugly, but it switched a ton of code duplication and switch statements with just a little code duplication to wrap basic math functions like "add" (in util.go).
+In the current iteration, the has a lot less switches and type-checking that makes use of an interface and wrapper. It makes the math look a LITTLE ugly, but it switched a ton of code duplication and switch statements with just a little code duplication to wrap basic math functions like "add" (in util.go).
 
 # TODO:
 
@@ -37,4 +37,4 @@ Documentation
 
 Test concurrency. Theoretically things like vector addition and matrix multiplication can be done concurrently. In practice I'm fairly sure the overhead for creating channels and spawning goroutines will outweight any benefit. However, some operations may be able to be optimized with concurrency in mind. For instance, matrix multiplication is associative, so if you have 4 matrices that all need to be multiplied at once, it may be possible and worthwhile to break them into a pair of multiplications with four each, and multiply the result.
 
-Make internal (unexported) methods that forego type checking. For instance, when multiplying we can be sure that the new matrix we're constructing has elements all of the correct type, so we don't need to go through and make sure.
+Make internal (unexported) methods that forego type checking. For instance, when multiplying we can be sure that the new matrix we're constructing has elements all of the correct type, so we don't need to go through and check.
