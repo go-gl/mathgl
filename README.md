@@ -23,7 +23,7 @@ This attempt is basically the polar opposite of the last attempt, forget speed i
 
 # TODO:
 
-Make unit tests, verify column major order stuff is correct on the matrices (especially multiplication). CMO makes my brain overflow for some reason.
+Make unit tests, verify row major order stuff is correct on the matrices (especially multiplication). RMO makes my brain overflow for some reason.
 
 Get determinant function working
 
