@@ -21,6 +21,8 @@ It will either go away or replace the current code once a decision is made on wh
 
 This attempt is basically the polar opposite of the last attempt, forget speed in an attempt to generalize code. This is still very early on in the project's lifecycle, I figure eventually we'll decide on a healthy mix of the two.
 
+In the current iteration, there's a package with a lot less switches and type-checking that makes use of an interface and wrapper. It makes the math look a LITTLE ugly, but it switched a ton of code duplication and switch statements with just a little code duplication to wrap basic math functions like "add" (in util.go).
+
 # TODO:
 
 Make unit tests, verify row major order stuff is correct on the matrices (especially multiplication). RMO makes my brain overflow for some reason.
