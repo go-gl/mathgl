@@ -7,11 +7,11 @@ import (
 type Matrix struct {
 	m,n int // an m x n matrix
 	typ VecType
-	dat []interface{}
+	dat []VecNum
 }
 
 func NewMatrix(m,n int, typ VecType) *Matrix {
-	return &Matrix{m:m, n:n, typ: typ, dat: make([]interface{},0,2) }
+	return &Matrix{m:m, n:n, typ: typ, dat: make([]VecNum,0,2) }
 }
 
 // [1, 1]
@@ -19,12 +19,12 @@ func NewMatrix(m,n int, typ VecType) *Matrix {
 // 
 // This may seem confusing, but it's because it's easier to type out and visualize things in CMO
 // So it's easier to type write your matrix as a slice in CMO, and pass it into this method
-func MatrixOf(typ VecType, el [][]interface{}) (mat *Matrix, err error) {
+func MatrixOf(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
 	mat.typ = typ
 	
 	mat.m = len(el)
 	mat.n = len(el[0])
-	mat.dat = make([]interface{}, 0, mat.m * mat.n)
+	mat.dat = make([]VecNum, 0, mat.m * mat.n)
 	
 	// Row Major Order, like in OpenGL
 	for i := 0; i < mat.n; i++ {
@@ -40,7 +40,7 @@ func MatrixOf(typ VecType, el [][]interface{}) (mat *Matrix, err error) {
 }
 
 // Slice-format data should be in Row Major Order
-func MatrixFromSlice(typ VecType, el []interface{}, m,n int) (mat *Matrix, err error) {
+func MatrixFromSlice(typ VecType, el []VecNum, m,n int) (mat *Matrix, err error) {
 	mat.typ = typ
 	mat.m = m
 	mat.n = n
@@ -62,7 +62,7 @@ func MatrixFromSlice(typ VecType, el []interface{}, m,n int) (mat *Matrix, err e
 
 // TODO: "Add" or "Append" data method
 
-func (mat *Matrix) SetElement(i, j int, el interface{}) error {
+func (mat *Matrix) SetElement(i, j int, el VecNum) error {
 	if i < mat.m || j < mat.n {
 		return errors.New("Dimensions out of bounds")
 	}
@@ -89,12 +89,12 @@ func (mat Matrix) AsVector() (v Vector, err error) {
 	return *vPoint, nil
 }
 
-func (mat Matrix) ToScalar() interface{} {
+func (mat Matrix) ToScalar() VecNum {
 	if mat.m != 1 || mat.n != 1 {
 		return nil
 	}
 	
-	switch mat.typ {
+	/*switch mat.typ {
 	case INT32:
 		return mat.dat[0].(int32)
 	case UINT32:
@@ -103,9 +103,9 @@ func (mat Matrix) ToScalar() interface{} {
 		return mat.dat[0].(float32)
 	case FLOAT64:
 		return mat.dat[0].(float64)
-	}
+	}*/
 	
-	return nil
+	return mat.dat[0]
 }
 
 func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
@@ -114,10 +114,11 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 	}
 	
 	m3.typ = m1.typ
-	m3.dat = make([]interface{}, len(m1.dat))
+	m3.dat = make([]VecNum, len(m1.dat))
 	
 	for i := range m1.dat {
-		switch m1.typ {
+		m3.dat[i] = m1.dat[i].add(m2.dat[i])
+		/*switch m1.typ {
 		case INT32:
 			m3.dat[i] = m1.dat[i].(int32) + m2.dat[i].(int32)
 		case UINT32:
@@ -126,7 +127,7 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 			m3.dat[i] = m1.dat[i].(float32) + m2.dat[i].(float32)
 		case FLOAT64:
 			m3.dat[i] = m1.dat[i].(float64) + m2.dat[i].(float64)
-		}
+		}*/
 	}
 	
 	return m3
@@ -138,10 +139,11 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 	}
 	
 	m3.typ = m1.typ
-	m3.dat = make([]interface{}, len(m1.dat))
+	m3.dat = make([]VecNum, len(m1.dat))
 	
 	for i := range m1.dat {
-		switch m1.typ {
+		m3.dat[i] = m1.dat[i].sub(m2.dat[i])
+		/*switch m1.typ {
 		case INT32:
 			m3.dat[i] = m1.dat[i].(int32) - m2.dat[i].(int32)
 		case UINT32:
@@ -150,7 +152,7 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 			m3.dat[i] = m1.dat[i].(float32) - m2.dat[i].(float32)
 		case FLOAT64:
 			m3.dat[i] = m1.dat[i].(float64) - m2.dat[i].(float64)
-		}
+		}*/
 	}
 	
 	return m3
@@ -160,9 +162,16 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 	if m1.n != m2.m || m1.typ != m2.typ {
 		return
 	}
-	dat := make([]interface{}, m1.m * m2.n)
+	dat := make([]VecNum, m1.m * m2.n)
 	
-	switch m1.typ {
+	for j := 0; j < m2.n; j++ { // Columns of m2 and m3
+		for i := 0; i < m1.m; i++ { // Rows of m1 and m3
+			for k := 0; k < m1.n; k++ { // Columns of m1, rows of m2
+				dat[j * m2.n + i] = dat[j * m2.n + i].add(m1.dat[k * m1.n + i].mul(m2.dat[j * m2.n + k])) // I think, needs testing
+			}
+		}
+	}
+	/*switch m1.typ {
 	case INT32:
 		for j := 0; j < m2.n; j++ { // Columns of m2 and m3
 			for i := 0; i < m1.m; i++ { // Rows of m1 and m3
@@ -195,7 +204,7 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 				}
 			}
 		}
-	}
+	}*/
 	
 	mat,err := MatrixFromSlice(m1.typ, dat, m1.m, m2.n)
 	if err != nil {
@@ -208,17 +217,8 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 // INCOMPLETE DO NOT USE
 // Need better function to make matrices for recursion
 func (m1 Matrix) Det() interface{} {
-	if m1.m != m1.n {
+	if m1.m != m1.n { // Det only available on square matrices
 		return nil
-	}
-	
-	switch m1.typ {
-	case INT32: 
-		if m1.m == 2 {
-			return m1.dat[0].(uint) * m1.dat[3].(uint) - m1.dat[1].(uint) * m1.dat[2].(uint)
-		} else {
-			// TODO
-		}
 	}
 	
 	return nil
