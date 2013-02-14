@@ -49,11 +49,11 @@ func TestVecSetGet(t *testing.T) {
 		t.Fatalf("Didn't set in-bounds vector element")
 	}
 
-	if a := v1.GetElement(4); math.Abs(float64(float32(a.(mathgl.VecFloat32))-float32(42))) > .00001 {
+	if a := v1.GetElement(4); math.Abs(float64(float32(a.(mathgl.VecFloat32))-float32(42))) > .0000001 {
 		t.Errorf("Did not correctly set single-in bounds vector element")
 	}
 
-	if a := v2.GetElement(4); math.Abs(float64(float32(a.(mathgl.VecFloat32))-float32(42))) < .00001 {
+	if a := v2.GetElement(4); math.Abs(float64(float32(a.(mathgl.VecFloat32))-float32(42))) < .0000001 {
 		t.Errorf("Changing one vector changed another %d")
 	}
 

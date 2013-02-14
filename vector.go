@@ -73,7 +73,7 @@ func (v *Vector) SetElement(loc int, el VecNum) error {
 	return nil
 }
 
-func (v *Vector) GetElement(loc int) VecNum {
+func (v Vector) GetElement(loc int) VecNum {
 	if loc < 0 || loc > len(v.dat)-1 {
 		return nil
 	}
@@ -101,8 +101,12 @@ func (v Vector) ToScalar() VecNum {
 	return v.dat[0]
 }
 
+func (v Vector) AsSlice() []VecNum {
+	return v.dat
+}
+
 // Converts a vector of up to size 4 into the appropriately typed array
-// Still must return an interface{} because of array size
+// Still must return an interface{} because of array size weirdness
 func (v Vector) AsArray() interface{} {
 
 	switch len(v.dat) {
