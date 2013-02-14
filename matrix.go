@@ -238,7 +238,7 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 // INCOMPLETE DO NOT USE
 // Need better function to make matrices for recursion
 func (m1 Matrix) Det() interface{} {
-	if m1.m != m1.n { // Det only available on square matrices
+	if m1.m != m1.n { // Determinants are only for square matrices
 		return nil
 	}
 	
