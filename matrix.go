@@ -87,16 +87,6 @@ func unsafeMatrixFromSlice(typ VecType, el []VecNum, m, n int) (mat *Matrix, err
 	mat.m = m
 	mat.n = n
 
-	/*if mat.m * mat.n != len(el) {
-		return nil, errors.New("Matrix dimensions do not match data passed in")
-	}
-
-	for _,e := range el {
-		if !checkType(mat.typ, e) {
-			return nil, errors.New("Type of at least one element does not match declared type")
-		}
-	}*/
-
 	mat.dat = el
 
 	return mat, nil
@@ -136,17 +126,6 @@ func (mat Matrix) ToScalar() VecNum {
 		return nil
 	}
 
-	/*switch mat.typ {
-	case INT32:
-		return mat.dat[0].(int32)
-	case UINT32:
-		return mat.dat[0].(uint32)
-	case FLOAT32:
-		return mat.dat[0].(float32)
-	case FLOAT64:
-		return mat.dat[0].(float64)
-	}*/
-
 	return mat.dat[0]
 }
 
@@ -160,16 +139,6 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 
 	for i := range m1.dat {
 		m3.dat[i] = m1.dat[i].add(m2.dat[i])
-		/*switch m1.typ {
-		case INT32:
-			m3.dat[i] = m1.dat[i].(int32) + m2.dat[i].(int32)
-		case UINT32:
-			m3.dat[i] = m1.dat[i].(uint32) + m2.dat[i].(uint32)
-		case FLOAT32:
-			m3.dat[i] = m1.dat[i].(float32) + m2.dat[i].(float32)
-		case FLOAT64:
-			m3.dat[i] = m1.dat[i].(float64) + m2.dat[i].(float64)
-		}*/
 	}
 
 	return m3
@@ -185,16 +154,6 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 
 	for i := range m1.dat {
 		m3.dat[i] = m1.dat[i].sub(m2.dat[i])
-		/*switch m1.typ {
-		case INT32:
-			m3.dat[i] = m1.dat[i].(int32) - m2.dat[i].(int32)
-		case UINT32:
-			m3.dat[i] = m1.dat[i].(uint32) - m2.dat[i].(uint32)
-		case FLOAT32:
-			m3.dat[i] = m1.dat[i].(float32) - m2.dat[i].(float32)
-		case FLOAT64:
-			m3.dat[i] = m1.dat[i].(float64) - m2.dat[i].(float64)
-		}*/
 	}
 
 	return m3
@@ -213,40 +172,6 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 			}
 		}
 	}
-	/*switch m1.typ {
-	case INT32:
-		for j := 0; j < m2.n; j++ { // Columns of m2 and m3
-			for i := 0; i < m1.m; i++ { // Rows of m1 and m3
-				for k := 0; k < m1.n; k++ { // Columns of m1, rows of m2
-					dat[j * m2.n + i] = dat[j * m2.n + i].(int32) + m1.dat[k * m1.n + i].(int32) * m2.dat[j * m2.n + k].(int32) // I think, needs testing
-				}
-			}
-		}
-	case UINT32:
-		for j := 0; j < m2.n; j++ { // Columns of m2 and m3
-			for i := 0; i < m1.m; i++ { // Rows of m1 and m3
-				for k := 0; k < m1.n; k++ { // Columns of m1, rows of m2
-					dat[j * m2.n + i] = dat[j * m2.n + i].(uint32) + m1.dat[k * m1.n + i].(uint32) * m2.dat[j * m2.n + k].(uint32) // I think, needs testing
-				}
-			}
-		}
-	case FLOAT32:
-		for j := 0; j < m2.n; j++ { // Columns of m2 and m3
-			for i := 0; i < m1.m; i++ { // Rows of m1 and m3
-				for k := 0; k < m1.n; k++ { // Columns of m1, rows of m2
-					dat[j * m2.n + i] = dat[j * m2.n + i].(float32) + m1.dat[k * m1.n + i].(float32) * m2.dat[j * m2.n + k].(float32) // I think, needs testing
-				}
-			}
-		}
-	case FLOAT64:
-		for j := 0; j < m2.n; j++ { // Columns of m2 and m3
-			for i := 0; i < m1.m; i++ { // Rows of m1 and m3
-				for k := 0; k < m1.n; k++ { // Columns of m1, rows of m2
-					dat[j * m2.n + i] = dat[j * m2.n + i].(float64) + m1.dat[k * m1.n + i].(float64) * m2.dat[j * m2.n + k].(float64) // I think, needs testing
-				}
-			}
-		}
-	}*/
 
 	mat, err := unsafeMatrixFromSlice(m1.typ, dat, m1.m, m2.n)
 	if err != nil {
@@ -256,6 +181,15 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 	return *mat
 }
 
+
+/* 
+Batch Multiply, as its name implies. Is supposed to multiply a huge amount of matrices at once
+Since matrix multiplication is associative, it can do pieces of the problem at the same time.
+Since starting a goroutine has some overhead, I'd wager it's probably not worth it to use this function unless you have
+6-8+ matrices, but I haven't benchmarked it so until then who knows?
+
+Make sure the matrices are in order, and that they can indeed be multiplied. If not you'll end up with an untyped 0x0 matrix (a.k.a the "zero type" for a Matrix struct)
+*/
 func BatchMultiply(args []Matrix) Matrix {
 	if len(args) == 1 {
 		return args[0]
@@ -266,7 +200,7 @@ func BatchMultiply(args []Matrix) Matrix {
 			ch1 := make(chan Matrix)
 			ch2 := make(chan Matrix)
 			
-			// Split up the work, matrix mult is associative so this will work
+			// Split up the work, matrix mult is associative
 			go batchMultHelper(ch1, args[0:len(args)/2])
 			go batchMultHelper(ch2, args[len(args)/2:len(args)])
 			
