@@ -156,7 +156,7 @@ func vecNumZero(typ VecType) Scalar {
 	return ScalarInt32(0)
 }
 
-// Concerts an int/int32, uint32, float32, or float64 to the a Scalar of type given by the second argument.
+// Converts an int/int32, uint32, float32, or float64 to the a Scalar of type given by the second argument.
 // If the number is not one of these types, it returns nil
 func MakeScalar(num interface{}, typ VecType) Scalar {
 
