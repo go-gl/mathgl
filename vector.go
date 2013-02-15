@@ -2,7 +2,6 @@ package mathgl
 
 import (
 	"errors"
-	"reflect"
 )
 
 type VecType int8
@@ -36,13 +35,17 @@ func VectorOf(t VecType, el []VecNum) (v *Vector, err error) {
 func checkType(typ VecType, i interface{}) bool {
 	switch typ {
 	case INT32:
-		return reflect.TypeOf(i).Name() == "VecInt32"
+		_,ok := i.(VecInt32)
+		return ok
 	case UINT32:
-		return reflect.TypeOf(i).Name() == "VecUint32"
+		_,ok := i.(VecUint32)
+		return ok
 	case FLOAT32:
-		return reflect.TypeOf(i).Name() == "VecFloat32"
+		_,ok := i.(VecFloat32)
+		return ok
 	case FLOAT64:
-		return reflect.TypeOf(i).Name() == "VecFloat64"
+		_,ok := i.(VecFloat64)
+		return ok
 	}
 
 	return false
