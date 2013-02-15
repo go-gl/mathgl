@@ -24,8 +24,6 @@ Make unit tests, verify row major order stuff is correct on the matrices (especi
 
 Get determinant function working
 
-Allow multiplication between matrices and vectors without using AsVector() or AsMatrix()
-
 Documentation
 
 ## Performance Ideas:
