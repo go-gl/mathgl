@@ -4,154 +4,216 @@ import (
 	"math"
 )
 
-type VecInt32 int32
-type VecUint32 uint32
-type VecFloat32 float32
-type VecFloat64 float64
+type ScalarInt32 int32
+type ScalarUint32 uint32
+type ScalarFloat32 float32
+type ScalarFloat64 float64
 
-// Internal Note: Types still need to be checked (using the VecType enum, not reflection) before calling any of the VecNum functions or Go will panic due to an incorrect type assertion.
+// Internal Note: Types still need to be checked (using the VecTypee enum, not reflection) before calling any of the Scalar functions or Go will panic due to an incorrect type assertion.
 
 // Before I did this, there were a lot of ugly switch statements and tons of code duplication.
 // Go doesn't allow arbitrary math without casting, so some code duplication was inevitable, but with this wrapper
 // I was able to localize all the duplication to one place and clean up the main package a great deal.
-type VecNum interface {
-	add(other VecNum) VecNum
-	sub(other VecNum) VecNum
-	mul(other VecNum) VecNum
-	mulFl64(c float64) VecNum // This is for the rare case we need to multiply by non-like types as for length
-	div(other VecNum) VecNum
-	equal(other VecNum) bool
+type Scalar interface {
+	add(other Scalar) Scalar
+	sub(other Scalar) Scalar
+	mul(other Scalar) Scalar
+	mulFl64(c float64) Scalar // This is for the rare case we need to multiply by non-like types as for length
+	div(other Scalar) Scalar
+	equal(other Scalar) bool
 	sqrt() float64
 }
 
 // Begin Int
-func (i VecInt32) add(other VecNum) VecNum {
-	return i + other.(VecInt32)
+func (i ScalarInt32) add(other Scalar) Scalar {
+	return i + other.(ScalarInt32)
 }
 
-func (i VecInt32) sub(other VecNum) VecNum {
-	return i - other.(VecInt32)
+func (i ScalarInt32) sub(other Scalar) Scalar {
+	return i - other.(ScalarInt32)
 }
 
-func (i VecInt32) mul(other VecNum) VecNum {
-	return i * other.(VecInt32)
+func (i ScalarInt32) mul(other Scalar) Scalar {
+	return i * other.(ScalarInt32)
 }
 
-func (i VecInt32) div(other VecNum) VecNum {
-	return i / other.(VecInt32)
+func (i ScalarInt32) div(other Scalar) Scalar {
+	return i / other.(ScalarInt32)
 }
 
-func (i VecInt32) sqrt() float64 {
+func (i ScalarInt32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i VecInt32) equal(other VecNum) bool {
-	return i == other.(VecInt32)
+func (i ScalarInt32) equal(other Scalar) bool {
+	return i == other.(ScalarInt32)
 }
 
-func (i VecInt32) mulFl64(c float64) VecNum {
-	return VecInt32(int32(float64(i) * c))
+func (i ScalarInt32) mulFl64(c float64) Scalar {
+	return ScalarInt32(int32(float64(i) * c))
 }
 
 // Begin Uint
-func (i VecUint32) add(other VecNum) VecNum {
-	return i + other.(VecUint32)
+func (i ScalarUint32) add(other Scalar) Scalar {
+	return i + other.(ScalarUint32)
 }
 
-func (i VecUint32) sub(other VecNum) VecNum {
-	return i - other.(VecUint32)
+func (i ScalarUint32) sub(other Scalar) Scalar {
+	return i - other.(ScalarUint32)
 }
 
-func (i VecUint32) mul(other VecNum) VecNum {
-	return i * other.(VecUint32)
+func (i ScalarUint32) mul(other Scalar) Scalar {
+	return i * other.(ScalarUint32)
 }
 
-func (i VecUint32) div(other VecNum) VecNum {
-	return i / other.(VecUint32)
+func (i ScalarUint32) div(other Scalar) Scalar {
+	return i / other.(ScalarUint32)
 }
 
-func (i VecUint32) sqrt() float64 {
+func (i ScalarUint32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i VecUint32) equal(other VecNum) bool {
-	return i == other.(VecUint32)
+func (i ScalarUint32) equal(other Scalar) bool {
+	return i == other.(ScalarUint32)
 }
 
-func (i VecUint32) mulFl64(c float64) VecNum {
-	return VecUint32(uint32(float64(i) * c))
+func (i ScalarUint32) mulFl64(c float64) Scalar {
+	return ScalarUint32(uint32(float64(i) * c))
 }
 
 // Begin Float
-func (i VecFloat32) add(other VecNum) VecNum {
-	return i + other.(VecFloat32)
+func (i ScalarFloat32) add(other Scalar) Scalar {
+	return i + other.(ScalarFloat32)
 }
 
-func (i VecFloat32) sub(other VecNum) VecNum {
-	return i - other.(VecFloat32)
+func (i ScalarFloat32) sub(other Scalar) Scalar {
+	return i - other.(ScalarFloat32)
 }
 
-func (i VecFloat32) mul(other VecNum) VecNum {
-	return i * other.(VecFloat32)
+func (i ScalarFloat32) mul(other Scalar) Scalar {
+	return i * other.(ScalarFloat32)
 }
 
-func (i VecFloat32) div(other VecNum) VecNum {
-	return i / other.(VecFloat32)
+func (i ScalarFloat32) div(other Scalar) Scalar {
+	return i / other.(ScalarFloat32)
 }
 
-func (i VecFloat32) sqrt() float64 {
+func (i ScalarFloat32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i VecFloat32) equal(other VecNum) bool {
-	return math.Abs(float64(i-other.(VecFloat32))) < float64(.00000000001)
+func (i ScalarFloat32) equal(other Scalar) bool {
+	return math.Abs(float64(i-other.(ScalarFloat32))) < float64(.00000000001)
 }
 
-func (i VecFloat32) mulFl64(c float64) VecNum {
-	return VecFloat32(float32(float64(i) * c))
+func (i ScalarFloat32) mulFl64(c float64) Scalar {
+	return ScalarFloat32(float32(float64(i) * c))
 }
 
 // Begin Float64
-func (i VecFloat64) add(other VecNum) VecNum {
-	return i + other.(VecFloat64)
+func (i ScalarFloat64) add(other Scalar) Scalar {
+	return i + other.(ScalarFloat64)
 }
 
-func (i VecFloat64) sub(other VecNum) VecNum {
-	return i - other.(VecFloat64)
+func (i ScalarFloat64) sub(other Scalar) Scalar {
+	return i - other.(ScalarFloat64)
 }
 
-func (i VecFloat64) mul(other VecNum) VecNum {
-	return i * other.(VecFloat64)
+func (i ScalarFloat64) mul(other Scalar) Scalar {
+	return i * other.(ScalarFloat64)
 }
 
-func (i VecFloat64) div(other VecNum) VecNum {
-	return i / other.(VecFloat64)
+func (i ScalarFloat64) div(other Scalar) Scalar {
+	return i / other.(ScalarFloat64)
 }
 
-func (i VecFloat64) sqrt() float64 {
+func (i ScalarFloat64) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i VecFloat64) equal(other VecNum) bool {
-	return math.Abs(float64(i-other.(VecFloat64))) < float64(.00000000001)
+func (i ScalarFloat64) equal(other Scalar) bool {
+	return math.Abs(float64(i-other.(ScalarFloat64))) < float64(.00000000001)
 }
 
-func (i VecFloat64) mulFl64(c float64) VecNum {
-	return VecFloat64(float64(i) * c)
+func (i ScalarFloat64) mulFl64(c float64) Scalar {
+	return ScalarFloat64(float64(i) * c)
 }
 
 // Helper
-func vecNumZero(typ VecType) VecNum {
+func vecNumZero(typ VecType) Scalar {
 	switch typ {
 	case INT32:
-		return VecInt32(0)
+		return ScalarInt32(0)
 	case UINT32:
-		return VecUint32(0)
+		return ScalarUint32(0)
 	case FLOAT32:
-		return VecFloat32(0)
+		return ScalarFloat32(0)
 	case FLOAT64:
-		return VecFloat64(0)
+		return ScalarFloat64(0)
 	}
 
-	return VecInt32(0)
+	return ScalarInt32(0)
+}
+
+func MakeScalar(num interface{}, typ VecType) Scalar {
+
+	if n,ok := num.(int); ok {
+		switch typ {
+		case INT32:
+			return ScalarInt32(n)
+		case UINT32:
+			return ScalarUint32(n)
+		case FLOAT32:
+			return ScalarFloat32(n)
+		case FLOAT64:
+			return ScalarFloat64(n)
+		}
+	} else if n,ok := num.(int32); ok {
+		switch typ {
+		case INT32:
+			return ScalarInt32(n)
+		case UINT32:
+			return ScalarUint32(n)
+		case FLOAT32:
+			return ScalarFloat32(n)
+		case FLOAT64:
+			return ScalarFloat64(n)
+		}
+	} else if n,ok := num.(uint32); ok {
+		switch typ {
+		case INT32:
+			return ScalarInt32(n)
+		case UINT32:
+			return ScalarUint32(n)
+		case FLOAT32:
+			return ScalarFloat32(n)
+		case FLOAT64:
+			return ScalarFloat64(n)
+	}
+	} else if n,ok := num.(float32); ok {
+		switch typ {
+		case INT32:
+			return ScalarInt32(n)
+		case UINT32:
+			return ScalarUint32(n)
+		case FLOAT32:
+			return ScalarFloat32(n)
+		case FLOAT64:
+			return ScalarFloat64(n)
+		}
+	} else if n,ok := num.(float64); ok {
+		switch typ {
+		case INT32:
+			return ScalarInt32(n)
+		case UINT32:
+			return ScalarUint32(n)
+		case FLOAT32:
+			return ScalarFloat32(n)
+		case FLOAT64:
+			return ScalarFloat64(n)
+		}
+	}
+	
+	return nil
 }

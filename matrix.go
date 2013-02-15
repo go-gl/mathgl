@@ -11,11 +11,26 @@ type MatrixMultiplyable interface {
 type Matrix struct {
 	m, n int // an m x n matrix
 	typ  VecType
-	dat  []VecNum
+	dat  []Scalar
 }
 
 func NewMatrix(m, n int, typ VecType) *Matrix {
-	return &Matrix{m: m, n: n, typ: typ, dat: make([]VecNum, 0, 2)}
+	return &Matrix{m: m, n: n, typ: typ, dat: make([]Scalar, 0, 2)}
+}
+
+func Identity(size int, typ VecType) Matrix {
+	dat := make([]Scalar, size*size)
+	
+	for i := 0; i < size; i++ {
+		for j := 0; j < size; j++ {
+			if i == j {
+				dat[i * size + j] = MakeScalar(1, typ)
+			} else {
+				dat[i * size + j] = vecNumZero(typ)
+			}
+		}
+	}
+	return *unsafeMatrixFromSlice(typ, dat, size, size)
 }
 
 // [1, 1]
@@ -23,12 +38,12 @@ func NewMatrix(m, n int, typ VecType) *Matrix {
 //
 // This may seem confusing, but it's because it's easier to type out and visualize things in CMO
 // So it's easier to type write your matrix as a slice in CMO, and pass it into this method
-func MatrixFromCols(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
+func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 	mat.typ = typ
 
 	mat.m = len(el)
 	mat.n = len(el[0])
-	mat.dat = make([]VecNum, 0, mat.m*mat.n)
+	mat.dat = make([]Scalar, 0, mat.m*mat.n)
 
 	// Row Major Order, like in OpenGL
 	for i := 0; i < mat.n; i++ {
@@ -43,13 +58,14 @@ func MatrixFromCols(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
 	return mat, nil
 }
 
+
 // This function is MatrixOf, except it takes a list of row "vectors" instead of row "vectors" (really slices)
-func MatrixFromRows(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
+func MatrixFromRows(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 	mat.typ = typ
 
 	mat.m = len(el)
 	mat.n = len(el[0])
-	mat.dat = make([]VecNum, 0, mat.m*mat.n)
+	mat.dat = make([]Scalar, 0, mat.m*mat.n)
 
 	// Row Major Order, like in OpenGL
 	for i := 0; i < mat.m; i++ {
@@ -65,7 +81,8 @@ func MatrixFromRows(typ VecType, el [][]VecNum) (mat *Matrix, err error) {
 }
 
 // Slice-format data should be in Row Major Order
-func MatrixFromSlice(typ VecType, el []VecNum, m, n int) (mat *Matrix, err error) {
+func MatrixFromSlice(typ VecType, el []Scalar, m, n int) (mat *Matrix, err error) {
+	mat = &Matrix{}
 	mat.typ = typ
 	mat.m = m
 	mat.n = n
@@ -86,7 +103,8 @@ func MatrixFromSlice(typ VecType, el []VecNum, m, n int) (mat *Matrix, err error
 }
 
 // Quick and dirty internal function to make a matrix without spending time checking types
-func unsafeMatrixFromSlice(typ VecType, el []VecNum, m, n int) (mat *Matrix) {
+func unsafeMatrixFromSlice(typ VecType, el []Scalar, m, n int) (mat *Matrix) {
+	mat = &Matrix{}
 	mat.typ = typ
 	mat.m = m
 	mat.n = n
@@ -96,9 +114,17 @@ func unsafeMatrixFromSlice(typ VecType, el []VecNum, m, n int) (mat *Matrix) {
 	return mat
 }
 
-// TODO: "Add" or "Append" data method (expand the matrix)
+func (mat Matrix) Type() VecType {
+	return mat.typ
+}
 
-func (mat *Matrix) SetElement(i, j int, el VecNum) error {
+func (m Matrix) AsSlice() []Scalar {
+	return m.dat
+}
+
+// TODO: "Append" data method (expand the matrix)
+
+func (mat *Matrix) SetElement(i, j int, el Scalar) error {
 	if i < mat.m || j < mat.n {
 		return errors.New("Dimensions out of bounds")
 	}
@@ -125,7 +151,7 @@ func (mat Matrix) AsVector() (v Vector, err error) {
 	return *vPoint, nil
 }
 
-func (mat Matrix) ToScalar() VecNum {
+func (mat Matrix) ToScalar() Scalar {
 	if mat.m != 1 || mat.n != 1 {
 		return nil
 	}
@@ -139,7 +165,7 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 	}
 
 	m3.typ = m1.typ
-	m3.dat = make([]VecNum, len(m1.dat))
+	m3.dat = make([]Scalar, len(m1.dat))
 
 	for i := range m1.dat {
 		m3.dat[i] = m1.dat[i].add(m2.dat[i])
@@ -154,7 +180,7 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 	}
 
 	m3.typ = m1.typ
-	m3.dat = make([]VecNum, len(m1.dat))
+	m3.dat = make([]Scalar, len(m1.dat))
 
 	for i := range m1.dat {
 		m3.dat[i] = m1.dat[i].sub(m2.dat[i])
@@ -163,12 +189,12 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 	return m3
 }
 
-func (m1 Matrix) ScalarMul(c VecNum) (mat Matrix) {
+func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 	if !checkType(m1.typ, c) {
 		return
 	}
 	
-	dat := make([]VecNum, len(m1.dat))
+	dat := make([]Scalar, len(m1.dat))
 	for i := range m1.dat {
 		dat[i] = m1.dat[i].mul(c)
 	}
@@ -178,7 +204,7 @@ func (m1 Matrix) ScalarMul(c VecNum) (mat Matrix) {
 }
 
 func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
-	var indat []VecNum
+	var indat []Scalar
 	m,n,o := m1.m, m1.n, 0
 	
 	if vec,ok := m2.(Vector); ok {
@@ -203,7 +229,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 		o = mat.n
 	}
 	
-	dat := make([]VecNum, m*o)
+	dat := make([]Scalar, m*o)
 
 	for j := 0; j < o; j++ { // Columns of m2 and m3
 		for i := 0; i < m; i++ { // Rows of m1 and m3
@@ -225,7 +251,7 @@ Since starting a goroutine has some overhead, I'd wager it's probably not worth 
 
 Make sure the matrices are in order, and that they can indeed be multiplied. If not you'll end up with an untyped 0x0 matrix (a.k.a the "zero type" for a Matrix struct)
 
-If the only input is a single vector, it will return it as a vector changed into a matrix as if it were a *ROW* vector
+If the only input is a single vector, it will return it as a vector as if you called vector.AsMatrix(true), meaning as a *ROW* vector
 */
 func BatchMultiply(args []MatrixMultiplyable) Matrix {
 	// Fun fact: Since in (Go's) integer division 3/2=1, in the case where you have an odd number 
@@ -267,10 +293,22 @@ func batchMultHelper(ch chan<- Matrix, args []MatrixMultiplyable) {
 
 // INCOMPLETE DO NOT USE
 // Need better function to make matrices for recursion
-func (m1 Matrix) Det() interface{} {
+func (m1 Matrix) Det() Scalar {
 	if m1.m != m1.n { // Determinants are only for square matrices
 		return nil
 	}
 
 	return nil
+}
+
+func (m Matrix) Transpose() Matrix {
+	dat := make([]Scalar, len(m.dat))
+	
+	for i := 0; i < m.n; i++ {
+		for j := 0; j < m.m; j++ {
+			dat[j + i * m.m] = m.dat[j * m.n + i] // Basically convert to CMO
+		}
+	}
+	
+	return *unsafeMatrixFromSlice(m.typ, dat, m.n, m.m)
 }
