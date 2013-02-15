@@ -256,6 +256,36 @@ func (m1 Matrix) Mul(m2 Matrix) (m3 Matrix) {
 	return *mat
 }
 
+func BatchMultiply(args []Matrix) Matrix {
+	if len(args) == 1 {
+		return args[0]
+	}
+	
+	var m1,m2 Matrix
+	if len(args) > 2 {
+			ch1 := make(chan Matrix)
+			ch2 := make(chan Matrix)
+			
+			// Split up the work, matrix mult is associative so this will work
+			go batchMultHelper(ch1, args[0:len(args)/2])
+			go batchMultHelper(ch2, args[len(args)/2:len(args)])
+			
+			m1 = <- ch1
+			m2 = <- ch2
+	} else {
+		m1 = args[0]
+		m2 = args[1]
+	}
+	
+	
+	return m1.Mul(m2)
+}
+
+// Wrapper so we can use multiply concurrently. Code duplication might be faster (if concurrency is faster here at all, that is). We'll need benchmarks to be sure
+func batchMultHelper(ch chan<- Matrix, args[]Matrix) { 
+	ch <- BatchMultiply(args)
+}
+
 // INCOMPLETE DO NOT USE
 // Need better function to make matrices for recursion
 func (m1 Matrix) Det() interface{} {
