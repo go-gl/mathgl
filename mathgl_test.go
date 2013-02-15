@@ -70,7 +70,7 @@ func TestScalar(t *testing.T) {
 		t.Errorf("Equality fails for integers")
 	}
 	
-	defer func() { recover() }()
+	defer func() { recover() }() // Ignore the panic we're about to cause
 	one.Equal(oneInt)
 	
 	t.Errorf("Did not panic on attempt to perform equality on differently typed scalars")

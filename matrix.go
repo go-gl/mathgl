@@ -58,7 +58,7 @@ func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 	return mat, nil
 }
 
-// This function is MatrixOf, except it takes a list of row "vectors" instead of row "vectors" (really slices)
+// This function is MatrixFromCols, except each slice is a row of the vector (from top to bottom), rather than a column
 func MatrixFromRows(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 	mat.typ = typ
 
@@ -173,6 +173,8 @@ func (mat Matrix) ToScalar() Scalar {
 	return mat.dat[0]
 }
 
+// TODO: AsArray (and possibly As2dSliceRow/Col)
+
 func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 	if m1.typ != m2.typ || len(m1.dat) != len(m2.dat) {
 		return
@@ -260,7 +262,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 Batch Multiply, as its name implies, is supposed to Multiply a huge amount of matrices at once
 Since matrix Multiplication is associative, it can do pieces of the problem at the same time.
 Since starting a goroutine has some overhead, I'd wager it's probably not worth it to use this function unless you have
-8+ matrices, but I haven't benchmarked it so until then who knows?
+6-8+ larger (i.e. 3x3 or 4x4) matrices, but I haven't benchmarked it so until then who knows?
 
 Make sure the matrices are in order, and that they can indeed be Multiplied. If not you'll end up with an untyped 0x0 matrix (a.k.a the "zero type" for a Matrix struct)
 
