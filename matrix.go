@@ -20,13 +20,13 @@ func NewMatrix(m, n int, typ VecType) *Matrix {
 
 func Identity(size int, typ VecType) Matrix {
 	dat := make([]Scalar, size*size)
-	
+
 	for i := 0; i < size; i++ {
 		for j := 0; j < size; j++ {
 			if i == j {
-				dat[i * size + j] = MakeScalar(1, typ)
+				dat[i*size+j] = MakeScalar(1, typ)
 			} else {
-				dat[i * size + j] = vecNumZero(typ)
+				dat[i*size+j] = vecNumZero(typ)
 			}
 		}
 	}
@@ -57,7 +57,6 @@ func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 
 	return mat, nil
 }
-
 
 // This function is MatrixOf, except it takes a list of row "vectors" instead of row "vectors" (really slices)
 func MatrixFromRows(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
@@ -122,7 +121,7 @@ func (m1 Matrix) Equal(m2 Matrix) (eq bool) {
 	if m1.typ != m2.typ || m1.n != m2.n || m1.m != m2.m {
 		return false
 	}
-	
+
 	for i := 0; i < len(m1.dat); i++ {
 		eq = m1.dat[i].Equal(m2.dat[i])
 		if !eq {
@@ -208,26 +207,26 @@ func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 	if !checkType(m1.typ, c) {
 		return
 	}
-	
+
 	dat := make([]Scalar, len(m1.dat))
 	for i := range m1.dat {
 		dat[i] = m1.dat[i].Mul(c)
 	}
-	
+
 	return *unsafeMatrixFromSlice(m1.typ, dat, m1.m, m1.n)
-	
+
 }
 
 func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 	var indat []Scalar
-	m,n,o := m1.m, m1.n, 0
-	
-	if vec,ok := m2.(Vector); ok {
+	m, n, o := m1.m, m1.n, 0
+
+	if vec, ok := m2.(Vector); ok {
 		if vec.typ != m1.typ || n != len(vec.dat) {
 			return
 		}
 		if m1.m == 1 && m1.n == 1 {
-			m3,_ = vec.ScalarMul(m1.ToScalar()).AsMatrix(false)
+			m3, _ = vec.ScalarMul(m1.ToScalar()).AsMatrix(false)
 			return m3
 		}
 		indat = vec.dat
@@ -243,7 +242,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 		indat = mat.dat
 		o = mat.n
 	}
-	
+
 	dat := make([]Scalar, m*o)
 
 	for j := 0; j < o; j++ { // Columns of m2 and m3
@@ -257,8 +256,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 	return *unsafeMatrixFromSlice(m1.typ, dat, m, o)
 }
 
-
-/* 
+/*
 Batch Multiply, as its name implies, is supposed to Multiply a huge amount of matrices at once
 Since matrix Multiplication is associative, it can do pieces of the problem at the same time.
 Since starting a goroutine has some overhead, I'd wager it's probably not worth it to use this function unless you have
@@ -269,35 +267,34 @@ Make sure the matrices are in order, and that they can indeed be Multiplied. If 
 If the only input is a single vector, it will return it as a vector as if you called vector.AsMatrix(true), meaning as a *ROW* vector
 */
 func BatchMultiply(args []MatrixMultiplyable) Matrix {
-	// Fun fact: Since in (Go's) integer division 3/2=1, in the case where you have an odd number 
+	// Fun fact: Since in (Go's) integer division 3/2=1, in the case where you have an odd number
 	// of matrices to Multiply, the only way a vector can end up alone is when it's on the left, meaning it has to be a row vector.
 	// this allows us to not need a special case for a slice length of 3!
 	if len(args) == 1 {
 		// We're expected to return a Matrix, so if it's suddenly a vector Go will panic from bad typing
-		if vec,ok := args[0].(Vector); ok {
-			ret,_ := vec.AsMatrix(true)
+		if vec, ok := args[0].(Vector); ok {
+			ret, _ := vec.AsMatrix(true)
 			return ret
 		}
 		return args[0].(Matrix)
 	}
-	
-	var m1,m2 MatrixMultiplyable
+
+	var m1, m2 MatrixMultiplyable
 	if len(args) > 2 {
-			ch1 := make(chan Matrix)
-			ch2 := make(chan Matrix)
-			
-			// Split up the work, matrix Mult is associative
-			go batchMultHelper(ch1, args[0:len(args)/2])
-			go batchMultHelper(ch2, args[len(args)/2:len(args)])
-			
-			m1 = <- ch1
-			m2 = <- ch2
+		ch1 := make(chan Matrix)
+		ch2 := make(chan Matrix)
+
+		// Split up the work, matrix Mult is associative
+		go batchMultHelper(ch1, args[0:len(args)/2])
+		go batchMultHelper(ch2, args[len(args)/2:len(args)])
+
+		m1 = <-ch1
+		m2 = <-ch2
 	} else {
 		m1 = args[0]
 		m2 = args[1]
 	}
-	
-	
+
 	return m1.Mul(m2)
 }
 
@@ -318,12 +315,12 @@ func (m1 Matrix) Det() Scalar {
 
 func (m Matrix) Transpose() Matrix {
 	dat := make([]Scalar, len(m.dat))
-	
+
 	for i := 0; i < m.n; i++ {
 		for j := 0; j < m.m; j++ {
-			dat[j + i * m.m] = m.dat[j * m.n + i] // Basically convert to CMO
+			dat[j+i*m.m] = m.dat[j*m.n+i] // Basically convert to CMO
 		}
 	}
-	
+
 	return *unsafeMatrixFromSlice(m.typ, dat, m.n, m.m)
 }

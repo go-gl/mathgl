@@ -66,16 +66,15 @@ func TestVecSetGet(t *testing.T) {
 	}
 
 	//v3,_ := mathgl.VectorOf(mathgl.INT32, []mathgl.Scalar{mathgl.VecInt32(1),mathgl.VecInt32(2)})
-	
-	
+
 }
 
 func TestMatrixCreation(t *testing.T) {
 	iden2 := mathgl.Identity(2, mathgl.FLOAT64)
-	for i,el := range iden2.AsSlice() {
-		if (i == 0 || i == 3) && math.Abs(float64(el.(mathgl.ScalarFloat64))- float64(1)) > .000001 {
+	for i, el := range iden2.AsSlice() {
+		if (i == 0 || i == 3) && math.Abs(float64(el.(mathgl.ScalarFloat64))-float64(1)) > .000001 {
 			t.Errorf("Diagonals not 1 in 2x2 identity el: %v", el)
-		} else if (i == 1 || i == 2) && math.Abs(float64(el.(mathgl.ScalarFloat64))- float64(0)) > .000001 {
+		} else if (i == 1 || i == 2) && math.Abs(float64(el.(mathgl.ScalarFloat64))-float64(0)) > .000001 {
 			t.Errorf("Off-diagonals not 0 in 2x2 identity el: %v", el)
 		}
 	}

@@ -89,7 +89,7 @@ func (v Vector) ToScalar() Scalar {
 	if len(v.dat) != 1 {
 		return nil
 	}
-	
+
 	return v.dat[0]
 }
 
@@ -203,7 +203,6 @@ func (v1 Vector) Dot(v2 Vector) (ret Scalar) {
 		ret = ret.Add(v1.dat[i].Mul(v2.dat[i]))
 	}
 
-
 	return ret
 }
 
@@ -258,11 +257,11 @@ func (v Vector) Normalize() (v2 Vector) {
 func (v Vector) floatScale(c float64) (v2 Vector) {
 	v2.typ = v.typ
 	v2.dat = make([]Scalar, len(v.dat))
-	
+
 	for i := range v.dat {
 		v2.dat[i] = v.dat[i].mulFl64(c)
 	}
-	
+
 	return v2
 }
 
@@ -282,7 +281,7 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 }
 
 func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
-	if v2,ok := m.(Vector); ok {
+	if v2, ok := m.(Vector); ok {
 		if v.typ != v2.typ {
 			return // We type check in Dot as well, but that will return a nil, I want to ensure we return a zero-val matrix
 		}
@@ -292,15 +291,15 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	if v.typ != mat.typ {
 		return
 	}
-	
-	dat := make([]Scalar, 1 * mat.n) // If v is a matrix then 1 is its "m"
-	for j := 0; j < mat.n; j++ { // Columns of m2 and m3
+
+	dat := make([]Scalar, 1*mat.n) // If v is a matrix then 1 is its "m"
+	for j := 0; j < mat.n; j++ {   // Columns of m2 and m3
 		//for i := 0; i < m1.m; i++ { // Rows of m1 and m3
 		for k := 0; k < len(v.dat); k++ { // Columns of m1, rows of m2
 			dat[j*mat.n] = dat[j*mat.n].Add(v.dat[k*mat.n].Mul(mat.dat[j*mat.n+k])) // I think, needs testing
 		}
 		//}
 	}
-	
+
 	return *unsafeMatrixFromSlice(v.typ, dat, 1, mat.n)
 }

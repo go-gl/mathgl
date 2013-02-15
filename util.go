@@ -23,7 +23,7 @@ type Scalar interface {
 	Div(other Scalar) Scalar
 	Equal(other Scalar) bool // Only "approximately equals" for float types, because of the minutae of floating point arithmetic
 	Type() VecType
-	
+
 	// These remain unexported because they're basically shortcuts for internal benefit
 	mulFl64(c float64) Scalar // This is for the rare case we need to Multiply by non-like types as for length
 	sqrt() float64
@@ -181,7 +181,7 @@ func vecNumZero(typ VecType) Scalar {
 // If the number is not one of these types, it returns nil
 func MakeScalar(num interface{}, typ VecType) Scalar {
 
-	if n,ok := num.(int); ok {
+	if n, ok := num.(int); ok {
 		switch typ {
 		case INT32:
 			return ScalarInt32(n)
@@ -192,7 +192,7 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 		case FLOAT64:
 			return ScalarFloat64(n)
 		}
-	} else if n,ok := num.(int32); ok {
+	} else if n, ok := num.(int32); ok {
 		switch typ {
 		case INT32:
 			return ScalarInt32(n)
@@ -203,7 +203,7 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 		case FLOAT64:
 			return ScalarFloat64(n)
 		}
-	} else if n,ok := num.(uint32); ok {
+	} else if n, ok := num.(uint32); ok {
 		switch typ {
 		case INT32:
 			return ScalarInt32(n)
@@ -213,47 +213,47 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 			return ScalarFloat32(n)
 		case FLOAT64:
 			return ScalarFloat64(n)
+		}
+	} else if n, ok := num.(float32); ok {
+		switch typ {
+		case INT32:
+			return ScalarInt32(n)
+		case UINT32:
+			return ScalarUint32(n)
+		case FLOAT32:
+			return ScalarFloat32(n)
+		case FLOAT64:
+			return ScalarFloat64(n)
+		}
+	} else if n, ok := num.(float64); ok {
+		switch typ {
+		case INT32:
+			return ScalarInt32(n)
+		case UINT32:
+			return ScalarUint32(n)
+		case FLOAT32:
+			return ScalarFloat32(n)
+		case FLOAT64:
+			return ScalarFloat64(n)
+		}
 	}
-	} else if n,ok := num.(float32); ok {
-		switch typ {
-		case INT32:
-			return ScalarInt32(n)
-		case UINT32:
-			return ScalarUint32(n)
-		case FLOAT32:
-			return ScalarFloat32(n)
-		case FLOAT64:
-			return ScalarFloat64(n)
-		}
-	} else if n,ok := num.(float64); ok {
-		switch typ {
-		case INT32:
-			return ScalarInt32(n)
-		case UINT32:
-			return ScalarUint32(n)
-		case FLOAT32:
-			return ScalarFloat32(n)
-		case FLOAT64:
-			return ScalarFloat64(n)
-		}
-	}
-	
+
 	return nil
 }
 
 // Converts all elements of a slice to a Scalar of a given VecType
 // All elements of the slice need not be of the same time, but MUST be of
 // a Scalar-friendly type (int/int32, uint32, float32, float64) or the function will return nil
-// 
+//
 //  All pieces of the scalar will be converted to the Scalar type specificed in the second argument
 func ScalarSlice(slice []interface{}, typ VecType) (out []Scalar) {
 	out = make([]Scalar, len(slice))
 	for i := range slice {
-		out[i] = MakeScalar(slice[i],typ)
+		out[i] = MakeScalar(slice[i], typ)
 		if out[i] == nil {
 			return nil
 		}
 	}
-	
+
 	return out
 }
