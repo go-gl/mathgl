@@ -280,6 +280,7 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 	return eq
 }
 
+// Assumes inner product, not out product.
 func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	if v2, ok := m.(Vector); ok {
 		if v.typ != v2.typ {
@@ -302,4 +303,16 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	}
 
 	return *unsafeMatrixFromSlice(v.typ, dat, 1, mat.n)
+}
+
+func (v1 Vector) OuterProduct(v2 Vector) (m Matrix) {
+	if v1.typ != v2.typ {
+		return
+	}
+	
+	// Should probably just spell it out
+	m1,_ := v1.AsMatrix(false)
+	m2,_ := v2.AsMatrix(true)
+	
+	return m1.Mul(m2)
 }

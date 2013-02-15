@@ -2,6 +2,7 @@ package mathgl
 
 import (
 	"errors"
+	"math"
 )
 
 type MatrixMultiplyable interface {
@@ -141,7 +142,7 @@ func (m Matrix) AsSlice() []Scalar {
 // TODO: "Append" data method (expand the matrix)
 
 func (mat *Matrix) SetElement(i, j int, el Scalar) error {
-	if i < mat.m || j < mat.n {
+	if i > mat.m || j > mat.n || i < 0 || j < 0 {
 		return errors.New("Dimensions out of bounds")
 	}
 
@@ -152,6 +153,14 @@ func (mat *Matrix) SetElement(i, j int, el Scalar) error {
 	mat.dat[mat.m*j+i] = el
 
 	return nil
+}
+
+func (m Matrix) GetElement(i, j int) Scalar {
+	if i > m.m || j > m.n || i < 0 || j < 0 {
+		return nil
+	}
+	
+	return m.dat[i * m.n + j]
 }
 
 func (mat Matrix) AsVector() (v Vector, err error) {
@@ -269,6 +278,8 @@ Since starting a goroutine has some overhead, I'd wager it's probably not worth 
 Make sure the matrices are in order, and that they can indeed be Multiplied. If not you'll end up with an untyped 0x0 matrix (a.k.a the "zero type" for a Matrix struct)
 
 If the only input is a single vector, it will return it as a vector as if you called vector.AsMatrix(true), meaning as a *ROW* vector
+
+Yes, this means that for vectors it assumes inner product rather than outer product.
 */
 func BatchMultiply(args []MatrixMultiplyable) Matrix {
 	// Fun fact: Since in (Go's) integer division 3/2=1, in the case where you have an odd number
@@ -307,14 +318,56 @@ func batchMultHelper(ch chan<- Matrix, args []MatrixMultiplyable) {
 	close(ch)
 }
 
-// INCOMPLETE DO NOT USE
-// Need better function to make matrices for recursion
-func (m1 Matrix) Det() Scalar {
+
+// I see no reason why the Det should be limited to the type of the underlying matrix
+func (m1 Matrix) Det() (det float64) {
 	if m1.m != m1.n { // Determinants are only for square matrices
-		return nil
+		return
+	}
+	
+	if m1.m == 2 {
+		return m1.dat[0].Fl64() * m1.dat[3].Fl64() - m1.dat[1].Fl64() * m1.dat[2].Fl64()
+	}
+	
+	for i := 0; i < m1.n; i++ {
+			det += m1.GetElement(i,0).Fl64() * m1.Cofactor(i,0)
 	}
 
-	return nil
+	return det
+}
+
+func (m1 Matrix) Cofactor(i,j int) float64 {
+	return  math.Pow(float64(-1),float64(i+j)) * m1.MinorMatrix(i,j).Det() // C^(i,j) * Minor(i,j)
+}
+
+
+func (m1 Matrix) MinorMatrix(i,j int) Matrix {
+	dat := make([]Scalar, (m1.m-1) * (m1.n-1))
+	
+	for k := 0; k < m1.m; k++ {
+		var q int
+		if k < j {
+			q = k
+		} else if k == j {
+			continue
+		} else {
+			q = k-q
+		}
+		for l := 0; l < m1.n; k++ {
+			var r int
+			if l < i {
+				r = l
+			} else  if l == i {
+				continue
+			} else {
+				r = l-1
+			}
+			
+			dat[r * (m1.n-1) + q] =  m1.dat[l * m1.n + k]
+		}
+	}
+	
+	return *unsafeMatrixFromSlice(m1.typ, dat, m1.m-1, m1.n-1)
 }
 
 func (m Matrix) Transpose() Matrix {
@@ -327,4 +380,22 @@ func (m Matrix) Transpose() Matrix {
 	}
 
 	return *unsafeMatrixFromSlice(m.typ, dat, m.n, m.m)
+}
+
+
+func (m Matrix) Inverse() (m2 Matrix) {
+	det := m.Det()
+	if det == 0 {
+		return
+	}
+	return m.floatScale(float64(1.0)/det)
+}
+
+func (m Matrix) floatScale(c float64) Matrix {
+	dat := make([]Scalar, len(m.dat))
+	for i,el := range dat {
+		dat[i] = el.mulFl64(c)
+	}
+	
+	return *unsafeMatrixFromSlice(m.typ, dat, m.m, m.n)
 }

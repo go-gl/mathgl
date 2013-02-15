@@ -21,8 +21,13 @@ type Scalar interface {
 	Sub(other Scalar) Scalar
 	Mul(other Scalar) Scalar
 	Div(other Scalar) Scalar
+	Pow(toThe float64) Scalar
 	Equal(other Scalar) bool // Only "approximately equals" for float types, because of the minutae of floating point arithmetic
 	Type() VecType
+	Fl64() float64
+	Fl32() float32
+	Int32() int32
+	Uint32() uint32
 
 	// These remain unexported because they're basically shortcuts for internal benefit
 	mulFl64(c float64) Scalar // This is for the rare case we need to Multiply by non-like types as for length
@@ -63,6 +68,26 @@ func (i ScalarInt32) Type() VecType {
 	return INT32
 }
 
+func (i ScalarInt32) Pow(toThe float64) Scalar {
+	return ScalarInt32(int32(math.Pow(float64(i),toThe)))
+}
+
+func (i ScalarInt32) Fl64() float64 {
+	return float64(i)
+}
+
+func (i ScalarInt32) Fl32() float32 {
+	return float32(i)
+}
+
+func (i ScalarInt32) Int32() int32 {
+	return int32(i)
+}
+
+func (i ScalarInt32) Uint32() uint32 {
+	return uint32(i)
+}
+
 // Begin Uint
 func (i ScalarUint32) Add(other Scalar) Scalar {
 	return i + other.(ScalarUint32)
@@ -94,6 +119,26 @@ func (i ScalarUint32) mulFl64(c float64) Scalar {
 
 func (i ScalarUint32) Type() VecType {
 	return UINT32
+}
+
+func (i ScalarUint32) Pow(toThe float64) Scalar {
+	return ScalarUint32(uint32(math.Pow(float64(i),toThe)))
+}
+
+func (i ScalarUint32) Fl64() float64 {
+	return float64(i)
+}
+
+func (i ScalarUint32) Fl32() float32 {
+	return float32(i)
+}
+
+func (i ScalarUint32) Int32() int32 {
+	return int32(i)
+}
+
+func (i ScalarUint32) Uint32() uint32 {
+	return uint32(i)
 }
 
 // Begin Float
@@ -129,6 +174,26 @@ func (i ScalarFloat32) Type() VecType {
 	return FLOAT32
 }
 
+func (i ScalarFloat32) Pow(toThe float64) Scalar {
+	return ScalarFloat32(float32(math.Pow(float64(i),toThe)))
+}
+
+func (i ScalarFloat32) Fl64() float64 {
+	return float64(i)
+}
+
+func (i ScalarFloat32) Fl32() float32 {
+	return float32(i)
+}
+
+func (i ScalarFloat32) Int32() int32 {
+	return int32(i)
+}
+
+func (i ScalarFloat32) Uint32() uint32 {
+	return uint32(i)
+}
+
 // Begin Float64
 func (i ScalarFloat64) Add(other Scalar) Scalar {
 	return i + other.(ScalarFloat64)
@@ -160,6 +225,26 @@ func (i ScalarFloat64) mulFl64(c float64) Scalar {
 
 func (i ScalarFloat64) Type() VecType {
 	return FLOAT64
+}
+
+func (i ScalarFloat64) Pow(toThe float64) Scalar {
+	return ScalarFloat64(math.Pow(float64(i),toThe))
+}
+
+func (i ScalarFloat64) Fl64() float64 {
+	return float64(i)
+}
+
+func (i ScalarFloat64) Fl32() float32 {
+	return float32(i)
+}
+
+func (i ScalarFloat64) Int32() int32 {
+	return int32(i)
+}
+
+func (i ScalarFloat64) Uint32() uint32 {
+	return uint32(i)
 }
 
 // Helper
