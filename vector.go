@@ -280,3 +280,27 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 
 	return eq
 }
+
+func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
+	if v2,ok := m.(Vector); ok {
+		if v.typ != v2.typ {
+			return // We type check in Dot as well, but that will return a nil, I want to ensure we return a zero-val matrix
+		}
+		return *unsafeMatrixFromSlice(v.typ, []VecNum{v.Dot(v2)}, 1, 1)
+	}
+	mat := m.(Matrix)
+	if v.typ != mat.typ {
+		return
+	}
+	
+	dat := make([]VecNum, 1 * mat.n) // If v is a matrix then 1 is its "m"
+	for j := 0; j < mat.n; j++ { // Columns of m2 and m3
+		//for i := 0; i < m1.m; i++ { // Rows of m1 and m3
+		for k := 0; k < len(v.dat); k++ { // Columns of m1, rows of m2
+			dat[j*mat.n] = dat[j*mat.n].add(v.dat[k*mat.n].mul(mat.dat[j*mat.n+k])) // I think, needs testing
+		}
+		//}
+	}
+	
+	return *unsafeMatrixFromSlice(v.typ, dat, 1, mat.n)
+}
