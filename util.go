@@ -15,7 +15,7 @@ type ScalarFloat64 float64
 // This, unfortunately, makes it a pain to deal with anything that's not going to be used internally in the package
 // i.e. doing math with the dot product of two vectors. Suggestions for how to improve this is welcome.
 //
-// For now, the basic mathematical operations are exported to make your lives a little bit easier
+// For now, the basic mathematical operations are exported to make things easier
 type Scalar interface {
 	Add(other Scalar) Scalar
 	Sub(other Scalar) Scalar
@@ -30,6 +30,7 @@ type Scalar interface {
 }
 
 // Begin Int
+
 func (i ScalarInt32) Add(other Scalar) Scalar {
 	return i + other.(ScalarInt32)
 }
@@ -177,8 +178,8 @@ func vecNumZero(typ VecType) Scalar {
 	return ScalarInt32(0)
 }
 
-// Converts an int/int32, uint32, float32, or float64 to the a Scalar of type given by the second argument.
-// If the number is not one of these types, it returns nil
+// Converts an int/int32, uint32, float32, or float64 to a Scalar of type given by the second argument.
+// If the number is not one of the allowed types (or typ is not a recognized value of VecType) it returns nil
 func MakeScalar(num interface{}, typ VecType) Scalar {
 
 	if n, ok := num.(int); ok {
@@ -242,8 +243,8 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 }
 
 // Converts all elements of a slice to a Scalar of a given VecType
-// All elements of the slice need not be of the same time, but MUST be of
-// a Scalar-friendly type (int/int32, uint32, float32, float64) or the function will return nil
+// All elements of the slice need not be of the same type, but MUST be of
+// a Scalar-friendly type (int/int32, uint32, float32, or float64) or the function will return nil
 //
 //  All pieces of the scalar will be converted to the Scalar type specificed in the second argument
 func ScalarSlice(slice []interface{}, typ VecType) (out []Scalar) {

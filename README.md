@@ -11,7 +11,7 @@ Which is more pleasing: a := v.Dot(u) or a := Dot(u,v)? If we use the latter, sh
 
 Obviously, for operations that return vectors you can chain things like v.Add(u).Cross(c).Sub(n).Dot(j), which may or may not be more clear than Dot(Sub(Cross(Add(v,u),c),n),j)
 
-## What's "ugly"
+## What's "ugly"?
 
 Ugly was my first attempt at this. It explicitly defines things like Vec3 and Vec2. It requires code-generation scripts and makefiles. It's probably faster, but a lot uglier.
 

@@ -6,6 +6,76 @@ import (
 	"testing"
 )
 
+func TestScalar(t *testing.T) {
+	one := mathgl.MakeScalar(1, mathgl.FLOAT32)
+	if one == nil {
+		t.Fatalf("Couldn't make a scalar")
+	}
+	
+	if math.Abs(float64(one.(mathgl.ScalarFloat32)) - float64(1)) > .0000001 {
+		t.Errorf("Scalar not set correctly")
+	}
+	
+	if one.Type() != mathgl.FLOAT32 {
+		t.Errorf("Scalar not of correct type after being made")
+	}
+	
+	alsoOne := mathgl.MakeScalar(1, mathgl.FLOAT32)
+	if !one.Equal(alsoOne) {
+		t.Fatalf("One doesn't equal one, or equal method failed") // If equal isn't working, that's REALLY bad for the rest of the tests, hence fatal
+	}
+	
+	pointZeroOne := mathgl.MakeScalar(.01, mathgl.FLOAT32)
+	onePointZeroOne := one.Add(pointZeroOne)
+	if one.Equal(onePointZeroOne) || !onePointZeroOne.Equal(mathgl.MakeScalar(1.01,mathgl.FLOAT32)) {
+		t.Errorf("Addition failed")
+	}
+	
+	
+	oneAgain := onePointZeroOne.Sub(pointZeroOne)
+	if !oneAgain.Equal(one) {
+		t.Errorf("Sub failed")
+	}
+	
+	if five := mathgl.MakeScalar(5, mathgl.FLOAT32); !five.Equal(one.Mul(five)) {
+		t.Errorf("Multiplcation failed")
+	}
+	
+	two := mathgl.MakeScalar(2, mathgl.FLOAT32)
+	
+	if !one.Equal(two.Div(two)) {
+		t.Errorf("Division failed")
+	}
+	
+	inSlice := []interface{}{int(1), float64(1.0), float32(1.01), uint32(2)}
+	slice := mathgl.ScalarSlice(inSlice, mathgl.FLOAT32)
+	
+	if slice == nil || len(slice) < 4 {
+		t.Fatalf("Slice not the correct length or does not exist after conversion %v", slice)
+	}
+	
+	for _,el := range slice {
+		if el == nil || el.Type() != mathgl.FLOAT32 {
+			t.Fatalf("Making a scalar slice failed")
+		}
+	}
+	
+	if !slice[0].Equal(one) || !one.Equal(slice[1]) || !onePointZeroOne.Equal(slice[2]) || !two.Equal(slice[3]) {
+		t.Errorf("Making a slice returned incorrect values")
+	}
+	
+	oneInt := mathgl.MakeScalar(1.0, mathgl.INT32)
+	anotherOneInt := mathgl.MakeScalar(int32(1), mathgl.INT32)
+	if !oneInt.Equal(anotherOneInt) {
+		t.Errorf("Equality fails for integers")
+	}
+	
+	defer func() { recover() }()
+	one.Equal(oneInt)
+	
+	t.Errorf("Did not panic on attempt to perform equality on differently typed scalars")
+}
+
 func TestVecSetGet(t *testing.T) {
 	v1 := mathgl.NewVector(mathgl.FLOAT32)
 	if v1 == nil {
