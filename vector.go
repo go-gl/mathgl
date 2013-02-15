@@ -223,12 +223,12 @@ func (v1 Vector) Sub(v2 Vector) (v3 Vector) {
 	return v3
 }
 
-func (v1 Vector) Dot(v2 Vector) VecNum {
+func (v1 Vector) Dot(v2 Vector) (ret VecNum) {
 	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) {
 		return nil
 	}
 
-	ret := vecNumZero(v1.typ)
+	ret = vecNumZero(v1.typ)
 
 	for i := range v1.dat {
 		ret = ret.add(v1.dat[i].mul(v2.dat[i]))
@@ -261,7 +261,7 @@ func (v1 Vector) Dot(v2 Vector) VecNum {
 		return ret
 	}*/
 
-	return nil
+	return ret
 }
 
 // Should we allow 7-dimensional?
@@ -324,6 +324,7 @@ func (v1 Vector) ScalarMul(c VecNum) (v2 Vector) {
 	return v2
 }
 
+// This is VECTOR LENGTH, a.k.a magnitude. For the number of elements, us Size()
 func (v Vector) Len() float64 {
 
 	dot := v.Dot(v)
@@ -341,8 +342,24 @@ func (v Vector) Len() float64 {
 	return dot.sqrt()
 }
 
+// This is the number of elements. For vector length or magnitude use Len()
+func (v Vector) Size() int {
+	return len(v.dat)
+}
+
 func (v Vector) Normalize() (v2 Vector) {
-	return v.ScalarMul(VecFloat64(float64(1.0) / v.Len()))
+	return v.floatScale(float64(1.0) / v.Len())
+}
+
+func (v Vector) floatScale(c float64) (v2 Vector) {
+	v2.typ = v.typ
+	v2.dat = make([]VecNum, len(v.dat))
+	
+	for i := range v.dat {
+		v2.dat[i] = v.dat[i].mulFl64(c)
+	}
+	
+	return v2
 }
 
 func (v1 Vector) Equal(v2 Vector) (eq bool) {

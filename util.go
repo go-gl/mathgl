@@ -18,6 +18,7 @@ type VecNum interface {
 	add(other VecNum) VecNum
 	sub(other VecNum) VecNum
 	mul(other VecNum) VecNum
+	mulFl64(c float64) VecNum // This is for the rare case we need to multiply by non-like types as for length
 	div(other VecNum) VecNum
 	equal(other VecNum) bool
 	sqrt() float64
@@ -48,6 +49,10 @@ func (i VecInt32) equal(other VecNum) bool {
 	return i == other.(VecInt32)
 }
 
+func (i VecInt32) mulFl64(c float64) VecNum {
+	return VecInt32(int32(float64(i) * c))
+}
+
 // Begin Uint
 func (i VecUint32) add(other VecNum) VecNum {
 	return i + other.(VecUint32)
@@ -71,6 +76,10 @@ func (i VecUint32) sqrt() float64 {
 
 func (i VecUint32) equal(other VecNum) bool {
 	return i == other.(VecUint32)
+}
+
+func (i VecUint32) mulFl64(c float64) VecNum {
+	return VecUint32(uint32(float64(i) * c))
 }
 
 // Begin Float
@@ -98,6 +107,10 @@ func (i VecFloat32) equal(other VecNum) bool {
 	return math.Abs(float64(i-other.(VecFloat32))) < float64(.00000000001)
 }
 
+func (i VecFloat32) mulFl64(c float64) VecNum {
+	return VecFloat32(float32(float64(i) * c))
+}
+
 // Begin Float64
 func (i VecFloat64) add(other VecNum) VecNum {
 	return i + other.(VecFloat64)
@@ -121,6 +134,10 @@ func (i VecFloat64) sqrt() float64 {
 
 func (i VecFloat64) equal(other VecNum) bool {
 	return math.Abs(float64(i-other.(VecFloat64))) < float64(.00000000001)
+}
+
+func (i VecFloat64) mulFl64(c float64) VecNum {
+	return VecFloat64(float64(i) * c)
 }
 
 // Helper

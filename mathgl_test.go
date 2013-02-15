@@ -65,4 +65,7 @@ func TestVecSetGet(t *testing.T) {
 		t.Errorf("Vectors are equal despite changing v1, or equal is wrong, v1: %v v2: %v", v1, v2)
 	}
 
+	//v3,_ := mathgl.VectorOf(mathgl.INT32, []mathgl.VecNum{mathgl.VecInt32(1),mathgl.VecInt32(2)})
+	
+	
 }
