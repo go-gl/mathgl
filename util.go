@@ -9,35 +9,40 @@ type ScalarUint32 uint32
 type ScalarFloat32 float32
 type ScalarFloat64 float64
 
-// Internal Note: Types still need to be checked (using the VecTypee enum, not reflection) before calling any of the Scalar functions or Go will panic due to an incorrect type assertion.
-
 // Before I did this, there were a lot of ugly switch statements and tons of code duplication.
 // Go doesn't allow arbitrary math without casting, so some code duplication was inevitable, but with this wrapper
 // I was able to localize all the duplication to one place and clean up the main package a great deal.
+// This, unfortunately, makes it a pain to deal with anything that's not going to be used internally in the package
+// i.e. doing math with the dot product of two vectors. Suggestions for how to improve this is welcome.
+//
+// For now, the basic mathematical operations are exported to make your lives a little bit easier
 type Scalar interface {
-	add(other Scalar) Scalar
-	sub(other Scalar) Scalar
-	mul(other Scalar) Scalar
-	mulFl64(c float64) Scalar // This is for the rare case we need to multiply by non-like types as for length
-	div(other Scalar) Scalar
-	equal(other Scalar) bool
+	Add(other Scalar) Scalar
+	Sub(other Scalar) Scalar
+	Mul(other Scalar) Scalar
+	Div(other Scalar) Scalar
+	Equal(other Scalar) bool // Only "approximately equals" for float types, because of the minutae of floating point arithmetic
+	Type() VecType
+	
+	// These remain unexported because they're basically shortcuts for internal benefit
+	mulFl64(c float64) Scalar // This is for the rare case we need to Multiply by non-like types as for length
 	sqrt() float64
 }
 
 // Begin Int
-func (i ScalarInt32) add(other Scalar) Scalar {
+func (i ScalarInt32) Add(other Scalar) Scalar {
 	return i + other.(ScalarInt32)
 }
 
-func (i ScalarInt32) sub(other Scalar) Scalar {
+func (i ScalarInt32) Sub(other Scalar) Scalar {
 	return i - other.(ScalarInt32)
 }
 
-func (i ScalarInt32) mul(other Scalar) Scalar {
+func (i ScalarInt32) Mul(other Scalar) Scalar {
 	return i * other.(ScalarInt32)
 }
 
-func (i ScalarInt32) div(other Scalar) Scalar {
+func (i ScalarInt32) Div(other Scalar) Scalar {
 	return i / other.(ScalarInt32)
 }
 
@@ -45,7 +50,7 @@ func (i ScalarInt32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i ScalarInt32) equal(other Scalar) bool {
+func (i ScalarInt32) Equal(other Scalar) bool {
 	return i == other.(ScalarInt32)
 }
 
@@ -53,20 +58,24 @@ func (i ScalarInt32) mulFl64(c float64) Scalar {
 	return ScalarInt32(int32(float64(i) * c))
 }
 
+func (i ScalarInt32) Type() VecType {
+	return INT32
+}
+
 // Begin Uint
-func (i ScalarUint32) add(other Scalar) Scalar {
+func (i ScalarUint32) Add(other Scalar) Scalar {
 	return i + other.(ScalarUint32)
 }
 
-func (i ScalarUint32) sub(other Scalar) Scalar {
+func (i ScalarUint32) Sub(other Scalar) Scalar {
 	return i - other.(ScalarUint32)
 }
 
-func (i ScalarUint32) mul(other Scalar) Scalar {
+func (i ScalarUint32) Mul(other Scalar) Scalar {
 	return i * other.(ScalarUint32)
 }
 
-func (i ScalarUint32) div(other Scalar) Scalar {
+func (i ScalarUint32) Div(other Scalar) Scalar {
 	return i / other.(ScalarUint32)
 }
 
@@ -74,7 +83,7 @@ func (i ScalarUint32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i ScalarUint32) equal(other Scalar) bool {
+func (i ScalarUint32) Equal(other Scalar) bool {
 	return i == other.(ScalarUint32)
 }
 
@@ -82,20 +91,24 @@ func (i ScalarUint32) mulFl64(c float64) Scalar {
 	return ScalarUint32(uint32(float64(i) * c))
 }
 
+func (i ScalarUint32) Type() VecType {
+	return UINT32
+}
+
 // Begin Float
-func (i ScalarFloat32) add(other Scalar) Scalar {
+func (i ScalarFloat32) Add(other Scalar) Scalar {
 	return i + other.(ScalarFloat32)
 }
 
-func (i ScalarFloat32) sub(other Scalar) Scalar {
+func (i ScalarFloat32) Sub(other Scalar) Scalar {
 	return i - other.(ScalarFloat32)
 }
 
-func (i ScalarFloat32) mul(other Scalar) Scalar {
+func (i ScalarFloat32) Mul(other Scalar) Scalar {
 	return i * other.(ScalarFloat32)
 }
 
-func (i ScalarFloat32) div(other Scalar) Scalar {
+func (i ScalarFloat32) Div(other Scalar) Scalar {
 	return i / other.(ScalarFloat32)
 }
 
@@ -103,7 +116,7 @@ func (i ScalarFloat32) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i ScalarFloat32) equal(other Scalar) bool {
+func (i ScalarFloat32) Equal(other Scalar) bool {
 	return math.Abs(float64(i-other.(ScalarFloat32))) < float64(.00000000001)
 }
 
@@ -111,20 +124,24 @@ func (i ScalarFloat32) mulFl64(c float64) Scalar {
 	return ScalarFloat32(float32(float64(i) * c))
 }
 
+func (i ScalarFloat32) Type() VecType {
+	return FLOAT32
+}
+
 // Begin Float64
-func (i ScalarFloat64) add(other Scalar) Scalar {
+func (i ScalarFloat64) Add(other Scalar) Scalar {
 	return i + other.(ScalarFloat64)
 }
 
-func (i ScalarFloat64) sub(other Scalar) Scalar {
+func (i ScalarFloat64) Sub(other Scalar) Scalar {
 	return i - other.(ScalarFloat64)
 }
 
-func (i ScalarFloat64) mul(other Scalar) Scalar {
+func (i ScalarFloat64) Mul(other Scalar) Scalar {
 	return i * other.(ScalarFloat64)
 }
 
-func (i ScalarFloat64) div(other Scalar) Scalar {
+func (i ScalarFloat64) Div(other Scalar) Scalar {
 	return i / other.(ScalarFloat64)
 }
 
@@ -132,12 +149,16 @@ func (i ScalarFloat64) sqrt() float64 {
 	return math.Sqrt(float64(i))
 }
 
-func (i ScalarFloat64) equal(other Scalar) bool {
+func (i ScalarFloat64) Equal(other Scalar) bool {
 	return math.Abs(float64(i-other.(ScalarFloat64))) < float64(.00000000001)
 }
 
 func (i ScalarFloat64) mulFl64(c float64) Scalar {
 	return ScalarFloat64(float64(i) * c)
+}
+
+func (i ScalarFloat64) Type() VecType {
+	return FLOAT64
 }
 
 // Helper
@@ -225,10 +246,10 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 // a Scalar-friendly type (int/int32, uint32, float32, float64) or the function will return nil
 // 
 //  All pieces of the scalar will be converted to the Scalar type specificed in the second argument
-func ScalarSlice(slice []interface{}, typ VecTyp) (out []Scalar) {
+func ScalarSlice(slice []interface{}, typ VecType) (out []Scalar) {
 	out = make([]Scalar, len(slice))
 	for i := range slice {
-		out[i] = MakeScalar(slice[i])
+		out[i] = MakeScalar(slice[i],typ)
 		if out[i] == nil {
 			return nil
 		}

@@ -171,7 +171,7 @@ func (v1 Vector) Add(v2 Vector) (v3 Vector) {
 	v3.dat = make([]Scalar, len(v1.dat))
 
 	for i := range v1.dat {
-		v3.dat[i] = v1.dat[i].add(v2.dat[i])
+		v3.dat[i] = v1.dat[i].Add(v2.dat[i])
 	}
 
 	return v3
@@ -186,7 +186,7 @@ func (v1 Vector) Sub(v2 Vector) (v3 Vector) {
 	v3.dat = make([]Scalar, len(v1.dat))
 
 	for i := range v1.dat {
-		v3.dat[i] = v1.dat[i].sub(v2.dat[i])
+		v3.dat[i] = v1.dat[i].Sub(v2.dat[i])
 	}
 
 	return v3
@@ -200,7 +200,7 @@ func (v1 Vector) Dot(v2 Vector) (ret Scalar) {
 	ret = vecNumZero(v1.typ)
 
 	for i := range v1.dat {
-		ret = ret.add(v1.dat[i].mul(v2.dat[i]))
+		ret = ret.Add(v1.dat[i].Mul(v2.dat[i]))
 	}
 
 
@@ -216,9 +216,9 @@ func (v1 Vector) Cross(v2 Vector) (v3 Vector) {
 	v3.typ = v1.typ
 	v3.dat = make([]Scalar, len(v3.dat))
 
-	v3.dat[0] = v1.dat[1].mul(v2.dat[2]).sub(v1.dat[2].mul(v2.dat[1]))
-	v3.dat[1] = v1.dat[2].mul(v2.dat[0]).sub(v1.dat[0].mul(v2.dat[2]))
-	v3.dat[2] = v1.dat[0].mul(v2.dat[1]).sub(v1.dat[1].mul(v2.dat[0]))
+	v3.dat[0] = v1.dat[1].Mul(v2.dat[2]).Sub(v1.dat[2].Mul(v2.dat[1]))
+	v3.dat[1] = v1.dat[2].Mul(v2.dat[0]).Sub(v1.dat[0].Mul(v2.dat[2]))
+	v3.dat[2] = v1.dat[0].Mul(v2.dat[1]).Sub(v1.dat[1].Mul(v2.dat[0]))
 
 	return v3
 }
@@ -232,7 +232,7 @@ func (v1 Vector) ScalarMul(c Scalar) (v2 Vector) {
 	v2.dat = make([]Scalar, len(v1.dat))
 
 	for i := range v1.dat {
-		v2.dat[i] = v1.dat[i].mul(c)
+		v2.dat[i] = v1.dat[i].Mul(c)
 	}
 
 	return v2
@@ -272,7 +272,7 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 	}
 
 	for i := 0; i < len(v1.dat); i++ {
-		eq = v1.dat[i].equal(v2.dat[i])
+		eq = v1.dat[i].Equal(v2.dat[i])
 		if !eq {
 			break
 		}
@@ -297,7 +297,7 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	for j := 0; j < mat.n; j++ { // Columns of m2 and m3
 		//for i := 0; i < m1.m; i++ { // Rows of m1 and m3
 		for k := 0; k < len(v.dat); k++ { // Columns of m1, rows of m2
-			dat[j*mat.n] = dat[j*mat.n].add(v.dat[k*mat.n].mul(mat.dat[j*mat.n+k])) // I think, needs testing
+			dat[j*mat.n] = dat[j*mat.n].Add(v.dat[k*mat.n].Mul(mat.dat[j*mat.n+k])) // I think, needs testing
 		}
 		//}
 	}

@@ -114,8 +114,23 @@ func unsafeMatrixFromSlice(typ VecType, el []Scalar, m, n int) (mat *Matrix) {
 	return mat
 }
 
-func (mat Matrix) Type() VecType {
-	return mat.typ
+func (m Matrix) Type() VecType {
+	return m.typ
+}
+
+func (m1 Matrix) Equal(m2 Matrix) (eq bool) {
+	if m1.typ != m2.typ || m1.n != m2.n || m1.m != m2.m {
+		return false
+	}
+	
+	for i := 0; i < len(m1.dat); i++ {
+		eq = m1.dat[i].Equal(m2.dat[i])
+		if !eq {
+			break
+		}
+	}
+
+	return eq
 }
 
 func (m Matrix) AsSlice() []Scalar {
@@ -168,7 +183,7 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 	m3.dat = make([]Scalar, len(m1.dat))
 
 	for i := range m1.dat {
-		m3.dat[i] = m1.dat[i].add(m2.dat[i])
+		m3.dat[i] = m1.dat[i].Add(m2.dat[i])
 	}
 
 	return m3
@@ -183,7 +198,7 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 	m3.dat = make([]Scalar, len(m1.dat))
 
 	for i := range m1.dat {
-		m3.dat[i] = m1.dat[i].sub(m2.dat[i])
+		m3.dat[i] = m1.dat[i].Sub(m2.dat[i])
 	}
 
 	return m3
@@ -196,7 +211,7 @@ func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 	
 	dat := make([]Scalar, len(m1.dat))
 	for i := range m1.dat {
-		dat[i] = m1.dat[i].mul(c)
+		dat[i] = m1.dat[i].Mul(c)
 	}
 	
 	return *unsafeMatrixFromSlice(m1.typ, dat, m1.m, m1.n)
@@ -234,7 +249,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 	for j := 0; j < o; j++ { // Columns of m2 and m3
 		for i := 0; i < m; i++ { // Rows of m1 and m3
 			for k := 0; k < n; k++ { // Columns of m1, rows of m2
-				dat[j*o+i] = dat[j*o+i].add(m1.dat[k*n+i].mul(indat[j*o+k])) // I think, needs testing
+				dat[j*o+i] = dat[j*o+i].Add(m1.dat[k*n+i].Mul(indat[j*o+k])) // I think, needs testing
 			}
 		}
 	}
@@ -244,18 +259,18 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 
 
 /* 
-Batch Multiply, as its name implies, is supposed to multiply a huge amount of matrices at once
-Since matrix multiplication is associative, it can do pieces of the problem at the same time.
+Batch Multiply, as its name implies, is supposed to Multiply a huge amount of matrices at once
+Since matrix Multiplication is associative, it can do pieces of the problem at the same time.
 Since starting a goroutine has some overhead, I'd wager it's probably not worth it to use this function unless you have
 8+ matrices, but I haven't benchmarked it so until then who knows?
 
-Make sure the matrices are in order, and that they can indeed be multiplied. If not you'll end up with an untyped 0x0 matrix (a.k.a the "zero type" for a Matrix struct)
+Make sure the matrices are in order, and that they can indeed be Multiplied. If not you'll end up with an untyped 0x0 matrix (a.k.a the "zero type" for a Matrix struct)
 
 If the only input is a single vector, it will return it as a vector as if you called vector.AsMatrix(true), meaning as a *ROW* vector
 */
 func BatchMultiply(args []MatrixMultiplyable) Matrix {
 	// Fun fact: Since in (Go's) integer division 3/2=1, in the case where you have an odd number 
-	// of matrices to multiply, the only way a vector can end up alone is when it's on the left, meaning it has to be a row vector.
+	// of matrices to Multiply, the only way a vector can end up alone is when it's on the left, meaning it has to be a row vector.
 	// this allows us to not need a special case for a slice length of 3!
 	if len(args) == 1 {
 		// We're expected to return a Matrix, so if it's suddenly a vector Go will panic from bad typing
@@ -271,7 +286,7 @@ func BatchMultiply(args []MatrixMultiplyable) Matrix {
 			ch1 := make(chan Matrix)
 			ch2 := make(chan Matrix)
 			
-			// Split up the work, matrix mult is associative
+			// Split up the work, matrix Mult is associative
 			go batchMultHelper(ch1, args[0:len(args)/2])
 			go batchMultHelper(ch2, args[len(args)/2:len(args)])
 			
