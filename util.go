@@ -156,6 +156,8 @@ func vecNumZero(typ VecType) Scalar {
 	return ScalarInt32(0)
 }
 
+// Concerts an int/int32, uint32, float32, or float64 to the a Scalar of type given by the second argument.
+// If the number is not one of these types, it returns nil
 func MakeScalar(num interface{}, typ VecType) Scalar {
 
 	if n,ok := num.(int); ok {
@@ -216,4 +218,21 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 	}
 	
 	return nil
+}
+
+// Converts all elements of a slice to a Scalar of a given VecType
+// All elements of the slice need not be of the same time, but MUST be of
+// a Scalar-friendly type (int/int32, uint32, float32, float64) or the function will return nil
+// 
+//  All pieces of the scalar will be converted to the Scalar type specificed in the second argument
+func ScalarSlice(slice []interface{}, typ VecTyp) (out []Scalar) {
+	out = make([]Scalar, len(slice))
+	for i := range slice {
+		out[i] = MakeScalar(slice[i])
+		if out[i] == nil {
+			return nil
+		}
+	}
+	
+	return out
 }
