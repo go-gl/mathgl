@@ -37,6 +37,10 @@ func TestVecSetGet(t *testing.T) {
 		t.Errorf("Two vectors not the same despite being made from same list")
 	}
 
+	if !v1.Equal(*v2) { // We should have checked if this was equal in the last step. So if this fails equal is PROBABLY bad
+		t.Errorf("Vectors are not equal or equal function failed, v1: %v v2: %v", v1, v2)
+	}
+
 	if err := v1.SetElement(25, mathgl.VecFloat32(1)); err == nil {
 		t.Errorf("Set out of bounds vector element")
 	}
@@ -54,7 +58,11 @@ func TestVecSetGet(t *testing.T) {
 	}
 
 	if a := v2.GetElement(4); math.Abs(float64(float32(a.(mathgl.VecFloat32))-float32(42))) < .0000001 {
-		t.Errorf("Changing one vector changed another %d")
+		t.Errorf("Changing one vector changed another")
+	}
+
+	if v1.Equal(*v2) {
+		t.Errorf("Vectors are equal despite changing v1, or equal is wrong, v1: %v v2: %v", v1, v2)
 	}
 
 }

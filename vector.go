@@ -35,16 +35,16 @@ func VectorOf(t VecType, el []VecNum) (v *Vector, err error) {
 func checkType(typ VecType, i interface{}) bool {
 	switch typ {
 	case INT32:
-		_,ok := i.(VecInt32)
+		_, ok := i.(VecInt32)
 		return ok
 	case UINT32:
-		_,ok := i.(VecUint32)
+		_, ok := i.(VecUint32)
 		return ok
 	case FLOAT32:
-		_,ok := i.(VecFloat32)
+		_, ok := i.(VecFloat32)
 		return ok
 	case FLOAT64:
-		_,ok := i.(VecFloat64)
+		_, ok := i.(VecFloat64)
 		return ok
 	}
 
@@ -343,4 +343,19 @@ func (v Vector) Len() float64 {
 
 func (v Vector) Normalize() (v2 Vector) {
 	return v.ScalarMul(VecFloat64(float64(1.0) / v.Len()))
+}
+
+func (v1 Vector) Equal(v2 Vector) (eq bool) {
+	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) {
+		return false
+	}
+
+	for i := 0; i < len(v1.dat); i++ {
+		eq = v1.dat[i].equal(v2.dat[i])
+		if !eq {
+			break
+		}
+	}
+
+	return eq
 }
