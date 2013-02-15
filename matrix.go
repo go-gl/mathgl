@@ -284,6 +284,7 @@ func BatchMultiply(args []Matrix) Matrix {
 // Wrapper so we can use multiply concurrently. Code duplication might be faster (if concurrency is faster here at all, that is). We'll need benchmarks to be sure
 func batchMultHelper(ch chan<- Matrix, args[]Matrix) { 
 	ch <- BatchMultiply(args)
+	close(ch)
 }
 
 // INCOMPLETE DO NOT USE
