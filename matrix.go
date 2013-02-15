@@ -39,6 +39,7 @@ func Identity(size int, typ VecType) Matrix {
 // This may seem confusing, but it's because it's easier to type out and visualize things in CMO
 // So it's easier to type write your matrix as a slice in CMO, and pass it into this method
 func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
+	mat = &Matrix{}
 	mat.typ = typ
 
 	mat.m = len(el)
@@ -60,6 +61,7 @@ func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 
 // This function is MatrixFromCols, except each slice is a row of the vector (from top to bottom), rather than a column
 func MatrixFromRows(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
+	mat = &Matrix{}
 	mat.typ = typ
 
 	mat.m = len(el)
