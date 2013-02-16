@@ -222,5 +222,11 @@ func TestMatrixCreation(t *testing.T) {
 
 	
 func TestVecMath(t *testing.T) {
+	vec1 := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{1,2,0,1},mathgl.FLOAT64), mathgl.FLOAT64)
+	vec2 := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{0,9,1,2.35},mathgl.FLOAT64), mathgl.FLOAT64)
+	eq := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{1,11,1,3.35},mathgl.FLOAT64), mathgl.FLOAT64)
 	
+	if sum := vec1.Add(vec2); !eq.Equal(sum) {
+		fmt.Errorf("Addition not working properly %v" vec1.Add(sum))
+	}
 }
