@@ -147,4 +147,6 @@ func TestMatrixCreation(t *testing.T) {
 			t.Errorf("Off-diagonals not 0 in 2x2 identity el: %v", el)
 		}
 	}
+
+		
 }

@@ -35,10 +35,7 @@ func Identity(size int, typ VecType) Matrix {
 }
 
 // [1, 1]
-// [0, 1] Would be entered as a 2D array [[1,1],[0,1]] -- but converted to RMO
-//
-// This may seem confusing, but it's because it's easier to type out and visualize things in CMO
-// So it's easier to type write your matrix as a slice in CMO, and pass it into this method
+// [0, 1] Would be entered as a 2D array [[1,0],[1,1]] -- but converted to RMO
 func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
@@ -60,7 +57,10 @@ func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 	return mat, nil
 }
 
-// This function is MatrixFromCols, except each slice is a row of the vector (from top to bottom), rather than a column
+// This function is MatrixFromCols, except each slice is a row vector, rather than a column
+//i.e. 
+// [1, 1]
+// [0, 1] is entered as [[1,1],[0,1]]
 func MatrixFromRows(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
