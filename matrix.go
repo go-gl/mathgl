@@ -31,12 +31,12 @@ func Identity(size int, typ VecType) Matrix {
 			}
 		}
 	}
-	return *unsafeMatrixFromSlice(dat, typ,  size, size)
+	return *unsafeMatrixFromSlice(dat, typ, size, size)
 }
 
 // [1, 1]
 // [0, 1] Would be entered as a 2D array [[1,0],[1,1]] -- but converted to RMO
-func MatrixFromCols(el [][]Scalar,typ VecType) (mat *Matrix, err error) {
+func MatrixFromCols(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
 
@@ -49,7 +49,7 @@ func MatrixFromCols(el [][]Scalar,typ VecType) (mat *Matrix, err error) {
 			if !checkType(mat.typ, el[j][i]) {
 				return nil, errors.New("Element type does not match matrix")
 			}
-			mat.dat[i * mat.n + j] = el[j][i]
+			mat.dat[i*mat.n+j] = el[j][i]
 		}
 	}
 
@@ -60,7 +60,7 @@ func MatrixFromCols(el [][]Scalar,typ VecType) (mat *Matrix, err error) {
 //i.e.
 // [1, 1]
 // [0, 1] is entered as [[1,1],[0,1]]
-func MatrixFromRows(el [][]Scalar,typ VecType) (mat *Matrix, err error) {
+func MatrixFromRows(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
 
@@ -73,7 +73,7 @@ func MatrixFromRows(el [][]Scalar,typ VecType) (mat *Matrix, err error) {
 			if !checkType(mat.typ, el[i][j]) {
 				return nil, errors.New("Element type does not match matrix")
 			}
-			mat.dat[i * mat.n + j] = el[i][j]
+			mat.dat[i*mat.n+j] = el[i][j]
 		}
 	}
 
@@ -85,7 +85,7 @@ func MatrixFromSlice(el []Scalar, typ VecType, m, n int) (mat *Matrix, err error
 	if m*n != len(el) {
 		return nil, errors.New("Matrix dimensions do not match data passed in")
 	}
-	
+
 	mat = &Matrix{}
 	mat.typ = typ
 	mat.m = m
@@ -263,7 +263,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 		}
 	}
 
-	return *unsafeMatrixFromSlice( dat, m1.typ, m, o)
+	return *unsafeMatrixFromSlice(dat, m1.typ, m, o)
 }
 
 /*
@@ -362,7 +362,7 @@ func (m1 Matrix) MinorMatrix(i, j int) Matrix {
 		}
 	}
 
-	return *unsafeMatrixFromSlice( dat, m1.typ, m1.m-1, m1.n-1)
+	return *unsafeMatrixFromSlice(dat, m1.typ, m1.m-1, m1.n-1)
 }
 
 func (m Matrix) Transpose() Matrix {
@@ -374,7 +374,7 @@ func (m Matrix) Transpose() Matrix {
 		}
 	}
 
-	return *unsafeMatrixFromSlice( dat, m.typ, m.n, m.m)
+	return *unsafeMatrixFromSlice(dat, m.typ, m.n, m.m)
 }
 
 func (m Matrix) Inverse() (m2 Matrix) {
@@ -391,5 +391,5 @@ func (m Matrix) floatScale(c float64) Matrix {
 		dat[i] = el.mulFl64(c)
 	}
 
-	return *unsafeMatrixFromSlice( dat, m.typ, m.m, m.n)
+	return *unsafeMatrixFromSlice(dat, m.typ, m.m, m.n)
 }

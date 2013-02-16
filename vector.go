@@ -2,6 +2,7 @@ package mathgl
 
 import (
 	"errors"
+	"math"
 )
 
 type VecType int8
@@ -22,7 +23,7 @@ func NewVector(t VecType) *Vector {
 	return &Vector{typ: t, dat: make([]Scalar, 0, 2)}
 }
 
-func VectorOf(el []Scalar, t VecType, ) (v *Vector, err error) {
+func VectorOf(el []Scalar, t VecType) (v *Vector, err error) {
 	for _, e := range el {
 		if !checkType(t, e) {
 			return nil, errors.New("Type of at least one element does not match declared type")
@@ -210,8 +211,9 @@ func (v1 Vector) Cross(v2 Vector) (v3 Vector) {
 		return
 	}
 
+	v3 = Vector{}
 	v3.typ = v1.typ
-	v3.dat = make([]Scalar, len(v3.dat))
+	v3.dat = make([]Scalar, len(v1.dat))
 
 	v3.dat[0] = v1.dat[1].Mul(v2.dat[2]).Sub(v1.dat[2].Mul(v2.dat[1]))
 	v3.dat[1] = v1.dat[2].Mul(v2.dat[0]).Sub(v1.dat[0].Mul(v2.dat[2]))
@@ -249,7 +251,11 @@ func (v Vector) Size() int {
 }
 
 func (v Vector) Normalize() (v2 Vector) {
-	return v.floatScale(float64(1.0) / v.Len())
+	length := v.Len()
+	if math.Abs(length) < .0000001 { // compare to 0
+		return v
+	}
+	return v.floatScale(float64(1.0) / length)
 }
 
 func (v Vector) floatScale(c float64) (v2 Vector) {
@@ -284,7 +290,7 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 		if v.typ != v2.typ {
 			return // We type check in Dot as well, but that will return a nil, I want to ensure we return a zero-val matrix
 		}
-		return *unsafeMatrixFromSlice( []Scalar{v.Dot(v2)}, v.typ, 1, 1)
+		return *unsafeMatrixFromSlice([]Scalar{v.Dot(v2)}, v.typ, 1, 1)
 	}
 	mat := m.(Matrix)
 	if v.typ != mat.typ {
@@ -300,7 +306,7 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 		//}
 	}
 
-	return *unsafeMatrixFromSlice( dat, v.typ, 1, mat.n)
+	return *unsafeMatrixFromSlice(dat, v.typ, 1, mat.n)
 }
 
 // I could be persuaded that the argument to this function should be allowed to be a MatrixMultiplyable, but

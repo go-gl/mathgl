@@ -163,7 +163,6 @@ func TestMatrixCreation(t *testing.T) {
 	rowSlice := rowMat.AsSlice()
 	colSlice := colMat.AsSlice()
 
-
 	if 1 != rowSlice[0].Int32() || 2 != rowSlice[1].Int32() || 3 != rowSlice[2].Int32() || 4 != rowSlice[3].Int32() {
 		t.Errorf("Matrix from rows did not order elements correctly %v", rowSlice)
 	}
@@ -171,22 +170,22 @@ func TestMatrixCreation(t *testing.T) {
 	if 1 != colSlice[0].Int32() || 2 != colSlice[2].Int32() || 3 != colSlice[1].Int32() || 4 != colSlice[3].Int32() {
 		t.Errorf("Matrix from cols did not order elements correctly %v", colSlice)
 	}
-	
-	askew := [][]mathgl.Scalar{mathgl.ScalarSlice([]interface{}{1, 2, 3}, mathgl.INT32), mathgl.ScalarSlice([]interface{}{4,5,6}, mathgl.INT32)}
+
+	askew := [][]mathgl.Scalar{mathgl.ScalarSlice([]interface{}{1, 2, 3}, mathgl.INT32), mathgl.ScalarSlice([]interface{}{4, 5, 6}, mathgl.INT32)}
 	row2, err := mathgl.MatrixFromRows(askew, mathgl.INT32)
 	col2, err2 := mathgl.MatrixFromCols(askew, mathgl.INT32)
-	
+
 	if row2 == nil || err != nil {
 		t.Fatalf("MatrixFromRows failed on non-square matrix")
 	}
-	
+
 	if col2 == nil || err2 != nil {
 		t.Fatalf("MatrixFromCols failed on non-square matrix")
 	}
-	
+
 	rowSlice = row2.AsSlice()
 	colSlice = col2.AsSlice()
-	
+
 	if 1 != rowSlice[0].Int32() || 2 != rowSlice[1].Int32() || 3 != rowSlice[2].Int32() || 4 != rowSlice[3].Int32() || 5 != rowSlice[4].Int32() || 6 != rowSlice[5].Int32() {
 		t.Errorf("Matrix from rows did not order elements correctly %v", rowSlice)
 	}
@@ -194,39 +193,98 @@ func TestMatrixCreation(t *testing.T) {
 	if 1 != colSlice[0].Int32() || 2 != colSlice[2].Int32() || 3 != colSlice[4].Int32() || 4 != colSlice[1].Int32() || 5 != colSlice[3].Int32() || 6 != colSlice[5].Int32() {
 		t.Errorf("Matrix from cols did not order elements correctly %v", colSlice)
 	}
-	
-	fromSlice,err := mathgl.MatrixFromSlice(mathgl.ScalarSlice([]interface{}{1,2,3,4,5,6}, mathgl.INT32), mathgl.INT32, 2, 3)
+
+	fromSlice, err := mathgl.MatrixFromSlice(mathgl.ScalarSlice([]interface{}{1, 2, 3, 4, 5, 6}, mathgl.INT32), mathgl.INT32, 2, 3)
 	if fromSlice == nil || err != nil {
 		t.Fatalf("Making a matrix from a slice failed")
 	}
 	testSlice := fromSlice.AsSlice()
-	
+
 	for i := range testSlice {
 		if testSlice[i].Int32() != rowSlice[i].Int32() {
 			t.Errorf("Matrix from slice not equal to one from rows, though it should be")
 		}
 	}
-	
+
 	if !fromSlice.Equal(*row2) {
 		t.Errorf("Equal gives false negative")
 	}
-	
+
 	if !row2.Equal(*fromSlice) {
 		t.Errorf("Equal not transitive (or gives false negative transitively)")
 	}
-	
+
 	if col2.Equal(*fromSlice) {
 		t.Errorf("Equal gives false positive")
 	}
 }
 
-	
 func TestVecMath(t *testing.T) {
-	vec1 := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{1,2,0,1},mathgl.FLOAT64), mathgl.FLOAT64)
-	vec2 := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{0,9,1,2.35},mathgl.FLOAT64), mathgl.FLOAT64)
-	eq := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{1,11,1,3.35},mathgl.FLOAT64), mathgl.FLOAT64)
-	
-	if sum := vec1.Add(vec2); !eq.Equal(sum) {
-		fmt.Errorf("Addition not working properly %v" vec1.Add(sum))
+	vec1, _ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{1, 2, 0, 1}, mathgl.FLOAT64), mathgl.FLOAT64)
+	vec2, _ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{0, 9, 1, 2.35}, mathgl.FLOAT64), mathgl.FLOAT64)
+	eq, _ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{1, 11, 1, 3.35}, mathgl.FLOAT64), mathgl.FLOAT64)
+
+	if sum := vec1.Add(*vec2); !eq.Equal(sum) {
+		t.Fatalf("Addition not working properly %v", sum)
+	}
+
+	if sum := vec2.Add(*vec1); !eq.Equal(sum) {
+		t.Errorf("Addition not transitive %v", sum)
+	}
+
+	if diff := eq.Sub(*vec1); !vec2.Equal(diff) {
+		t.Errorf("Subtraction fails %v", diff)
+	}
+
+	if diff := eq.Sub(*vec2); !vec1.Equal(diff) {
+		t.Errorf("Subtraction fails %v", diff)
+	}
+
+	if dot := vec1.Dot(*vec2); math.Abs(dot.Fl64()-20.35) > .00000001 {
+		t.Fatalf("Dot product produces incorrect answer %v", dot)
+	}
+
+	if dot := vec2.Dot(*vec1); math.Abs(dot.Fl64()-20.35) > .00000001 {
+		t.Fatalf("Dot product intransitive %v", dot)
+	}
+
+	if dot := vec2.Dot(*vec2); math.Abs(dot.Fl64()-87.5225) > .00000001 {
+		t.Fatalf("Dot product failed %v", dot)
+	}
+
+	length := vec2.Len()
+	if math.Abs(length-9.35534606522) > .00000001 {
+		t.Fatalf("Length is incorrect %f", length)
+	}
+
+	norm := vec2.Normalize()
+
+	if math.Abs(norm.GetElement(0).Fl64()) > .00000001 || math.Abs(norm.GetElement(1).Fl64()-0.96201679096) > .00000001 || math.Abs(norm.GetElement(2).Fl64()-0.10689075455) > .00001 ||
+		math.Abs(norm.GetElement(3).Fl64()-0.25119327319) > .00001 {
+		t.Errorf("Normalization of vector failed %v", norm)
+	}
+
+	zero, _ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{0, 0, 0, 0, 0, 0, 0}, mathgl.FLOAT64), mathgl.FLOAT64)
+
+	if !zero.Equal(zero.Normalize()) {
+		t.Errorf("Normalization of zero vector changes vector")
+	}
+
+	cr1, _ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{5, 15.7, 2}, mathgl.FLOAT64), mathgl.FLOAT64)
+	cr2, _ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{3, 0, -.2}, mathgl.FLOAT64), mathgl.FLOAT64)
+
+	ver, _ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{-3.14, 7, -47.1}, mathgl.FLOAT64), mathgl.FLOAT64)
+
+	if cross := cr1.Cross(*cr2); !ver.Equal(cross) {
+		t.Errorf("Cross product is wrong %v", cross)
+	}
+
+	ver2 := ver.ScalarMul(mathgl.MakeScalar(-1, mathgl.FLOAT64))
+	if math.Abs(ver2.GetElement(0).Fl64()-3.14) > .00001 || math.Abs(ver2.GetElement(1).Fl64()-(-7)) > .00001 || math.Abs(ver2.GetElement(2).Fl64()-47.1) > .00001 {
+		t.Errorf("Scalar multiply failed to work %v", ver2)
+	}
+
+	if cross := cr2.Cross(*cr1); !ver2.Equal(cross) {
+		t.Errorf("Cross product failed %v", cross)
 	}
 }
