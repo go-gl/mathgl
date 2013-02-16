@@ -219,3 +219,7 @@ func TestMatrixCreation(t *testing.T) {
 		t.Errorf("Equal gives false positive")
 	}
 }
+
+	
+func TestVecMath(t *testing.T) {
+}
