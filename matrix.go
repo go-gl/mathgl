@@ -147,7 +147,7 @@ func (mat *Matrix) SetElement(i, j int, el Scalar) error {
 		return errors.New("Type of element does not match matrix's type")
 	}
 
-	mat.dat[i*mat.n*+j] = el
+	mat.dat[i*mat.n+j] = el
 
 	return nil
 }
