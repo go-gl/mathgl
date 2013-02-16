@@ -147,7 +147,7 @@ func (mat *Matrix) SetElement(i, j int, el Scalar) error {
 		return errors.New("Type of element does not match matrix's type")
 	}
 
-	mat.dat[mat.m*j+i] = el
+	mat.dat[i*mat.n*+j] = el
 
 	return nil
 }
@@ -165,7 +165,7 @@ func (mat Matrix) AsVector() (v Vector, err error) {
 		return v, errors.New("Matrix is not 1-dimensional in either direction.")
 	}
 
-	vPoint, err := VectorOf(mat.typ, mat.dat)
+	vPoint, err := VectorOf(mat.dat, mat.typ)
 	if err != nil {
 		return v, err
 	}

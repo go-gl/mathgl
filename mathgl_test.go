@@ -97,7 +97,7 @@ func TestVecSetGet(t *testing.T) {
 		t.Errorf("Didn't get/set correct element of vector")
 	}
 
-	v2, e := mathgl.VectorOf(mathgl.FLOAT32, input)
+	v2, e := mathgl.VectorOf(input, mathgl.FLOAT32)
 	if v2 == nil || e != nil {
 		t.Fatalf("VectorOf failed on good input")
 	}
@@ -222,4 +222,5 @@ func TestMatrixCreation(t *testing.T) {
 
 	
 func TestVecMath(t *testing.T) {
+	
 }

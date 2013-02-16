@@ -22,7 +22,7 @@ func NewVector(t VecType) *Vector {
 	return &Vector{typ: t, dat: make([]Scalar, 0, 2)}
 }
 
-func VectorOf(t VecType, el []Scalar) (v *Vector, err error) {
+func VectorOf(el []Scalar, t VecType, ) (v *Vector, err error) {
 	for _, e := range el {
 		if !checkType(t, e) {
 			return nil, errors.New("Type of at least one element does not match declared type")
