@@ -377,6 +377,8 @@ func TestMatrixMath(t *testing.T) {
 		t.Fatalf("Matrix/Vector Multiplication failed")
 	}
 	
+	// TODO: Test transpose
+	
 }
 
 // My determinant method is slow. Disable this test for quick testing
@@ -392,7 +394,7 @@ func TestInvertible(t *testing.T) {
 	}
 	
 	// This is just too hard in general to hard code the answer (precision needed is too great), so I'm using a for loop
-	slice := invmat.AsSlice()
+	slice := invmat.Transpose().AsSlice()
 	for i,el := range slice {
 		slice[i] = mathgl.MakeScalar(float64(1)/float64(71) * el.Fl64(), mathgl.FLOAT64)
 	}

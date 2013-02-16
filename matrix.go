@@ -233,6 +233,9 @@ func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 
 }
 
+// TODO: Maybe look into the Strassen algorithm for large square matrices and hard code common cases
+
+//
 func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 	var indat []Scalar
 	m, n, o := m1.m, m1.n, 0
@@ -323,6 +326,8 @@ func batchMultHelper(ch chan<- Matrix, args []MatrixMultiplyable) {
 	ch <- BatchMultiply(args)
 	close(ch)
 }
+
+// TODO: Well duh, Laplace expansion is O(n!) -- look into alt methods like LU Decomposition
 
 // I see no reason why the Det should be limited to the type of the underlying matrix
 // This takes a really long time for non-hard-coded matrices, maybe some infinite loop bug. For now only use for matrices <=4x4
@@ -415,7 +420,7 @@ func (m Matrix) Inverse() (m2 Matrix) {
 	if math.Abs(det) < 1e-7 {
 		return
 	}
-	return m.floatScale(float64(1.0) / det)
+	return m.Transpose().floatScale(float64(1.0) / det)
 }
 
 func (m Matrix) floatScale(c float64) Matrix {
