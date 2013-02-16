@@ -69,7 +69,7 @@ func (i ScalarInt32) Type() VecType {
 }
 
 func (i ScalarInt32) Pow(toThe float64) Scalar {
-	return ScalarInt32(int32(math.Pow(float64(i),toThe)))
+	return ScalarInt32(int32(math.Pow(float64(i), toThe)))
 }
 
 func (i ScalarInt32) Fl64() float64 {
@@ -122,7 +122,7 @@ func (i ScalarUint32) Type() VecType {
 }
 
 func (i ScalarUint32) Pow(toThe float64) Scalar {
-	return ScalarUint32(uint32(math.Pow(float64(i),toThe)))
+	return ScalarUint32(uint32(math.Pow(float64(i), toThe)))
 }
 
 func (i ScalarUint32) Fl64() float64 {
@@ -175,7 +175,7 @@ func (i ScalarFloat32) Type() VecType {
 }
 
 func (i ScalarFloat32) Pow(toThe float64) Scalar {
-	return ScalarFloat32(float32(math.Pow(float64(i),toThe)))
+	return ScalarFloat32(float32(math.Pow(float64(i), toThe)))
 }
 
 func (i ScalarFloat32) Fl64() float64 {
@@ -228,7 +228,7 @@ func (i ScalarFloat64) Type() VecType {
 }
 
 func (i ScalarFloat64) Pow(toThe float64) Scalar {
-	return ScalarFloat64(math.Pow(float64(i),toThe))
+	return ScalarFloat64(math.Pow(float64(i), toThe))
 }
 
 func (i ScalarFloat64) Fl64() float64 {

@@ -31,26 +31,25 @@ func Identity(size int, typ VecType) Matrix {
 			}
 		}
 	}
-	return *unsafeMatrixFromSlice(typ, dat, size, size)
+	return *unsafeMatrixFromSlice(dat, typ,  size, size)
 }
 
 // [1, 1]
 // [0, 1] Would be entered as a 2D array [[1,0],[1,1]] -- but converted to RMO
-func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
+func MatrixFromCols(el [][]Scalar,typ VecType) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
 
-	mat.m = len(el)
-	mat.n = len(el[0])
-	mat.dat = make([]Scalar, 0, mat.m*mat.n)
+	mat.n = len(el)
+	mat.m = len(el[0])
+	mat.dat = make([]Scalar, mat.m*mat.n)
 
-	// Row Major Order, like in OpenGL
-	for i := 0; i < mat.n; i++ {
-		for j := 0; j < mat.m; j++ {
+	for i := 0; i < mat.m; i++ {
+		for j := 0; j < mat.n; j++ {
 			if !checkType(mat.typ, el[j][i]) {
 				return nil, errors.New("Element type does not match matrix")
 			}
-			mat.dat = append(mat.dat, el[j][i])
+			mat.dat[i * mat.n + j] = el[j][i]
 		}
 	}
 
@@ -58,24 +57,23 @@ func MatrixFromCols(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 }
 
 // This function is MatrixFromCols, except each slice is a row vector, rather than a column
-//i.e. 
+//i.e.
 // [1, 1]
 // [0, 1] is entered as [[1,1],[0,1]]
-func MatrixFromRows(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
+func MatrixFromRows(el [][]Scalar,typ VecType) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
 
 	mat.m = len(el)
 	mat.n = len(el[0])
-	mat.dat = make([]Scalar, 0, mat.m*mat.n)
+	mat.dat = make([]Scalar, mat.m*mat.n)
 
-	// Row Major Order, like in OpenGL
 	for i := 0; i < mat.m; i++ {
 		for j := 0; j < mat.n; j++ {
-			if !checkType(mat.typ, el[j][i]) {
+			if !checkType(mat.typ, el[i][j]) {
 				return nil, errors.New("Element type does not match matrix")
 			}
-			mat.dat = append(mat.dat, el[j][i])
+			mat.dat[i * mat.n + j] = el[i][j]
 		}
 	}
 
@@ -83,15 +81,15 @@ func MatrixFromRows(typ VecType, el [][]Scalar) (mat *Matrix, err error) {
 }
 
 // Slice-format data should be in Row Major Order
-func MatrixFromSlice(typ VecType, el []Scalar, m, n int) (mat *Matrix, err error) {
+func MatrixFromSlice(el []Scalar, typ VecType, m, n int) (mat *Matrix, err error) {
+	if m*n != len(el) {
+		return nil, errors.New("Matrix dimensions do not match data passed in")
+	}
+	
 	mat = &Matrix{}
 	mat.typ = typ
 	mat.m = m
 	mat.n = n
-
-	if mat.m*mat.n != len(el) {
-		return nil, errors.New("Matrix dimensions do not match data passed in")
-	}
 
 	for _, e := range el {
 		if !checkType(mat.typ, e) {
@@ -105,12 +103,11 @@ func MatrixFromSlice(typ VecType, el []Scalar, m, n int) (mat *Matrix, err error
 }
 
 // Quick and dirty internal function to make a matrix without spending time checking types
-func unsafeMatrixFromSlice(typ VecType, el []Scalar, m, n int) (mat *Matrix) {
+func unsafeMatrixFromSlice(el []Scalar, typ VecType, m, n int) (mat *Matrix) {
 	mat = &Matrix{}
 	mat.typ = typ
 	mat.m = m
 	mat.n = n
-
 	mat.dat = el
 
 	return mat
@@ -159,8 +156,8 @@ func (m Matrix) GetElement(i, j int) Scalar {
 	if i > m.m || j > m.n || i < 0 || j < 0 {
 		return nil
 	}
-	
-	return m.dat[i * m.n + j]
+
+	return m.dat[i*m.n+j]
 }
 
 func (mat Matrix) AsVector() (v Vector, err error) {
@@ -226,7 +223,7 @@ func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 		dat[i] = m1.dat[i].Mul(c)
 	}
 
-	return *unsafeMatrixFromSlice(m1.typ, dat, m1.m, m1.n)
+	return *unsafeMatrixFromSlice(dat, m1.typ, m1.m, m1.n)
 
 }
 
@@ -266,7 +263,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 		}
 	}
 
-	return *unsafeMatrixFromSlice(m1.typ, dat, m, o)
+	return *unsafeMatrixFromSlice( dat, m1.typ, m, o)
 }
 
 /*
@@ -318,32 +315,30 @@ func batchMultHelper(ch chan<- Matrix, args []MatrixMultiplyable) {
 	close(ch)
 }
 
-
 // I see no reason why the Det should be limited to the type of the underlying matrix
 func (m1 Matrix) Det() (det float64) {
 	if m1.m != m1.n { // Determinants are only for square matrices
 		return
 	}
-	
+
 	if m1.m == 2 {
-		return m1.dat[0].Fl64() * m1.dat[3].Fl64() - m1.dat[1].Fl64() * m1.dat[2].Fl64()
+		return m1.dat[0].Fl64()*m1.dat[3].Fl64() - m1.dat[1].Fl64()*m1.dat[2].Fl64()
 	}
-	
+
 	for i := 0; i < m1.n; i++ {
-			det += m1.GetElement(i,0).Fl64() * m1.Cofactor(i,0)
+		det += m1.GetElement(i, 0).Fl64() * m1.Cofactor(i, 0)
 	}
 
 	return det
 }
 
-func (m1 Matrix) Cofactor(i,j int) float64 {
-	return  math.Pow(float64(-1),float64(i+j)) * m1.MinorMatrix(i,j).Det() // C^(i,j) * Minor(i,j)
+func (m1 Matrix) Cofactor(i, j int) float64 {
+	return math.Pow(float64(-1), float64(i+j)) * m1.MinorMatrix(i, j).Det() // C^(i,j) * Minor(i,j)
 }
 
+func (m1 Matrix) MinorMatrix(i, j int) Matrix {
+	dat := make([]Scalar, (m1.m-1)*(m1.n-1))
 
-func (m1 Matrix) MinorMatrix(i,j int) Matrix {
-	dat := make([]Scalar, (m1.m-1) * (m1.n-1))
-	
 	for k := 0; k < m1.m; k++ {
 		var q int
 		if k < j {
@@ -351,23 +346,23 @@ func (m1 Matrix) MinorMatrix(i,j int) Matrix {
 		} else if k == j {
 			continue
 		} else {
-			q = k-q
+			q = k - q
 		}
 		for l := 0; l < m1.n; k++ {
 			var r int
 			if l < i {
 				r = l
-			} else  if l == i {
+			} else if l == i {
 				continue
 			} else {
-				r = l-1
+				r = l - 1
 			}
-			
-			dat[r * (m1.n-1) + q] =  m1.dat[l * m1.n + k]
+
+			dat[r*(m1.n-1)+q] = m1.dat[l*m1.n+k]
 		}
 	}
-	
-	return *unsafeMatrixFromSlice(m1.typ, dat, m1.m-1, m1.n-1)
+
+	return *unsafeMatrixFromSlice( dat, m1.typ, m1.m-1, m1.n-1)
 }
 
 func (m Matrix) Transpose() Matrix {
@@ -379,23 +374,22 @@ func (m Matrix) Transpose() Matrix {
 		}
 	}
 
-	return *unsafeMatrixFromSlice(m.typ, dat, m.n, m.m)
+	return *unsafeMatrixFromSlice( dat, m.typ, m.n, m.m)
 }
-
 
 func (m Matrix) Inverse() (m2 Matrix) {
 	det := m.Det()
 	if det == 0 {
 		return
 	}
-	return m.floatScale(float64(1.0)/det)
+	return m.floatScale(float64(1.0) / det)
 }
 
 func (m Matrix) floatScale(c float64) Matrix {
 	dat := make([]Scalar, len(m.dat))
-	for i,el := range dat {
+	for i, el := range dat {
 		dat[i] = el.mulFl64(c)
 	}
-	
-	return *unsafeMatrixFromSlice(m.typ, dat, m.m, m.n)
+
+	return *unsafeMatrixFromSlice( dat, m.typ, m.m, m.n)
 }

@@ -148,5 +148,74 @@ func TestMatrixCreation(t *testing.T) {
 		}
 	}
 
-		
+	lopsided := [][]mathgl.Scalar{mathgl.ScalarSlice([]interface{}{1, 2}, mathgl.INT32), mathgl.ScalarSlice([]interface{}{3, 4}, mathgl.INT32)}
+	rowMat, err := mathgl.MatrixFromRows(lopsided, mathgl.INT32)
+	colMat, err2 := mathgl.MatrixFromCols(lopsided, mathgl.INT32)
+
+	if rowMat == nil || err != nil {
+		t.Fatalf("MatrixFromRows failed")
+	}
+
+	if colMat == nil || err2 != nil {
+		t.Fatalf("MatrixFromCols failed")
+	}
+
+	rowSlice := rowMat.AsSlice()
+	colSlice := colMat.AsSlice()
+
+
+	if 1 != rowSlice[0].Int32() || 2 != rowSlice[1].Int32() || 3 != rowSlice[2].Int32() || 4 != rowSlice[3].Int32() {
+		t.Errorf("Matrix from rows did not order elements correctly %v", rowSlice)
+	}
+
+	if 1 != colSlice[0].Int32() || 2 != colSlice[2].Int32() || 3 != colSlice[1].Int32() || 4 != colSlice[3].Int32() {
+		t.Errorf("Matrix from cols did not order elements correctly %v", colSlice)
+	}
+	
+	askew := [][]mathgl.Scalar{mathgl.ScalarSlice([]interface{}{1, 2, 3}, mathgl.INT32), mathgl.ScalarSlice([]interface{}{4,5,6}, mathgl.INT32)}
+	row2, err := mathgl.MatrixFromRows(askew, mathgl.INT32)
+	col2, err2 := mathgl.MatrixFromCols(askew, mathgl.INT32)
+	
+	if row2 == nil || err != nil {
+		t.Fatalf("MatrixFromRows failed on non-square matrix")
+	}
+	
+	if col2 == nil || err2 != nil {
+		t.Fatalf("MatrixFromCols failed on non-square matrix")
+	}
+	
+	rowSlice = row2.AsSlice()
+	colSlice = col2.AsSlice()
+	
+	if 1 != rowSlice[0].Int32() || 2 != rowSlice[1].Int32() || 3 != rowSlice[2].Int32() || 4 != rowSlice[3].Int32() || 5 != rowSlice[4].Int32() || 6 != rowSlice[5].Int32() {
+		t.Errorf("Matrix from rows did not order elements correctly %v", rowSlice)
+	}
+
+	if 1 != colSlice[0].Int32() || 2 != colSlice[2].Int32() || 3 != colSlice[4].Int32() || 4 != colSlice[1].Int32() || 5 != colSlice[3].Int32() || 6 != colSlice[5].Int32() {
+		t.Errorf("Matrix from cols did not order elements correctly %v", colSlice)
+	}
+	
+	fromSlice,err := mathgl.MatrixFromSlice(mathgl.ScalarSlice([]interface{}{1,2,3,4,5,6}, mathgl.INT32), mathgl.INT32, 2, 3)
+	if fromSlice == nil || err != nil {
+		t.Fatalf("Making a matrix from a slice failed")
+	}
+	testSlice := fromSlice.AsSlice()
+	
+	for i := range testSlice {
+		if testSlice[i].Int32() != rowSlice[i].Int32() {
+			t.Errorf("Matrix from slice not equal to one from rows, though it should be")
+		}
+	}
+	
+	if !fromSlice.Equal(*row2) {
+		t.Errorf("Equal gives false negative")
+	}
+	
+	if !row2.Equal(*fromSlice) {
+		t.Errorf("Equal not transitive (or gives false negative transitively)")
+	}
+	
+	if col2.Equal(*fromSlice) {
+		t.Errorf("Equal gives false positive")
+	}
 }

@@ -154,12 +154,10 @@ func (v Vector) AsArray() interface{} {
 // If row is true, it's a row vector (1xn) else a column vector (nx1)
 func (v Vector) AsMatrix(row bool) (m Matrix, err error) {
 	if row {
-		mat, err := MatrixFromSlice(v.typ, v.dat, 1, len(v.dat))
-		return *mat, err
+		return *unsafeMatrixFromSlice(v.dat, v.typ, 1, len(v.dat)), nil
 	}
 
-	mat, err := MatrixFromSlice(v.typ, v.dat, len(v.dat), 1)
-	return *mat, err
+	return *unsafeMatrixFromSlice(v.dat, v.typ, len(v.dat), 1), nil
 }
 
 func (v1 Vector) Add(v2 Vector) (v3 Vector) {
@@ -280,13 +278,13 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 	return eq
 }
 
-// Assumes inner product, not out product.
+// Assumes inner product, use the OuterProduct if you need that functionality
 func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	if v2, ok := m.(Vector); ok {
 		if v.typ != v2.typ {
 			return // We type check in Dot as well, but that will return a nil, I want to ensure we return a zero-val matrix
 		}
-		return *unsafeMatrixFromSlice(v.typ, []Scalar{v.Dot(v2)}, 1, 1)
+		return *unsafeMatrixFromSlice( []Scalar{v.Dot(v2)}, v.typ, 1, 1)
 	}
 	mat := m.(Matrix)
 	if v.typ != mat.typ {
@@ -302,17 +300,19 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 		//}
 	}
 
-	return *unsafeMatrixFromSlice(v.typ, dat, 1, mat.n)
+	return *unsafeMatrixFromSlice( dat, v.typ, 1, mat.n)
 }
 
+// I could be persuaded that the argument to this function should be allowed to be a MatrixMultiplyable, but
+// for now I'm leaving is as between two vectors.
 func (v1 Vector) OuterProduct(v2 Vector) (m Matrix) {
 	if v1.typ != v2.typ {
 		return
 	}
-	
+
 	// Should probably just spell it out
-	m1,_ := v1.AsMatrix(false)
-	m2,_ := v2.AsMatrix(true)
-	
+	m1, _ := v1.AsMatrix(false)
+	m2, _ := v2.AsMatrix(true)
+
 	return m1.Mul(m2)
 }
