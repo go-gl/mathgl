@@ -61,7 +61,7 @@ func (i ScalarInt32) Equal(other Scalar) bool {
 }
 
 func (i ScalarInt32) mulFl64(c float64) Scalar {
-	return ScalarInt32(int32(float64(i) * c))
+	return ScalarInt32(i.Fl64() * c)
 }
 
 func (i ScalarInt32) Type() VecType {
@@ -114,7 +114,7 @@ func (i ScalarUint32) Equal(other Scalar) bool {
 }
 
 func (i ScalarUint32) mulFl64(c float64) Scalar {
-	return ScalarUint32(uint32(float64(i) * c))
+	return ScalarUint32(i.Fl64() * c)
 }
 
 func (i ScalarUint32) Type() VecType {
@@ -167,7 +167,7 @@ func (i ScalarFloat32) Equal(other Scalar) bool {
 }
 
 func (i ScalarFloat32) mulFl64(c float64) Scalar {
-	return ScalarFloat32(float32(float64(i) * c))
+	return ScalarFloat32(i.Fl64() * c)
 }
 
 func (i ScalarFloat32) Type() VecType {

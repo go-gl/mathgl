@@ -134,8 +134,6 @@ func TestVecSetGet(t *testing.T) {
 		t.Errorf("Vectors are equal despite changing v1, or equal is wrong, v1: %v v2: %v", v1, v2)
 	}
 
-	//v3,_ := mathgl.VectorOf(mathgl.INT32, []mathgl.Scalar{mathgl.VecInt32(1),mathgl.VecInt32(2)})
-
 }
 
 func TestMatrixCreation(t *testing.T) {
@@ -253,13 +251,13 @@ func TestVecMath(t *testing.T) {
 	}
 
 	length := vec2.Len()
-	if math.Abs(length-9.35534606522) > .00000001 {
+	if math.Abs(length-9.35534606522) > 1e-10 {
 		t.Fatalf("Length is incorrect %f", length)
 	}
 
 	norm := vec2.Normalize()
 
-	if math.Abs(norm.GetElement(0).Fl64()) > .00000001 || math.Abs(norm.GetElement(1).Fl64()-0.96201679096) > .00000001 || math.Abs(norm.GetElement(2).Fl64()-0.10689075455) > .00001 ||
+	if math.Abs(norm.GetElement(0).Fl64()) > 1e-10 || math.Abs(norm.GetElement(1).Fl64()-0.96201679096) > 1e-10 || math.Abs(norm.GetElement(2).Fl64()-0.10689075455) > 1e-10 ||
 		math.Abs(norm.GetElement(3).Fl64()-0.25119327319) > .00001 {
 		t.Errorf("Normalization of vector failed %v", norm)
 	}
@@ -280,11 +278,140 @@ func TestVecMath(t *testing.T) {
 	}
 
 	ver2 := ver.ScalarMul(mathgl.MakeScalar(-1, mathgl.FLOAT64))
-	if math.Abs(ver2.GetElement(0).Fl64()-3.14) > .00001 || math.Abs(ver2.GetElement(1).Fl64()-(-7)) > .00001 || math.Abs(ver2.GetElement(2).Fl64()-47.1) > .00001 {
+	if math.Abs(ver2.GetElement(0).Fl64()-3.14) > 1e-10 || math.Abs(ver2.GetElement(1).Fl64()-(-7)) > 1e-10 || math.Abs(ver2.GetElement(2).Fl64()-47.1) > 1e-10 {
 		t.Errorf("Scalar multiply failed to work %v", ver2)
 	}
 
+	// u x v = -(v x u)
 	if cross := cr2.Cross(*cr1); !ver2.Equal(cross) {
 		t.Errorf("Cross product failed %v", cross)
+	}
+}
+
+// Tests conversion between vec/mat/scalar (and later, AsArray)
+func TestConversion(t *testing.T) {
+	conv,_ := mathgl.VectorOf([]mathgl.Scalar{mathgl.MakeScalar(1, mathgl.INT32)}, mathgl.INT32)
+	if conv.ToScalar().Int32() != 1 {
+		t.Errorf("Vector's ToScalar doesn't work")
+	}
+	
+	mat,_ := conv.AsMatrix(false)
+	comp,_ := mathgl.MatrixFromSlice([]mathgl.Scalar{mathgl.MakeScalar(1, mathgl.INT32)}, mathgl.INT32,1,1)
+	
+	if !mat.Equal(*comp) {
+		t.Errorf("Matrix conversion failed")
+	}
+	
+	if !mat.AsVector().Equal(*conv) {
+		t.Errorf("Matrix conversion to vector failed")
+	}
+	
+	if mat.ToScalar().Int32() != 1 {
+		t.Errorf("Matrix ToScalar doesn't work")
+	}
+	
+	// Needs more tests, but should suffice minimally for now
+}
+
+func TestMatrixMath(t *testing.T) {
+	i3 := mathgl.Identity(3, mathgl.FLOAT64)
+	
+	mul3,_ := mathgl.MatrixFromRows([][]mathgl.Scalar{
+		mathgl.ScalarSlice([]interface{}{2,0,0}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{0,2,0}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{0,0,2}, mathgl.FLOAT64)}, mathgl.FLOAT64)
+		
+	if sum := i3.Add(i3); !mul3.Equal(sum) {
+		t.Errorf("Adding fails %v %v", sum, mul3)
+	}
+	
+	if diff := mul3.Sub(i3); !i3.Equal(diff) {
+		t.Errorf("Subtracting fails %v %v", diff, i3)
+	}
+	
+	if prod := i3.ScalarMul(mathgl.MakeScalar(2,mathgl.FLOAT64)); !prod.Equal(*mul3) {
+		t.Errorf("Scaling fails %v %v", prod, mul3)
+	}
+	
+	if prod := i3.Mul(*mul3); !mul3.Equal(prod) {
+		t.Fatalf("Multiplication by identity failed %v", prod)
+	}
+	
+	mat3x2,_ := mathgl.MatrixFromRows([][]mathgl.Scalar{
+		mathgl.ScalarSlice([]interface{}{1,0}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{1,2}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{0,1}, mathgl.FLOAT64)}, mathgl.FLOAT64)
+		
+	mat2x4,_ := mathgl.MatrixFromRows([][]mathgl.Scalar{
+		mathgl.ScalarSlice([]interface{}{1,0,3,1}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{1,2,1,4}, mathgl.FLOAT64)}, mathgl.FLOAT64)
+		
+	out3x4,_ := mathgl.MatrixFromRows([][]mathgl.Scalar{
+		mathgl.ScalarSlice([]interface{}{1,0,3,1}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{3,4,5,9}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{1,2,1,4}, mathgl.FLOAT64)}, mathgl.FLOAT64)
+		
+	if prod := mat3x2.Mul(*mat2x4); !out3x4.Equal(prod) {
+		t.Fatalf("Non-square product failed %v", prod)
+	}
+	
+	vec,_ := mathgl.VectorOf(mathgl.ScalarSlice([]interface{}{1,5,1.5}, mathgl.FLOAT64), mathgl.FLOAT64)
+	result,_ := mathgl.MatrixFromRows([][]mathgl.Scalar{
+		mathgl.ScalarSlice([]interface{}{6,11.5}, mathgl.FLOAT64)}, mathgl.FLOAT64)
+		
+	if prod := vec.Mul(*mat3x2); !result.Equal(prod) {
+		t.Fatalf("Vector/Matrix Multiplication failed")
+	}
+	
+	leftMul,_ := mathgl.MatrixFromRows([][]mathgl.Scalar{
+		mathgl.ScalarSlice([]interface{}{2,1.5,0}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{1,2,0}, mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{7,0,2}, mathgl.FLOAT64)}, mathgl.FLOAT64)
+	
+	result,_ = mathgl.MatrixFromRows([][]mathgl.Scalar{
+		[]mathgl.Scalar{mathgl.MakeScalar(9.5,mathgl.FLOAT64)}, 
+		[]mathgl.Scalar{mathgl.MakeScalar(11,mathgl.FLOAT64)}, 
+		[]mathgl.Scalar{mathgl.MakeScalar(10,mathgl.FLOAT64)}}, mathgl.FLOAT64)
+		
+	if prod := leftMul.Mul(*vec); !result.Equal(prod) {
+		t.Fatalf("Matrix/Vector Multiplication failed")
+	}
+	
+}
+
+// My determinant method is slow. Disable this test for quick testing
+func TestInvertible(t *testing.T) {
+	invmat,_ := mathgl.MatrixFromRows([][]mathgl.Scalar {
+		mathgl.ScalarSlice([]interface{}{1, 3, 2, 5},mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{1, 5, 6, 2},mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{1.5, 2.5, 1, 2},mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{2, 4, 7, 1},mathgl.FLOAT64)}, mathgl.FLOAT64)
+		
+	if math.Abs(invmat.Det() - 71) > 1e-7 {
+		t.Fatalf("Determinant incorrect")
+	}
+	
+	// This is just too hard in general to hard code the answer (precision needed is too great), so I'm using a for loop
+	slice := invmat.AsSlice()
+	for i,el := range slice {
+		slice[i] = mathgl.MakeScalar(float64(1)/float64(71) * el.Fl64(), mathgl.FLOAT64)
+	}
+	
+	realInv,_ := mathgl.MatrixFromSlice(slice, mathgl.FLOAT64, 4, 4)
+	
+	if genInv := invmat.Inverse(); !realInv.Equal(genInv) {
+		t.Errorf("Matrix did not generate correct inverse\n %v,\n %v", realInv, genInv )
+	}
+	
+	noninvmat,_ := mathgl.MatrixFromRows([][]mathgl.Scalar {
+		mathgl.ScalarSlice([]interface{}{1, 2},mathgl.FLOAT64),
+		mathgl.ScalarSlice([]interface{}{2, 4},mathgl.FLOAT64)}, mathgl.FLOAT64)
+	
+	if math.Abs(noninvmat.Det()) > 1e-7 {
+		t.Errorf("Non-invertible matrix with det > 0")
+	}
+	
+	if m := mathgl.NewMatrix(0,0,mathgl.FLOAT64); m.Equal(noninvmat.Inverse()) {
+		t.Errorf("Non-invertible matrix calling Inverse does not return matrix zero-type")
 	}
 }

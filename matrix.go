@@ -133,7 +133,9 @@ func (m1 Matrix) Equal(m2 Matrix) (eq bool) {
 }
 
 func (m Matrix) AsSlice() []Scalar {
-	return m.dat
+	dat := make([]Scalar,len(m.dat))
+	copy(dat, m.dat)
+	return dat
 }
 
 // TODO: "Append" data method (expand the matrix)
@@ -160,17 +162,17 @@ func (m Matrix) GetElement(i, j int) Scalar {
 	return m.dat[i*m.n+j]
 }
 
-func (mat Matrix) AsVector() (v Vector, err error) {
+func (mat Matrix) AsVector() (v Vector) {
 	if mat.m != 1 && mat.n != 1 {
-		return v, errors.New("Matrix is not 1-dimensional in either direction.")
+		return v
 	}
 
-	vPoint, err := VectorOf(mat.dat, mat.typ)
+	vPoint,err := VectorOf(mat.dat, mat.typ)
 	if err != nil {
-		return v, err
+		return v
 	}
 
-	return *vPoint, nil
+	return *vPoint
 }
 
 func (mat Matrix) ToScalar() Scalar {
@@ -190,6 +192,8 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 
 	m3.typ = m1.typ
 	m3.dat = make([]Scalar, len(m1.dat))
+	m3.m = m1.m
+	m3.n = m2.n
 
 	for i := range m1.dat {
 		m3.dat[i] = m1.dat[i].Add(m2.dat[i])
@@ -205,6 +209,8 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 
 	m3.typ = m1.typ
 	m3.dat = make([]Scalar, len(m1.dat))
+	m3.m = m1.m
+	m3.n = m2.n
 
 	for i := range m1.dat {
 		m3.dat[i] = m1.dat[i].Sub(m2.dat[i])
@@ -258,7 +264,10 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 	for j := 0; j < o; j++ { // Columns of m2 and m3
 		for i := 0; i < m; i++ { // Rows of m1 and m3
 			for k := 0; k < n; k++ { // Columns of m1, rows of m2
-				dat[j*o+i] = dat[j*o+i].Add(m1.dat[k*n+i].Mul(indat[j*o+k])) // I think, needs testing
+				if dat[i*o+j] == nil {
+					dat[i*o+j] = MakeScalar(0,m1.typ)
+				}
+				dat[i*o+j] = dat[i*o+j].Add(m1.dat[i*n+k].Mul(indat[k*o+j])) // I think, needs testing
 			}
 		}
 	}
@@ -316,6 +325,8 @@ func batchMultHelper(ch chan<- Matrix, args []MatrixMultiplyable) {
 }
 
 // I see no reason why the Det should be limited to the type of the underlying matrix
+// This takes a really long time for non-hard-coded matrices, maybe some infinite loop bug. For now only use for matrices <=4x4
+// I've hard coded the three common cases (2x2, 3x3, 4x4)
 func (m1 Matrix) Det() (det float64) {
 	if m1.m != m1.n { // Determinants are only for square matrices
 		return
@@ -323,20 +334,42 @@ func (m1 Matrix) Det() (det float64) {
 
 	if m1.m == 2 {
 		return m1.dat[0].Fl64()*m1.dat[3].Fl64() - m1.dat[1].Fl64()*m1.dat[2].Fl64()
-	}
+	} else if m1.m == 3 {
+		return m1.dat[0].Fl64() * (m1.dat[4].Fl64() * m1.dat[8].Fl64() - m1.dat[5].Fl64() * m1.dat[7].Fl64()) - 
+			   m1.dat[1].Fl64() * (m1.dat[3].Fl64() * m1.dat[8].Fl64() - m1.dat[5].Fl64() * m1.dat[6].Fl64()) +
+			   m1.dat[2].Fl64() * (m1.dat[3].Fl64() * m1.dat[7].Fl64() - m1.dat[4].Fl64() * m1.dat[6].Fl64())
+	} else if m1.m == 4 {
+		return m1.dat[0].Fl64() * 
+									(m1.dat[5].Fl64() * (m1.dat[10].Fl64()*  m1.dat[15].Fl64() - m1.dat[14].Fl64() * m1.dat[11].Fl64())  -
+									 m1.dat[6].Fl64() * (m1.dat[9].Fl64() *  m1.dat[15].Fl64() - m1.dat[13].Fl64() * m1.dat[11].Fl64())  +
+									 m1.dat[7].Fl64() * (m1.dat[9].Fl64() *  m1.dat[14].Fl64() - m1.dat[13].Fl64() * m1.dat[10].Fl64())) -
+			   m1.dat[1].Fl64() *
+									(m1.dat[4].Fl64() * (m1.dat[10].Fl64() * m1.dat[15].Fl64() - m1.dat[14].Fl64() * m1.dat[11].Fl64())  -
+									 m1.dat[6].Fl64() * (m1.dat[8].Fl64() *  m1.dat[15].Fl64() - m1.dat[12].Fl64() * m1.dat[11].Fl64())  +
+									 m1.dat[7].Fl64() * (m1.dat[8].Fl64() *  m1.dat[14].Fl64() - m1.dat[12].Fl64() * m1.dat[10].Fl64())) +
+			   m1.dat[2].Fl64() *
+									(m1.dat[4].Fl64() * (m1.dat[9].Fl64() *  m1.dat[15].Fl64() - m1.dat[13].Fl64() * m1.dat[11].Fl64())  -
+									 m1.dat[5].Fl64() * (m1.dat[8].Fl64() *  m1.dat[15].Fl64() - m1.dat[12].Fl64() * m1.dat[11].Fl64())  +
+									 m1.dat[7].Fl64() * (m1.dat[8].Fl64() *  m1.dat[13].Fl64() - m1.dat[12].Fl64() * m1.dat[9].Fl64()))  -
+			   m1.dat[3].Fl64() *
+									(m1.dat[4].Fl64() * (m1.dat[9].Fl64() *  m1.dat[14].Fl64() - m1.dat[13].Fl64() * m1.dat[10].Fl64())  -
+									 m1.dat[5].Fl64() * (m1.dat[8].Fl64() *  m1.dat[14].Fl64() - m1.dat[12].Fl64() * m1.dat[10].Fl64())  +
+									 m1.dat[6].Fl64() * (m1.dat[8].Fl64() *  m1.dat[13].Fl64() - m1.dat[12].Fl64() * m1.dat[9].Fl64()))
 
+									 
+	}
 	for i := 0; i < m1.n; i++ {
-		det += m1.GetElement(i, 0).Fl64() * m1.Cofactor(i, 0)
+		det += m1.GetElement(i, 0).Fl64() * m1.cofactor(i, 0)
 	}
 
 	return det
 }
 
-func (m1 Matrix) Cofactor(i, j int) float64 {
-	return math.Pow(float64(-1), float64(i+j)) * m1.MinorMatrix(i, j).Det() // C^(i,j) * Minor(i,j)
+func (m1 Matrix) cofactor(i, j int) float64 {
+	return math.Pow(float64(-1), float64(i+j)) * m1.minorMatrix(i, j).Det() // C^(i,j) * Minor(i,j)
 }
 
-func (m1 Matrix) MinorMatrix(i, j int) Matrix {
+func (m1 Matrix) minorMatrix(i, j int) Matrix {
 	dat := make([]Scalar, (m1.m-1)*(m1.n-1))
 
 	for k := 0; k < m1.m; k++ {
@@ -379,7 +412,7 @@ func (m Matrix) Transpose() Matrix {
 
 func (m Matrix) Inverse() (m2 Matrix) {
 	det := m.Det()
-	if det == 0 {
+	if math.Abs(det) < 1e-7 {
 		return
 	}
 	return m.floatScale(float64(1.0) / det)
@@ -387,7 +420,7 @@ func (m Matrix) Inverse() (m2 Matrix) {
 
 func (m Matrix) floatScale(c float64) Matrix {
 	dat := make([]Scalar, len(m.dat))
-	for i, el := range dat {
+	for i, el := range m.dat {
 		dat[i] = el.mulFl64(c)
 	}
 

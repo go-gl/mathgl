@@ -301,7 +301,10 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	for j := 0; j < mat.n; j++ {   // Columns of m2 and m3
 		//for i := 0; i < m1.m; i++ { // Rows of m1 and m3
 		for k := 0; k < len(v.dat); k++ { // Columns of m1, rows of m2
-			dat[j*mat.n] = dat[j*mat.n].Add(v.dat[k*mat.n].Mul(mat.dat[j*mat.n+k])) // I think, needs testing
+			if dat[j] == nil {
+				dat[j] = MakeScalar(0, v.typ)
+			}
+			dat[j] = dat[j].Add(v.dat[k].Mul(mat.dat[k*mat.n+j])) // I think, needs testing
 		}
 		//}
 	}
