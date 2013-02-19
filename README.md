@@ -8,7 +8,7 @@ This is a Go matrix and vector math library intended for Open GL graphics capabi
 This (sub-)package is also in development, to be a closer-to-OpenGL library. It is unfortunately a complete pain to write. I'm working on a code generation script at the moment for it.
 
 
-# TODO:
+# TODO (Contribution welcome):
 
 Benchmarks (important!)
 
