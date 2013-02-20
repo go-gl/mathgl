@@ -14,7 +14,8 @@ func Rotate2D(angle float64) Matrix {
 // [0 s c ]
 func Rotate3DX(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1, 0, 0,
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
+		1, 0, 0,
 		0, cos, -sin,
 		0, sin, cos}, FLOAT64), FLOAT64, 3, 3)
 }
