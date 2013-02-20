@@ -68,6 +68,7 @@ func (q1 Quaternion) Equal(q2 Quaternion) bool {
 }
 
 // Always returns a matrix of type FLOAT64
+// Quaternion must be normalized before-hand. If len != 1, return the zero type for Quaternion
 func (q Quaternion) ToHomogRotationMatrix() Matrix {
 	if math.Abs(q.Len()) > 1e-7 {
 		return Matrix{}
@@ -75,9 +76,9 @@ func (q Quaternion) ToHomogRotationMatrix() Matrix {
 
 	w, x, y, z := q.w.Fl64(), q.v.dat[0].Fl64(), q.v.dat[1].Fl64(), q.v.dat[2].Fl64()
 
-	dat := ScalarSlice([]interface{}{1. - 2.*y*y - 2.*z*z, 2.*x*y - 2*w*z, 2.*x*z + 2*w*y, 0.,
-		2.*x*y + 2*w*z, 1. - 2.*x*x - 2*z*z, 2.*y*z + 2.*w*z, 0.,
-		2.*x*z - 2*w*y, 2.*y*z - 2*w*x, 1. - 2.*x*x - 2.*y*y, 0.,
+	dat := ScalarSlice([]interface{}{1. - 2.*y*y - 2.*z*z, 2.*x*y - 2.*w*z, 2.*x*z + 2.*w*y, 0.,
+		2.*x*y + 2.*w*z, 1. - 2.*x*x - 2*z*z, 2.*y*z + 2.*w*z, 0.,
+		2.*x*z - 2.*w*y, 2.*y*z - 2.*w*x, 1. - 2.*x*x - 2.*y*y, 0.,
 		0., 0., 0., 1.}, FLOAT64)
 	return *unsafeMatrixFromSlice(dat, q.typ, 4, 4)
 }
