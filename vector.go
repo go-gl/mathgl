@@ -251,6 +251,9 @@ func (v1 Vector) Dot(v2 Vector) (ret Scalar) {
 //
 // It returns the zero-type for a vector if any vector's Size is not 3, or the vector's underlying types
 // don't match
+//
+// Note for the pedantic: the binary cross product is technically defined in 7D as well,
+// but it's such a rare operation (especially for a library geared towards 3D math) that it's left unimplemented
 func (v1 Vector) Cross(v2 Vector) (v3 Vector) {
 	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) || len(v1.dat) != 3 {
 		return

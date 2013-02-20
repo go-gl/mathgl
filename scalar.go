@@ -9,25 +9,22 @@ type ScalarUint32 uint32
 type ScalarFloat32 float32
 type ScalarFloat64 float64
 
-// Before I did this, there were a lot of ugly switch statements and tons of code duplication.
-// Go doesn't allow arbitrary math without casting, so some code duplication was inevitable, but with this wrapper
-// I was able to localize all the duplication to one place and clean up the main package a great deal.
-// This, unfortunately, makes it a pain to deal with anything that's not going to be used internally in the package
-// i.e. doing math with the dot product of two vectors. Suggestions for how to improve this is welcome.
-//
-// For now, the basic mathematical operations are exported to make things easier
+// Scalar is a wrapper that tiptoes around generics. By defining a few basic arithmetic operations
+// on some aliases for things like int32, we can treat any type Vector (Matrix/Quaternion) interchangeably as long as the operations
+// are performed between the same underlying type, there's no conflict and the code becomes much cleaner. (This prevents all the arguments and return vals from being
+// interface{} everywhere in the code, which leads to a lot of really ugly casting and switch statements)
 type Scalar interface {
-	Add(other Scalar) Scalar
-	Sub(other Scalar) Scalar
-	Mul(other Scalar) Scalar
-	Div(other Scalar) Scalar
-	Pow(toThe float64) Scalar
-	Equal(other Scalar) bool // Only "approximately equals" for float types, because of the minutae of floating point arithmetic
-	Type() VecType
-	Fl64() float64
-	Fl32() float32
-	Int32() int32
-	Uint32() uint32
+	Add(other Scalar) Scalar // Adds two numbers, returns a Scalar of the same type
+	Sub(other Scalar) Scalar // Subtracts, returns a Scalar of the same type
+	Mul(other Scalar) Scalar // Multiplies, returns a Scalar of the same type
+	Div(other Scalar) Scalar // Divides, returns a Scalar of the same type
+	Pow(toThe float64) Scalar // Does x^(toThe) of the Scalar, and returns a Scalar of the same type
+	Equal(other Scalar) bool // Equivalent to a==other for int types, util.go:FloatEquals(a, other) for float types
+	Type() VecType // Returns the VecType corresponding to the scalar (INT32 for ScalarInt32 etc)
+	Fl64() float64 // Returns the underlying value as a float64, regardless of the underlying type
+	Fl32() float32 // Returns the underlying value as a float32, regardless of the underlying type
+	Int32() int32 // Returns the underlying value as an int32, regardless of the underlying type
+	Uint32() uint32 // Returns the underlying value as a uint32, regardless of the underlying type
 
 	// These remain unexported because they're basically shortcuts for internal benefit
 	mulFl64(c float64) Scalar // This is for the rare case we need to Multiply by non-like types as for length
