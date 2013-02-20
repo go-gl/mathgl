@@ -22,6 +22,8 @@ Make more unit tests. Right now basic functionality is essentially tested, but a
 
 Look into an alternate determinant method (standard method is O(n!)). Low priority, since most people probably won't be taking >4x4 matrix determinants anyway.
 
-Perhaps improve API for making Scalars/Scalar slices. It can look a bit ugly right now.
+# Wishlist
 
-Perhaps Euler Angles should be supported -- maybe at least minimally add functions to construct Quaternions and Rotation Matrices from some similar representation
+I would love to make this have some more general functions, finding eigenvectors, putting matrices in echelon form. Perhaps even some utility methods to make finding a ray/plane intersection easier. This doesn't have to be Matlab for Go, but the more tested, optimized utility methods we get, the better this package will be.
+
+Perhaps push parallel development on fastmathgl a little farther. At the moment I just don't have the heart to work on it. To really make it shine, it seems like you need to use code generation and text replacement tricks to minimize the amount of work you need. On the plus side, it's almost guaranteed to be faster (no for loops etc), requires less conversion from basic types to Scalar and such, and is much closer to GLM. (Also, suggestions to improve the name of fastmathgl are welcome, I have no idea what to call the thing)
