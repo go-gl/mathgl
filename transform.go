@@ -100,24 +100,3 @@ func QuaternionRotation(angle float64, axis Vector) Quaternion {
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return Quaternion{MakeScalar(cos/float64(2), FLOAT64), axis.ScalarMul(MakeScalar(sin/float64(2), FLOAT64)), FLOAT64}
 }
-
-func QuaternionRoll(angle float64) Quaternion {
-	sin, cos := math.Sin(angle), math.Cos(angle)
-
-	v, _ := VectorOf(ScalarSlice([]interface{}{sin / 2.0, 0, 0}, FLOAT64), FLOAT64)
-	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
-}
-
-func QuaternionPitch(angle float64) Quaternion {
-	sin, cos := math.Sin(angle), math.Cos(angle)
-
-	v, _ := VectorOf(ScalarSlice([]interface{}{0, sin / 2.0, 0}, FLOAT64), FLOAT64)
-	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
-}
-
-func QuaternionYaw(angle float64) Quaternion {
-	sin, cos := math.Sin(angle), math.Cos(angle)
-
-	v, _ := VectorOf(ScalarSlice([]interface{}{0, 0, sin / 2.0}, FLOAT64), FLOAT64)
-	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
-}
