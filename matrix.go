@@ -243,7 +243,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 			return
 		}
 		if m1.m == 1 && m1.n == 1 {
-			m3, _ = vec.ScalarMul(m1.ToScalar()).AsMatrix(false)
+			m3 = vec.ScalarMul(m1.ToScalar()).AsMatrix(false)
 			return m3
 		}
 		indat = vec.dat
@@ -278,7 +278,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 
 /*
 Batch Multiply, as its name implies, is supposed to Multiply a huge amount of matrices at once
-Since matrix Multiplication is associative, it can do pieces of the problem at the same time.
+Since matrix Mmltiplication is associative, it can do pieces of the problem at the same time.
 Since starting a goroutine has some overhead, I'd wager it's probably not worth it to use this function unless you have
 6-8+ larger (i.e. 3x3 or 4x4) matrices, but I haven't benchmarked it so until then who knows?
 
@@ -295,7 +295,7 @@ func BatchMultiply(args []MatrixMultiplyable) Matrix {
 	if len(args) == 1 {
 		// We're expected to return a Matrix, so if it's suddenly a vector Go will panic from bad typing
 		if vec, ok := args[0].(Vector); ok {
-			ret, _ := vec.AsMatrix(true)
+			ret := vec.AsMatrix(true)
 			return ret
 		}
 		return args[0].(Matrix)

@@ -2,27 +2,42 @@ package mathgl
 
 import (
 	"errors"
-	"math"
 )
 
+/*
+A VecType is a simple ID for what type our vector(/matrix/quaternion) is
+This is basically to sneak around lack of generics without using extreme code duplication tricks and
+scripts
+
+The associated consts should be self explanatory, as they correspond to the actual built-in go type, except in ALLCAPS
+*/
 type VecType int8
 
 const (
-	INT32 = iota
+	INT32 = iota + 1
 	UINT32
 	FLOAT32
 	FLOAT64
 )
 
+/*
+A Vector is essentially a wrapper for a slice of Scalars, with an extra VecType variable to signify the underlying type
+
+A Vector is both a row and a column vector at once (whichever is convenient at the moment), the orientation only matters once converted to a Matrix
+*/
 type Vector struct {
 	typ VecType
 	dat []Scalar
 }
 
+// NewVector Returns an empty Vector of type t, ready to be added to
+// It's recommended you use VectorOf() instead
 func NewVector(t VecType) *Vector {
 	return &Vector{typ: t, dat: make([]Scalar, 0, 2)}
 }
 
+// VectorOf takes in a list of Scalar objects and a type, and returns a pointer to a vector,
+// if not all of the elements of el are of type t, an error is returned
 func VectorOf(el []Scalar, t VecType) (v *Vector, err error) {
 	for _, e := range el {
 		if !checkType(t, e) {
@@ -33,25 +48,8 @@ func VectorOf(el []Scalar, t VecType) (v *Vector, err error) {
 	return &Vector{t, el}, nil
 }
 
-func checkType(typ VecType, i interface{}) bool {
-	switch typ {
-	case INT32:
-		_, ok := i.(ScalarInt32)
-		return ok
-	case UINT32:
-		_, ok := i.(ScalarUint32)
-		return ok
-	case FLOAT32:
-		_, ok := i.(ScalarFloat32)
-		return ok
-	case FLOAT64:
-		_, ok := i.(ScalarFloat64)
-		return ok
-	}
-
-	return false
-}
-
+// AddElements adds all the elements of the slice el to the vector in-place (as in, it modified the vector)
+// It returns an error iff any element of el does not match v's type. In this scenario, the vector is not altered
 func (v *Vector) AddElements(el []Scalar) error {
 	for _, e := range el {
 		if !checkType(v.typ, e) {
@@ -63,6 +61,8 @@ func (v *Vector) AddElements(el []Scalar) error {
 	return nil
 }
 
+// SetElement will change the element at zero-based index loc to Scalar el.
+// It will return an error if loc is out of bounds or el is not of vec's type
 func (v *Vector) SetElement(loc int, el Scalar) error {
 	if !checkType(v.typ, el) {
 		return errors.New("Element does not match vector's type")
@@ -77,6 +77,8 @@ func (v *Vector) SetElement(loc int, el Scalar) error {
 	return nil
 }
 
+// GetElement returns the Scalar element at the zero-based index loc.
+// nil is returned instead of loc is out of bounds
 func (v Vector) GetElement(loc int) Scalar {
 	if loc < 0 || loc > len(v.dat)-1 {
 		return nil
@@ -85,7 +87,11 @@ func (v Vector) GetElement(loc int) Scalar {
 	return v.dat[loc]
 }
 
-// Converts a 1-d vector to a scalar
+// ToScalar is equivalent to GetElement(0), but works if and only if
+// the vector is a Size 1 (or 1x1 or 1-d) Vector. It's effective an acknowledgment that
+// a 1x1 vector or matrix is often treated as if it were a scalar. This function is implicitly called
+// in most multiplication functions, so there is no need to convert to a scalar yourself if multiplying a 1x1 Vector and a Matrix
+// or other Vector
 func (v Vector) ToScalar() Scalar {
 	if len(v.dat) != 1 {
 		return nil
@@ -94,12 +100,17 @@ func (v Vector) ToScalar() Scalar {
 	return v.dat[0]
 }
 
+// AsSlice simply returns the current underlying slice representation
 func (v Vector) AsSlice() []Scalar {
 	return v.dat
 }
 
-// Converts a vector of up to size 4 into the appropriately typed array
-// Still must return an interface{} because of array size weirdness
+// AsArray converts a vector of up to size 4 into the appropriately typed array
+// Because in Go Arrays have a static size that may never change, and this may return an array
+// of any size(1-4) and any valid underlying vector type an interface{} in returned and the user is responsible
+// for correctly casting it. Note that if the underlying type is, say, INT32, it will be an array of int32, not ScalarInt32.
+// In other words, it will return the true underlying Go type, not its Scalar wrapper.
+// Very useful for use with OpenGL packages that take in such arrays
 func (v Vector) AsArray() interface{} {
 
 	switch len(v.dat) {
@@ -152,15 +163,25 @@ func (v Vector) AsArray() interface{} {
 	return nil
 }
 
-// If row is true, it's a row vector (1xn) else a column vector (nx1)
-func (v Vector) AsMatrix(row bool) (m Matrix, err error) {
+// AsMatrix converts the vector to an nx1 or 1xn vector. Which one it converts to is
+// determined by the argument "row". If it's true, it's treated as a 1xn ROW vector,
+// else an nx1 COLUMN vector.
+func (v Vector) AsMatrix(row bool) (m Matrix) {
 	if row {
-		return *unsafeMatrixFromSlice(v.dat, v.typ, 1, len(v.dat)), nil
+		return *unsafeMatrixFromSlice(v.dat, v.typ, 1, len(v.dat))
 	}
 
-	return *unsafeMatrixFromSlice(v.dat, v.typ, len(v.dat), 1), nil
+	return *unsafeMatrixFromSlice(v.dat, v.typ, len(v.dat), 1)
 }
 
+// Add, obviously, adds two vectors in the normal fashion:
+//
+// [a]   [d]    [a+d]
+// [b] + [e] =  [b+e]
+// [c]   [f]    [c+f]
+//
+// It returns the zero-value for a vector (a nil slice and type of 0 (no type)
+// if the two vectors either aren't the same Size or don't have the same VecType
 func (v1 Vector) Add(v2 Vector) (v3 Vector) {
 	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) {
 		return
@@ -176,6 +197,14 @@ func (v1 Vector) Add(v2 Vector) (v3 Vector) {
 	return v3
 }
 
+// Sub, like add, subtracts two vectors in the normal fashion:
+//
+// [a]   [d]    [a-d]
+// [b] - [e] =  [b-e]
+// [c]   [f]    [c-f]
+//
+// It returns the zero-value for a vector (a nil slice and type of 0 (no type)
+// if the two vectors either aren't the same Size or don't have the same VecType
 func (v1 Vector) Sub(v2 Vector) (v3 Vector) {
 	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) {
 		return
@@ -191,6 +220,15 @@ func (v1 Vector) Sub(v2 Vector) (v3 Vector) {
 	return v3
 }
 
+
+// Dot returns the dot product of the two vectors
+//
+// [a] [d]
+// [b] [e] = a*d+b*e+c*f
+// [c].[f]
+//
+// If the two vectors Sizes don't match or their underlying VecTypes aren't the same
+// it returns nil
 func (v1 Vector) Dot(v2 Vector) (ret Scalar) {
 	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) {
 		return nil
@@ -205,7 +243,14 @@ func (v1 Vector) Dot(v2 Vector) (ret Scalar) {
 	return ret
 }
 
-// Should we allow 7-dimensional?
+// The cross product is only defined in three dimensions (and does not currently support homogeneous vectors)
+//
+// [a] [d]   [b*f-c*e]
+// [b]x[e] = [c*d-a*f]
+// [c] [f]   [a*e-b*d]
+//
+// It returns the zero-type for a vector if any vector's Size is not 3, or the vector's underlying types
+// don't match
 func (v1 Vector) Cross(v2 Vector) (v3 Vector) {
 	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) || len(v1.dat) != 3 {
 		return
@@ -222,6 +267,13 @@ func (v1 Vector) Cross(v2 Vector) (v3 Vector) {
 	return v3
 }
 
+// ScalarMul performs element-wise scalar multiplication on a vector
+//
+//   [x]   [c*x]
+// c [y] = [c*y]
+//   [z]   [c*z]
+//
+// If c's type doesn't match the vector's, it will return the Zero-type of a vector
 func (v1 Vector) ScalarMul(c Scalar) (v2 Vector) {
 	if !checkType(v1.typ, c) {
 		return
@@ -237,7 +289,11 @@ func (v1 Vector) ScalarMul(c Scalar) (v2 Vector) {
 	return v2
 }
 
-// This is VECTOR LENGTH, a.k.a magnitude. For the number of elements, us Size()
+// Len returns the Vector Length. Also known as *magnitude*
+// This is equivalent to sqrt(v.v) -- the square root of the dot product of v with itself
+// If you want the dimension or number of elements of a vector, use Size()
+//
+// This returns a float64 because an integer length isn't very useful
 func (v Vector) Len() float64 {
 
 	dot := v.Dot(v)
@@ -245,19 +301,27 @@ func (v Vector) Len() float64 {
 	return dot.sqrt()
 }
 
-// This is the number of elements. For vector length or magnitude use Len()
+// Size simply returns the number of elements the vector has or it's "dimension"
 func (v Vector) Size() int {
 	return len(v.dat)
 }
 
+// If possible, Normalize will return a normalized version of the current vector -- aka a unit vector or a vector of Length 1
+//
+// ||v|| = 1/Len(v) * v = 1/sqrt(v.v) * v, or a vector multiplied with one divided by its magnitude
+//
+// If this is not possible (i.e. v is the zero vector), it simply returns v. It also returns v if normalization isn't necessary (Len(v) already is 1)
+// This method works correctly on vectors of an integer type.
 func (v Vector) Normalize() (v2 Vector) {
 	length := v.Len()
-	if math.Abs(length) < 1e-7 { // compare to 0
+	if FloatEqual(length,0.) || FloatEqual(length,1) { // compare to 0
 		return v
 	}
 	return v.floatScale(float64(1.0) / length)
 }
 
+// INTERNAL: floatScale makes sure that every element is scaled correctly,
+// converting the length to an int makes no sense, as by strict multiplication you cannot lower an int's value (beyond making it negative)
 func (v Vector) floatScale(c float64) (v2 Vector) {
 	v2.typ = v.typ
 	v2.dat = make([]Scalar, len(v.dat))
@@ -269,6 +333,14 @@ func (v Vector) floatScale(c float64) (v2 Vector) {
 	return v2
 }
 
+// Equal does an element-wise comparison of two vectors and returns true if they're equal.
+//
+// That is, if each element of the same ordinal in both vectors are equal, this function returns true.
+//
+// If the vectors are of different lengths, or different VecTypes, this returns false automaticaly
+//
+// Naturally, for float32/64 vectors, this is only approximately equal. See util.go:FloatEqual
+// for more info on this.
 func (v1 Vector) Equal(v2 Vector) (eq bool) {
 	if v1.typ != v2.typ || len(v1.dat) != len(v2.dat) {
 		return false
@@ -284,16 +356,26 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 	return eq
 }
 
-// Assumes inner product, use the OuterProduct if you need that functionality
+// Mul multiplies a Vector and either another Vector, or a Matrix
+// If m is another Vector, it performs the dot product and returns it as a 1x1 Matrix
+//
+// If m is a Matrix, it returns a 1xo Matrix (where o is the number of columns in m) as if we had
+// multiplied a 1xn matrix with an nxo Matrix.
+//
+// The result will be the zero-type for a Matrix if any of the following conditions are met:
+// v and m's underlying VecTypes don't match
+// m is a vector and m and v's Sizes aren't the same
+// m is a matrix and its number of rows is not equal to v's Size
 func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	if v2, ok := m.(Vector); ok {
-		if v.typ != v2.typ {
+		if v.typ != v2.typ || len(v.dat) != len(v2.dat) {
 			return // We type check in Dot as well, but that will return a nil, I want to ensure we return a zero-val matrix
 		}
 		return *unsafeMatrixFromSlice([]Scalar{v.Dot(v2)}, v.typ, 1, 1)
 	}
+	
 	mat := m.(Matrix)
-	if v.typ != mat.typ {
+	if v.typ != mat.typ || len(v.dat) != mat.m {
 		return
 	}
 
@@ -312,16 +394,23 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	return *unsafeMatrixFromSlice(dat, v.typ, 1, mat.n)
 }
 
-// I could be persuaded that the argument to this function should be allowed to be a MatrixMultiplyable, but
-// for now I'm leaving is as between two vectors.
+// The outer product of a vector is similar to the dot product, in that
+// the dot product is equal to a row vector times a column vector, the outer product
+// is a column vector times a row vector. This results in an nxo matrix, where
+// n is the Size of the first vector and o is the Size of the second vector
+//
+// [a]            [[a*c, a*d]]
+// [b] * [c, d] = [[b*c, b*d]]
+//
+// It returns the zero-type for a Matrix if v1 and v2's underlying VecTypes don't match
 func (v1 Vector) OuterProduct(v2 Vector) (m Matrix) {
 	if v1.typ != v2.typ {
 		return
 	}
 
 	// Should probably just spell it out
-	m1, _ := v1.AsMatrix(false)
-	m2, _ := v2.AsMatrix(true)
+	m1 := v1.AsMatrix(false)
+	m2 := v2.AsMatrix(true)
 
 	return m1.Mul(m2)
 }

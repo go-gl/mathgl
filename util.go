@@ -18,3 +18,22 @@ func FloatEqual(a, b float64) bool {
 	// Else compare difference
 	return math.Abs(a-b)/(math.Abs(a)+math.Abs(b)) < epsilon
 }
+
+func checkType(typ VecType, i interface{}) bool {
+	switch typ {
+	case INT32:
+		_, ok := i.(ScalarInt32)
+		return ok
+	case UINT32:
+		_, ok := i.(ScalarUint32)
+		return ok
+	case FLOAT32:
+		_, ok := i.(ScalarFloat32)
+		return ok
+	case FLOAT64:
+		_, ok := i.(ScalarFloat64)
+		return ok
+	}
+
+	return false
+}
