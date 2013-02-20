@@ -429,12 +429,11 @@ func (m Matrix) floatScale(c float64) Matrix {
 	return *unsafeMatrixFromSlice(dat, m.typ, m.m, m.n)
 }
 
-
 func (m Matrix) AsArray() interface{} {
 	if m.n < 1 || m.m < 1 || m.m > 4 || m.n > 4 {
 		return nil
 	}
-	
+
 	switch m.typ {
 	case INT32:
 		switch m.m * m.n {
@@ -459,7 +458,7 @@ func (m Matrix) AsArray() interface{} {
 			return [16]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32(), m.dat[3].Int32(), m.dat[4].Int32(), m.dat[5].Int32(), m.dat[6].Int32(), m.dat[7].Int32(), m.dat[8].Int32(),
 				m.dat[9].Int32(), m.dat[10].Int32(), m.dat[11].Int32(), m.dat[12].Int32(), m.dat[13].Int32(), m.dat[14].Int32(), m.dat[15].Int32()}
 		}
-	
+
 	case UINT32:
 		switch m.m * m.n {
 		case 1:
@@ -483,7 +482,7 @@ func (m Matrix) AsArray() interface{} {
 			return [16]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32(), m.dat[3].Uint32(), m.dat[4].Uint32(), m.dat[5].Uint32(), m.dat[6].Uint32(), m.dat[7].Uint32(), m.dat[8].Uint32(),
 				m.dat[9].Uint32(), m.dat[10].Uint32(), m.dat[11].Uint32(), m.dat[12].Uint32(), m.dat[13].Uint32(), m.dat[14].Uint32(), m.dat[15].Uint32()}
 		}
-	
+
 	case FLOAT32:
 		switch m.m * m.n {
 		case 1:
@@ -507,7 +506,7 @@ func (m Matrix) AsArray() interface{} {
 			return [16]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32(), m.dat[3].Fl32(), m.dat[4].Fl32(), m.dat[5].Fl32(), m.dat[6].Fl32(), m.dat[7].Fl32(), m.dat[8].Fl32(),
 				m.dat[9].Fl32(), m.dat[10].Fl32(), m.dat[11].Fl32(), m.dat[12].Fl32(), m.dat[13].Fl32(), m.dat[14].Fl32(), m.dat[15].Fl32()}
 		}
-	
+
 	case FLOAT64:
 		switch m.m * m.n {
 		case 1:
@@ -532,6 +531,6 @@ func (m Matrix) AsArray() interface{} {
 				m.dat[9].Fl64(), m.dat[10].Fl64(), m.dat[11].Fl64(), m.dat[12].Fl64(), m.dat[13].Fl64(), m.dat[14].Fl64(), m.dat[15].Fl64()}
 		}
 	}
-	
+
 	return nil
 }

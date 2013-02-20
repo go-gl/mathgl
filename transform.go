@@ -102,9 +102,9 @@ func HomogRotate3DY(angle float64) Matrix {
 func HomogRotate3DZ(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
-		cos, -sin, 0, 0, 
-		-sin, cos, 0, 0, 
-		0, 0, 1, 0, 
+		cos, -sin, 0, 0,
+		-sin, cos, 0, 0,
+		0, 0, 1, 0,
 		0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
 }
 
