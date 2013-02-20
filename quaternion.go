@@ -120,10 +120,10 @@ func (q1 Quaternion) Equal(q2 Quaternion) bool {
 //
 // Where w = q.w, and x,y,z are the first, second, and third elements of the underlying vector (respectively), this gives us
 //
-// [[ 1-2y^2-2z^2, 2xy-2wz    , 2xz+2wy    , 0 ]]
-// [[ 2xy+2wz    , 1-2x^2-2z^2, 2yz+2wz    , 0 ]]
-// [[ 2xz-2wy    , 2yz -2wx   , 1-2x^2-2y^2, 0 ]]
-// [[ 0          , 0          , 0          , 1 ]]
+//    [[ 1-2y^2-2z^2, 2xy-2wz    , 2xz+2wy    , 0 ]]
+//    [[ 2xy+2wz    , 1-2x^2-2z^2, 2yz+2wz    , 0 ]]
+//    [[ 2xz-2wy    , 2yz -2wx   , 1-2x^2-2y^2, 0 ]]
+//    [[ 0          , 0          , 0          , 1 ]]
 //
 // The Quaternion must be Normalized before-hand. If len != 1, this will return the zero type for Matrix
 func (q Quaternion) ToHomogRotationMatrix() Matrix {

@@ -88,6 +88,7 @@ func (i ScalarInt32) Uint32() uint32 {
 }
 
 // Begin Uint
+
 func (i ScalarUint32) Add(other Scalar) Scalar {
 	return i + other.(ScalarUint32)
 }
@@ -141,6 +142,7 @@ func (i ScalarUint32) Uint32() uint32 {
 }
 
 // Begin Float
+
 func (i ScalarFloat32) Add(other Scalar) Scalar {
 	return i + other.(ScalarFloat32)
 }
@@ -197,6 +199,7 @@ func (i ScalarFloat32) Uint32() uint32 {
 }
 
 // Begin Float64
+
 func (i ScalarFloat64) Add(other Scalar) Scalar {
 	return i + other.(ScalarFloat64)
 }

@@ -9,17 +9,16 @@ it will explain exactly what the function does.
 
 Generally in this package anything in the documentation enclosed by [Single Brackets] is a Vector
 
-[a]
-[b] = Column Vector
+	[a]
+	[b] = Column Vector
 
-[a, b] = Row Vector
+	[a, b] = Row Vector
 
 And anything enclosed by [[Double Brackets]] is a Matrix
 
-[[ a, b ]]
-[[ c, d ]]
+	[[ a, b ]]
+	[[ c, d ]]
 
-(These notations don't work in the godoc, only in the actual source comments)
 */
 package mathgl
 
@@ -198,11 +197,11 @@ func (v Vector) AsMatrix(row bool) (m Matrix) {
 	return *unsafeMatrixFromSlice(v.dat, v.typ, len(v.dat), 1)
 }
 
-// Add, obviously, adds two vectors in the normal fashion:
+// Add, obviously, adds two vectors in the normal piecewise fashion:
 //
-// [a]   [d]    [a+d]
-// [b] + [e] =  [b+e]
-// [c]   [f]    [c+f]
+// 	[a]   [d]    [a+d]
+// 	[b] + [e] =  [b+e]
+// 	[c]   [f]    [c+f]
 //
 // It returns the zero-value for a vector (a nil slice and type of 0 (no type)
 // if the two vectors either aren't the same Size or don't have the same VecType
@@ -223,9 +222,9 @@ func (v1 Vector) Add(v2 Vector) (v3 Vector) {
 
 // Sub, like add, subtracts two vectors in the normal fashion:
 //
-// [a]   [d]    [a-d]
-// [b] - [e] =  [b-e]
-// [c]   [f]    [c-f]
+// 	[a]   [d]    [a-d]
+// 	[b] - [e] =  [b-e]
+// 	[c]   [f]    [c-f]
 //
 // It returns the zero-value for a vector (a nil slice and type of 0 (no type)
 // if the two vectors either aren't the same Size or don't have the same VecType
@@ -246,9 +245,9 @@ func (v1 Vector) Sub(v2 Vector) (v3 Vector) {
 
 // Dot returns the dot product of the two vectors
 //
-// [a] [d]
-// [b] [e] = a*d+b*e+c*f
-// [c].[f]
+// 	[a] [d]
+// 	[b] [e] = a*d+b*e+c*f
+// 	[c].[f]
 //
 // If the two vectors Sizes don't match or their underlying VecTypes aren't the same
 // it returns nil
@@ -268,9 +267,9 @@ func (v1 Vector) Dot(v2 Vector) (ret Scalar) {
 
 // The cross product is only defined in three dimensions (and does not currently support homogeneous vectors)
 //
-// [a] [d]   [b*f-c*e]
-// [b]x[e] = [c*d-a*f]
-// [c] [f]   [a*e-b*d]
+// 	[a] [d]   [b*f-c*e]
+// 	[b]x[e] = [c*d-a*f]
+// 	[c] [f]   [a*e-b*d]
 //
 // It returns the zero-type for a vector if any vector's Size is not 3, or the vector's underlying types
 // don't match
@@ -295,9 +294,9 @@ func (v1 Vector) Cross(v2 Vector) (v3 Vector) {
 
 // ScalarMul performs element-wise scalar multiplication on a vector
 //
-//   [x]   [c*x]
-// c [y] = [c*y]
-//   [z]   [c*z]
+//    [x]   [c*x]
+//  c [y] = [c*y]
+//    [z]   [c*z]
 //
 // If c's type doesn't match the vector's, it will return the Zero-type of a vector
 func (v1 Vector) ScalarMul(c Scalar) (v2 Vector) {
@@ -334,7 +333,7 @@ func (v Vector) Size() int {
 
 // If possible, Normalize will return a normalized version of the current vector -- aka a unit vector or a vector of Length 1
 //
-// ||v|| = 1/Len(v) * v = 1/sqrt(v.v) * v, or a vector multiplied with one divided by its magnitude
+// 	||v|| = 1/Len(v) * v = 1/sqrt(v.v) * v, or a vector multiplied with one divided by its magnitude
 //
 // If this is not possible (i.e. v is the zero vector), it simply returns v. It also returns v if normalization isn't necessary (Len(v) already is 1)
 // This method works correctly on vectors of an integer type.
@@ -437,8 +436,8 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 // is a column vector times a row vector. This results in an nxo matrix, where
 // n is the Size of the first vector and o is the Size of the second vector
 //
-// [a]            [[a*c, a*d]]
-// [b] * [c, d] = [[b*c, b*d]]
+// 	[a]            [[a*c, a*d]]
+// 	[b] * [c, d] = [[b*c, b*d]]
 //
 // It returns the zero-type for a Matrix if v1 and v2's underlying VecTypes don't match
 func (v1 Vector) OuterProduct(v2 Vector) (m Matrix) {

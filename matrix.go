@@ -31,8 +31,8 @@ func NewMatrix(m, n int, typ VecType) *Matrix {
 // Multiplying by the identity matrix is guaranteed to keep the matrix it's multiplied by the same (hence "identity")
 //
 // For instance, a size of 2 yields
-// [[1 0]]
-// [[0 1]]
+// 	[[1 0]]
+// 	[[0 1]]
 func Identity(size int, typ VecType) Matrix {
 	dat := make([]Scalar, size*size)
 
@@ -51,8 +51,8 @@ func Identity(size int, typ VecType) Matrix {
 // MatrixFromCols takes in a slice of matrix columns (represented as slices of Scalars). m and n are inferred from the sizes of the slice
 // For instance:
 //
-// [[1, 1]]
-// [[0, 1]] Would be entered as a 2D array [[1,0],[1,1]]
+// 	[[1, 1]]
+// 	[[0, 1]] Would be entered as a 2D array [[1,0],[1,1]]
 //
 // But will be flattened to Row Major Order, [1,1,0,1]
 //
@@ -81,8 +81,8 @@ func MatrixFromCols(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 // MatrixFromRows is MatrixFromCols, except is takes a slice of matrix columns (as Scalar slices), and makes them a matrix. m and n are inferred
 // For instance:
 //
-// [[1, 1]]
-// [[0, 1]] is entered as [[1,1],[0,1]]
+// 	[[1, 1]]
+// 	S[[0, 1]] is entered as [[1,1],[0,1]]
 //
 // And will be flattened to [1,1,0,1]
 //
@@ -229,8 +229,8 @@ func (mat Matrix) ToScalar() Scalar {
 
 // Add does a traditional element-wise addition of two Matrices.
 //
-// [[a, b]]   [[e, f]]   [[a+e, b+f]]
-// [[c, d]] + [[g, h]] = [[c+g, d+h]]
+// 	[[a, b]]   [[e, f]]   [[a+e, b+f]]
+// 	[[c, d]] + [[g, h]] = [[c+g, d+h]]
 //
 // It returns the zero-type for a Matrix if the number of rows, columns, or underlying types don't match
 func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
@@ -252,8 +252,8 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 
 // Sub does a traditional element-wise subtraction of two Matrices.
 //
-// [[a, b]]   [[e, f]]   [[a-e, b-f]]
-// [[c, d]] - [[g, h]] = [[c-g, d-h]]
+// 	[[a, b]]   [[e, f]]   [[a-e, b-f]]
+// 	[[c, d]] - [[g, h]] = [[c-g, d-h]]
 //
 // It returns the zero-type for a Matrix if the number of rows, columns, or underlying types don't match
 func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
@@ -275,8 +275,8 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 
 // ScalarMul does an element-wise multiplcation of a Matrix's elements and a scalar value
 //
-//   [[w, x]]    [[c*w, c*x]]
-// c*[[y, z]] =  [[c*y, c*z]]
+//       [[w, x]]    [[c*w, c*x]]
+//     c*[[y, z]] =  [[c*y, c*z]]
 //
 // It returns the Matrix zero-type if c is not of the same underlying type as the matrix
 func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
@@ -445,9 +445,9 @@ func (m1 Matrix) Det() (det float64) {
 
 // Transpose returns the matrix's transpose. A transpose is where a Matrix's rows and columns are swapped
 //
-//            T    [[a, d]]
-// [[a, b, c]]     [[b, e]]
-// [[d, e, f]]  =  [[c, f]]
+//               T    [[a, d]]
+//    [[a, b, c]]     [[b, e]]
+//    [[d, e, f]]  =  [[c, f]]
 //
 // This is also useful for converting the underlying slice to Column Major Order if you ever need to
 func (m Matrix) Transpose() Matrix {
@@ -464,8 +464,8 @@ func (m Matrix) Transpose() Matrix {
 
 // Inverse creates the inverse Matrix
 //
-//  -1           T
-// M  = 1/Det * M
+//     -1           T
+//    M  = 1/Det * M
 //
 // That is, the inverse is one divided by the determinant times the matrix's transpose.
 //

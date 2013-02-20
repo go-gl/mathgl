@@ -14,9 +14,9 @@ func Rotate2D(angle float64) Matrix {
 // Rotate3DX returns a 3x3 (non-homogeneous) Matrix of type FLOAT64 that rotates by (radian) angle about the X-axis
 //
 // Where c is cos(angle) and s is sin(angle)
-// [1 0 0]
-// [0 c -s]
-// [0 s c ]
+//    [1 0 0]
+//    [0 c -s]
+//    [0 s c ]
 func Rotate3DX(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
@@ -28,9 +28,9 @@ func Rotate3DX(angle float64) Matrix {
 // Rotate3DY returns a 3x3 (non-homogeneous) Matrix of type FLOAT64 that rotates by (radian) angle about the Y-axis
 //
 // Where c is cos(angle) and s is sin(angle)
-// [c 0 s]
-// [0 1 0]
-// [s 0 c ]
+//    [c 0 s]
+//    [0 1 0]
+//    [s 0 c ]
 func Rotate3DY(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
@@ -42,9 +42,9 @@ func Rotate3DY(angle float64) Matrix {
 // Rotate3DZ returns a 3x3 (non-homogeneous) Matrix of type FLOAT64 that rotates by (radian) angle about the Z-axis
 //
 // Where c is cos(angle) and s is sin(angle)
-// [c -s 0]
-// [s c 0]
-// [0 0 1 ]
+//    [c -s 0]
+//    [s c 0]
+//    [0 0 1 ]
 func Rotate3DZ(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
@@ -55,9 +55,9 @@ func Rotate3DZ(angle float64) Matrix {
 
 // Translate2D returns a homogeneous (3x3 for 2D-space) Translation matrix of type FLOAT64 that moves a point by Tx units in the x-direction and Ty units in the y-direction
 //
-// [[1, 0, Tx]]
-// [[0, 1, Ty]]
-// [[0, 0, 1 ]]
+//    [[1, 0, Tx]]
+//    [[0, 1, Ty]]
+//    [[0, 0, 1 ]]
 func Translate2D(Tx, Ty float64) Matrix {
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		1, 0, Tx,
@@ -68,10 +68,10 @@ func Translate2D(Tx, Ty float64) Matrix {
 // Translate3D returns a homogeneous (4x4 for 3D-space) Translation matrix of type FLOAT64 that moves a point by Tx units in the x-direction, Ty units in the y-direction,
 // and Tz units in the z-direction
 //
-// [[1, 0, 0, Tx]]
-// [[0, 1, 0, Ty]]
-// [[0, 0, 1, Tz]]
-// [[0, 0, 0, 1 ]]
+//    [[1, 0, 0, Tx]]
+//    [[0, 1, 0, Ty]]
+//    [[0, 0, 1, Tz]]
+//    [[0, 0, 0, 1 ]]
 func Translate3D(Tx, Ty, Tz float64) Matrix {
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		1, 0, 0, Tx,
@@ -124,10 +124,10 @@ func HomogRotate3DZ(angle float64) Matrix {
 //
 // Where c is cos(angle) and s is sin(angle), and x, y, and z are the first, second, and third elements of the axis vector (respectively):
 //
-// [[ x^2(c-1)+c, xy(c-1)-zs, xz(c-1)+ys, 0 ]]
-// [[ xy(c-1)+zs, y^2(c-1)+c, yz(c-1)-xs, 0 ]]
-// [[ xz(c-1)-ys, yz(c-1)+xs, z^2(c-1)+c, 0 ]]
-// [[ 0         , 0         , 0         , 1 ]]
+//    [[ x^2(c-1)+c, xy(c-1)-zs, xz(c-1)+ys, 0 ]]
+//    [[ xy(c-1)+zs, y^2(c-1)+c, yz(c-1)-xs, 0 ]]
+//    [[ xz(c-1)-ys, yz(c-1)+xs, z^2(c-1)+c, 0 ]]
+//    [[ 0         , 0         , 0         , 1 ]]
 //
 // The axis vector's type must be FLOAT64 or you'll get the zero-type Matrix
 func HomogRotate3D(angle float64, axis Vector) Matrix {
