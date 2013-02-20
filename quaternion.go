@@ -66,3 +66,18 @@ func (q Quaternion) Normalize() Quaternion {
 func (q1 Quaternion) Equal(q2 Quaternion) bool {
 	return q1.w.Equal(q2.w) && q1.v.Equal(q2.v)
 }
+
+func (q Quaternion) ToHomoRotationMatrix() Matrix {
+	if math.Abs(q.Len()) > 1e-7 {
+		return Matrix{}
+	}
+	
+	w,x,y,z := q.w, q.v.dat[0], q.v.dat[1], q.v.dat[2]
+	zero,one,two := MakeScalar(0,q.typ), MakeScalar(1, q.typ), MakeScalar(2, q.typ)
+	
+	dat := ScalarSlice([]interface{}{one.Sub(two.Mul(y.Mul(y))).Sub(two.Mul(z.Mul(z))), two.Mul(x.Mul(y)).Sub(two.Mul(w.Mul(z))), two.Mul(x.Mul(z)).Add(two.Mul(w.Mul(y))), zero,
+									 two.Mul(x.Mul(y)).Add(two.Mul(w.Mul(z))),one.Sub(two.Mul(x.Mul(x))).Sub(two.Mul(z.Mul(z))), two.Mul(y.Mul(z)).Add(two.Mul(w.Mul(x))),  zero,
+									 two.Mul(x.Mul(z)).Sub(two.Mul(w.Mul(y))), two.Mul(y.Mul(z)).Sub(two.Mul(w.Mul(x))), one.Sub(two.Mul(x.Mul(x))).Sub(two.Mul(y.Mul(y))), zero,
+									 zero, zero, zero, one}, FLOAT64)
+	return *unsafeMatrixFromSlice(dat, q.typ, 4, 4)
+}

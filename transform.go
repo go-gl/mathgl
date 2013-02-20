@@ -44,7 +44,38 @@ func Transform3D(Tx, Ty, Tz float64) Matrix {
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,Tx,0,1,0,Ty,0,0, 1,Tz,0,0,0,1}, FLOAT64), FLOAT64, 4, 4)
 }
 
-// TODO: Homogeneous conversion, homogeneous rotation matrices
+func HomoRotate2D(angle float64) Matrix {
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, sin, cos, 0, 0,0,1}, FLOAT64), FLOAT64, 2, 2)
+}
+
+// Rotates about X-axis
+// [1 0 0]
+// [0 c -s]
+// [0 s c ]
+func HomoRotate3DX(angle float64) Matrix {
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,0, 0,cos, -sin, 0, 0, sin, cos, 0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
+}
+
+// Rotates around Y-axis
+// [c 0 s]
+// [0 1 0]
+// [s 0 c ]
+func HomoRotate3DY(angle float64) Matrix {
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,0,sin,0, 0,1,0,0, -sin,0,cos,0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
+}
+
+// Rotates about Z-axis
+// [c -s 0]
+// [s c 0]
+// [0 0 1 ]
+func HomoRotate3DZ(angle float64) Matrix {
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,-sin,0,0, -sin,cos,0,0, 0,0,1,0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
+}
+
 
 // Note: Vector type must be FLOAT64
 func QuaternionRotation(angle float64, axis Vector) Quaternion {
@@ -54,4 +85,25 @@ func QuaternionRotation(angle float64, axis Vector) Quaternion {
 	
 	sin,cos := math.Sin(angle), math.Cos(angle)
 	return Quaternion{MakeScalar(cos/float64(2) , FLOAT64), axis.ScalarMul(MakeScalar(sin/float64(2), FLOAT64)), FLOAT64}
+}
+
+func QuaternionRoll(angle float64) Quaternion {
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	
+	v,_ := VectorOf(ScalarSlice([]interface{}{sin/2.0,0,0}, FLOAT64), FLOAT64)
+	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
+}
+
+func QuaternionPitch(angle float64) Quaternion {
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	
+	v,_ := VectorOf(ScalarSlice([]interface{}{0, sin/2.0,0}, FLOAT64), FLOAT64)
+	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
+}
+
+func QuaternionYaw(angle float64) Quaternion {
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	
+	v,_ := VectorOf(ScalarSlice([]interface{}{0,0,sin/2.0}, FLOAT64), FLOAT64)
+	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
 }
