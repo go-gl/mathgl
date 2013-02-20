@@ -252,7 +252,7 @@ func (v Vector) Size() int {
 
 func (v Vector) Normalize() (v2 Vector) {
 	length := v.Len()
-	if math.Abs(length) < .0000001 { // compare to 0
+	if math.Abs(length) < 1e-7 { // compare to 0
 		return v
 	}
 	return v.floatScale(float64(1.0) / length)

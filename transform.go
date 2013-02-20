@@ -45,4 +45,13 @@ func Transform3D(Tx, Ty, Tz float64) Matrix {
 }
 
 // TODO: Homogeneous conversion, homogeneous rotation matrices
-// TODO: Quaternion rotation
+
+// Note: Vector type must be FLOAT64
+func QuaternionRotation(angle float64, axis Vector) Quaternion {
+	if axis.typ != FLOAT64 {
+		return Quaternion{}
+	}
+	
+	sin,cos := math.Sin(angle), math.Cos(angle)
+	return Quaternion{MakeScalar(cos/float64(2) , FLOAT64), axis.ScalarMul(MakeScalar(sin/float64(2), FLOAT64)), FLOAT64}
+}
