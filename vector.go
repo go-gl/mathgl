@@ -18,6 +18,8 @@ And anything enclosed by [[Double Brackets]] is a Matrix
 
 [[ a, b ]]
 [[ c, d ]]
+
+(These notations don't work in the godoc, only in the actual source comments)
 */
 package mathgl
 
