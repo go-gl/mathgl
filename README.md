@@ -1,7 +1,13 @@
 MathGL
 ======
 
-This is a Go matrix and vector math library intended for Open GL graphics capabilities. Hopefully to one day be good enough for inclusion with go-gl.
+This is a Go matrix and vector math library intended for Open GL graphics capabilities. Hopefully to one day be good enough for inclusion with go-gl. Feedback is very welcome, especially API improvements, and pull requests are welcome. Benchmarks, more test cases, and example code (probably something like following an OpenGL tutorial) are definitely needed.
+
+# Documentation
+
+The package (the base package, not mathglfast) is more or less fully documented at the moment. However, suggestions for improvement or correction of obvious errors are obviously welcome.
+
+The package-level documentation is in vector.go
 
 # Mathglfast
 
@@ -12,7 +18,7 @@ This (sub-)package is also in development, to be a closer-to-OpenGL library. It 
 
 Benchmarks (important!)
 
-Make more unit tests. Right now basic functionality is essentially tested, but a lot of corner cases potentially aren't covered. Additionally, new context (Quaternions and anything in transform.go) is untested
+Make more unit tests. Right now basic functionality is essentially tested, but a lot of corner cases potentially aren't covered. Additionally, no new content (Quaternions and anything in transform.go) is untested
 
 Look into an alternate determinant method (standard method is O(n!)). Low priority, since most people probably won't be taking >4x4 matrix determinants anyway.
 
