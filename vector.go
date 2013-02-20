@@ -1,5 +1,5 @@
 /*
-package mathgl is an open source 3D vector, matrix, and quaternion library. It is intended to serve as a useful helper to using OpenGL just as GLM works for C++, except being a tad bit more Go-ish.
+Package mathgl is an open source 3D vector, matrix, and quaternion library. It is intended to serve as a useful helper to using OpenGL just as GLM works for C++, except being a tad bit more Go-ish.
 
 That said, this package has to work around Go's lack of Generics, but generally the package works rather cleanly once you get your variables set up. It has helper functions that will convert
 your data into an Array for use with functions size as glUniformMatrix[...] and so on.
