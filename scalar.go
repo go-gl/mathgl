@@ -13,18 +13,20 @@ type ScalarFloat64 float64
 // on some aliases for things like int32, we can treat any type Vector (Matrix/Quaternion) interchangeably as long as the operations
 // are performed between the same underlying type, there's no conflict and the code becomes much cleaner. (This prevents all the arguments and return vals from being
 // interface{} everywhere in the code, which leads to a lot of really ugly casting and switch statements)
+//
+// Note that for purposs of helper functions (MakeScalar, ScalarSlice), an int is treated like an int32
 type Scalar interface {
-	Add(other Scalar) Scalar // Adds two numbers, returns a Scalar of the same type
-	Sub(other Scalar) Scalar // Subtracts, returns a Scalar of the same type
-	Mul(other Scalar) Scalar // Multiplies, returns a Scalar of the same type
-	Div(other Scalar) Scalar // Divides, returns a Scalar of the same type
+	Add(other Scalar) Scalar  // Adds two numbers, returns a Scalar of the same type
+	Sub(other Scalar) Scalar  // Subtracts, returns a Scalar of the same type
+	Mul(other Scalar) Scalar  // Multiplies, returns a Scalar of the same type
+	Div(other Scalar) Scalar  // Divides, returns a Scalar of the same type
 	Pow(toThe float64) Scalar // Does x^(toThe) of the Scalar, and returns a Scalar of the same type
-	Equal(other Scalar) bool // Equivalent to a==other for int types, util.go:FloatEquals(a, other) for float types
-	Type() VecType // Returns the VecType corresponding to the scalar (INT32 for ScalarInt32 etc)
-	Fl64() float64 // Returns the underlying value as a float64, regardless of the underlying type
-	Fl32() float32 // Returns the underlying value as a float32, regardless of the underlying type
-	Int32() int32 // Returns the underlying value as an int32, regardless of the underlying type
-	Uint32() uint32 // Returns the underlying value as a uint32, regardless of the underlying type
+	Equal(other Scalar) bool  // Equivalent to a==other for int types, util.go:FloatEquals(a, other) for float types
+	Type() VecType            // Returns the VecType corresponding to the scalar (INT32 for ScalarInt32 etc)
+	Fl64() float64            // Returns the underlying value as a float64, regardless of the underlying type
+	Fl32() float32            // Returns the underlying value as a float32, regardless of the underlying type
+	Int32() int32             // Returns the underlying value as an int32, regardless of the underlying type
+	Uint32() uint32           // Returns the underlying value as a uint32, regardless of the underlying type
 
 	// These remain unexported because they're basically shortcuts for internal benefit
 	mulFl64(c float64) Scalar // This is for the rare case we need to Multiply by non-like types as for length
@@ -266,7 +268,7 @@ func vecNumZero(typ VecType) Scalar {
 	return ScalarInt32(0)
 }
 
-// Converts an int/int32, uint32, float32, or float64 to a Scalar of type given by the second argument.
+// MakeScalar converts an int/int32, uint32, float32, or float64 to a Scalar of type given by the second argument.
 // If the number is not one of the allowed types (or typ is not a recognized value of VecType) it returns nil
 func MakeScalar(num interface{}, typ VecType) Scalar {
 
@@ -330,11 +332,19 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 	return nil
 }
 
-// Converts all elements of a slice to a Scalar of a given VecType
+// ScalarSlice Converts all elements of a slice to a Scalar of a given VecType
 // All elements of the slice need not be of the same type, but MUST be of
 // a Scalar-friendly type (int/int32, uint32, float32, or float64) or the function will return nil
 //
-//  All pieces of the scalar will be converted to the Scalar type specificed in the second argument
+//  All pieces of the scalar will be converted to the Scalar type specificed in the second argument, there is no need for them to be the "correct" type when passing in.
+//
+// Using the function can get ugly, my recommended syntax is:
+// ScalarSlice([]interface{}{
+// 		num, num, num...
+// 		num, num, num...
+// 		num, num, num... }, VECTYPE)
+//
+// Where the line of "nums" is in the shape of the matrix (vector etc) you're building
 func ScalarSlice(slice []interface{}, typ VecType) (out []Scalar) {
 	out = make([]Scalar, len(slice))
 	for i := range slice {

@@ -295,7 +295,7 @@ func TestConversion(t *testing.T) {
 		t.Errorf("Vector's ToScalar doesn't work")
 	}
 
-	mat, _ := conv.AsMatrix(false)
+	mat := conv.AsMatrix(false)
 	comp, _ := mathgl.MatrixFromSlice([]mathgl.Scalar{mathgl.MakeScalar(1, mathgl.INT32)}, mathgl.INT32, 1, 1)
 
 	if !mat.Equal(*comp) {

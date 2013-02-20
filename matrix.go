@@ -5,20 +5,34 @@ import (
 	"math"
 )
 
+// MatrixMultiplyable let's us make multiplication between vectors and matrices easier (especially for the batch multiplyer)
 type MatrixMultiplyable interface {
 	Mul(m MatrixMultiplyable) Matrix
 }
 
+// A Matrix is another slice wrapper like Vector, but along with its VecType, it also
+// encodes the number of rows and columns it would have were it written out in a non-flattened fashion
+//
+// All matrices are treated as if they are in Row Major Order
 type Matrix struct {
 	m, n int // an m x n matrix
 	typ  VecType
 	dat  []Scalar
 }
 
+// NewMatrix returns an mxn matrix with an underlying slice of m*n nil-valued Scalars.
+// (You probably shouldn't use this)
 func NewMatrix(m, n int, typ VecType) *Matrix {
-	return &Matrix{m: m, n: n, typ: typ, dat: make([]Scalar, 0, 2)}
+	return &Matrix{m: m, n: n, typ: typ, dat: make([]Scalar, m*n)}
 }
 
+// Returns a size x size identity of type typ. The identity Matrix is defined as a square
+// Matrix (same number of rows and columns, nxn) with 1's along the main diagonal, and zeros elsewhere
+// Multiplying by the identity matrix is guaranteed to keep the matrix it's multiplied by the same (hence "identity")
+//
+// For instance, a size of 2 yields
+// [[1 0]]
+// [[0 1]]
 func Identity(size int, typ VecType) Matrix {
 	dat := make([]Scalar, size*size)
 
@@ -34,8 +48,16 @@ func Identity(size int, typ VecType) Matrix {
 	return *unsafeMatrixFromSlice(dat, typ, size, size)
 }
 
-// [1, 1]
-// [0, 1] Would be entered as a 2D array [[1,0],[1,1]] -- but converted to RMO
+// MatrixFromCols takes in a slice of matrix columns (represented as slices of Scalars). m and n are inferred from the sizes of the slice
+// For instance:
+//
+// [[1, 1]]
+// [[0, 1]] Would be entered as a 2D array [[1,0],[1,1]]
+//
+// But will be flattened to Row Major Order, [1,1,0,1]
+//
+// It returns nil and an error if the types of the underlying slice elements don't match
+// typ
 func MatrixFromCols(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
@@ -56,10 +78,16 @@ func MatrixFromCols(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	return mat, nil
 }
 
-// This function is MatrixFromCols, except each slice is a row vector, rather than a column
-//i.e.
-// [1, 1]
-// [0, 1] is entered as [[1,1],[0,1]]
+// MatrixFromRows is MatrixFromCols, except is takes a slice of matrix columns (as Scalar slices), and makes them a matrix. m and n are inferred
+// For instance:
+//
+// [[1, 1]]
+// [[0, 1]] is entered as [[1,1],[0,1]]
+//
+// And will be flattened to [1,1,0,1]
+//
+// It returns nil and an error if the types of the underlying slice elements don't
+// match typ
 func MatrixFromRows(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	mat = &Matrix{}
 	mat.typ = typ
@@ -80,7 +108,10 @@ func MatrixFromRows(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	return mat, nil
 }
 
-// Slice-format data should be in Row Major Order
+// MatrixFromSlice takes in a slice of scalars, a type-checking argument, and its dimensions and gives a pointer to a Matrix
+// Matrix treats its input as if it were in Row Major Order, see MatrixFromRows comments, specifically how it's flattened, for reference
+//
+//  It returns nil and an error if the length of the slice isn't m*n or any of el's elements fail to match typ
 func MatrixFromSlice(el []Scalar, typ VecType, m, n int) (mat *Matrix, err error) {
 	if m*n != len(el) {
 		return nil, errors.New("Matrix dimensions do not match data passed in")
@@ -113,10 +144,19 @@ func unsafeMatrixFromSlice(el []Scalar, typ VecType, m, n int) (mat *Matrix) {
 	return mat
 }
 
+// Returns the vector's underlying VecType
 func (m Matrix) Type() VecType {
 	return m.typ
 }
 
+// Does an element-wise matrix comparison and returns true if it passes.
+// That is, for each ordinal in the underlying slice it compares the values of both matrices
+//
+// If the matrices' types are different, or their dimensions are different (meaning their m's, n's, or both are different)
+// it will return false automatically.
+//
+// As with other Equal functions in this package, for integers it's a straight == comparison, but floats are compared as in
+// util.go:FloatEquals
 func (m1 Matrix) Equal(m2 Matrix) (eq bool) {
 	if m1.typ != m2.typ || m1.n != m2.n || m1.m != m2.m {
 		return false
@@ -132,12 +172,14 @@ func (m1 Matrix) Equal(m2 Matrix) (eq bool) {
 	return eq
 }
 
+// AsSlice() simply returns the Marix's underlying slice
 func (m Matrix) AsSlice() []Scalar {
-	dat := make([]Scalar, len(m.dat))
-	copy(dat, m.dat)
-	return dat
+	return m.dat
 }
 
+// SetElement set's the ith row and jth column of the Matrix to the element el.
+//
+// It returns an error if i or j are out of bounds, or the type of el doesn't match that of the Matrix
 func (mat *Matrix) SetElement(i, j int, el Scalar) error {
 	if i > mat.m || j > mat.n || i < 0 || j < 0 {
 		return errors.New("Dimensions out of bounds")
@@ -152,6 +194,7 @@ func (mat *Matrix) SetElement(i, j int, el Scalar) error {
 	return nil
 }
 
+// GetElement returns the Scalar element at the ith row and jth column of the matrix, or nil if i or j are out of bounds
 func (m Matrix) GetElement(i, j int) Scalar {
 	if i > m.m || j > m.n || i < 0 || j < 0 {
 		return nil
@@ -160,6 +203,8 @@ func (m Matrix) GetElement(i, j int) Scalar {
 	return m.dat[i*m.n+j]
 }
 
+// AsVector recognizes that a 1xn or mx1 Matrix is equivalent to a Vector.
+// This explicitly converts the matrix to a vector if those conditions are true, if not, it returns the zero-type for a Vector
 func (mat Matrix) AsVector() (v Vector) {
 	if mat.m != 1 && mat.n != 1 {
 		return v
@@ -173,6 +218,7 @@ func (mat Matrix) AsVector() (v Vector) {
 	return *vPoint
 }
 
+// ToScalar operates exactly like Vector's ToScalar. If a matrix is a 1x1 matrix, it returns m.dat[0]
 func (mat Matrix) ToScalar() Scalar {
 	if mat.m != 1 || mat.n != 1 {
 		return nil
@@ -181,10 +227,14 @@ func (mat Matrix) ToScalar() Scalar {
 	return mat.dat[0]
 }
 
-// TODO: AsArray (and possibly As2dSliceRow/Col)
-
+// Add does a traditional element-wise addition of two Matrices.
+//
+// [[a, b]]   [[e, f]]   [[a+e, b+f]]
+// [[c, d]] + [[g, h]] = [[c+g, d+h]]
+//
+// It returns the zero-type for a Matrix if the number of rows, columns, or underlying types don't match
 func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
-	if m1.typ != m2.typ || len(m1.dat) != len(m2.dat) {
+	if m1.typ != m2.typ || m1.m != m2.m || m1.n != m2.n {
 		return
 	}
 
@@ -200,6 +250,12 @@ func (m1 Matrix) Add(m2 Matrix) (m3 Matrix) {
 	return m3
 }
 
+// Sub does a traditional element-wise subtraction of two Matrices.
+//
+// [[a, b]]   [[e, f]]   [[a-e, b-f]]
+// [[c, d]] - [[g, h]] = [[c-g, d-h]]
+//
+// It returns the zero-type for a Matrix if the number of rows, columns, or underlying types don't match
 func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 	if m1.typ != m2.typ || len(m1.dat) != len(m2.dat) {
 		return
@@ -217,6 +273,12 @@ func (m1 Matrix) Sub(m2 Matrix) (m3 Matrix) {
 	return m3
 }
 
+// ScalarMul does an element-wise multiplcation of a Matrix's elements and a scalar value
+//
+//   [[w, x]]    [[c*w, c*x]]
+// c*[[y, z]] =  [[c*y, c*z]]
+//
+// It returns the Matrix zero-type if c is not of the same underlying type as the matrix
 func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 	if !checkType(m1.typ, c) {
 		return
@@ -233,7 +295,14 @@ func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 
 // TODO: Maybe look into the Strassen algorithm for large square matrices and hard code common cases
 
+// Mul does a simple textbook Matrix multiplication between MatrixMultiplyables
+// In the case m2 is a Vector, it is multiplied with as if it were a nx1 matrix (row vector)
+// In the case m2 is a Matrix, textbook matrix multiplication happens.
 //
+// In the case m1 is a 1x1 matrix, it will multiply with m2 (treated as a row vector if it's a vector) as if using ScalarMul
+// on m1.ToScalar()
+//
+// It returns the zero-type for Matrix if m.n and m2.m (or vec.Size()) don't match, or if the underlying types don't match.
 func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 	var indat []Scalar
 	m, n, o := m1.m, m1.n, 0
@@ -287,6 +356,8 @@ Make sure the matrices are in order, and that they can indeed be Multiplied. If 
 If the only input is a single vector, it will return it as a vector as if you called vector.AsMatrix(true), meaning as a *ROW* vector
 
 Yes, this means that for vectors it assumes inner product rather than outer product.
+
+Be careful with vectors either way. I'd *recommend* only using Matrices and converting yourself.
 */
 func BatchMultiply(args []MatrixMultiplyable) Matrix {
 	// Fun fact: Since in (Go's) integer division 3/2=1, in the case where you have an odd number
@@ -320,6 +391,7 @@ func BatchMultiply(args []MatrixMultiplyable) Matrix {
 	return m1.Mul(m2)
 }
 
+// Simple wrapper for channels
 func batchMultHelper(ch chan<- Matrix, args []MatrixMultiplyable) {
 	ch <- BatchMultiply(args)
 	close(ch)
@@ -327,9 +399,13 @@ func batchMultHelper(ch chan<- Matrix, args []MatrixMultiplyable) {
 
 // TODO: Well duh, Laplace expansion is O(n!) -- look into alt methods like LU Decomposition
 
-// I see no reason why the Det should be limited to the type of the underlying matrix
-// This takes a really long time for non-hard-coded matrices, maybe some infinite loop bug. For now only use for matrices <=4x4
-// I've hard coded the three common cases (2x2, 3x3, 4x4)
+// Det computes the Determinant for a square matrix. For a 2x2, 3x3, and 4x4 matrix the return operation is hard-coded
+// For above that, it uses a (very, very slow) Laplace Expansion method. I don't advise using this for >4x4 matrices
+//
+// It is returned as a float64 for similar reasons to Vector.Len(), an integer values determinant isn't a huge travesty, but isn't
+// really worth it either.
+//
+// It returns 0 if your matrix isn't square, so be careful.
 func (m1 Matrix) Det() (det float64) {
 	if m1.m != m1.n { // Determinants are only for square matrices
 		return
@@ -367,39 +443,13 @@ func (m1 Matrix) Det() (det float64) {
 	return det
 }
 
-func (m1 Matrix) cofactor(i, j int) float64 {
-	return math.Pow(float64(-1), float64(i+j)) * m1.minorMatrix(i, j).Det() // C^(i,j) * Minor(i,j)
-}
-
-func (m1 Matrix) minorMatrix(i, j int) Matrix {
-	dat := make([]Scalar, (m1.m-1)*(m1.n-1))
-
-	for k := 0; k < m1.m; k++ {
-		var q int
-		if k < j {
-			q = k
-		} else if k == j {
-			continue
-		} else {
-			q = k - q
-		}
-		for l := 0; l < m1.n; k++ {
-			var r int
-			if l < i {
-				r = l
-			} else if l == i {
-				continue
-			} else {
-				r = l - 1
-			}
-
-			dat[r*(m1.n-1)+q] = m1.dat[l*m1.n+k]
-		}
-	}
-
-	return *unsafeMatrixFromSlice(dat, m1.typ, m1.m-1, m1.n-1)
-}
-
+// Transpose returns the matrix's transpose. A transpose is where a Matrix's rows and columns are swapped
+//
+//            T    [[a, d]]
+// [[a, b, c]]     [[b, e]]
+// [[d, e, f]]  =  [[c, f]]
+//
+// This is also useful for converting the underlying slice to Column Major Order if you ever need to
 func (m Matrix) Transpose() Matrix {
 	dat := make([]Scalar, len(m.dat))
 
@@ -412,14 +462,24 @@ func (m Matrix) Transpose() Matrix {
 	return *unsafeMatrixFromSlice(dat, m.typ, m.n, m.m)
 }
 
+// Inverse creates the inverse Matrix
+//
+//  -1           T
+// M  = 1/Det * M
+//
+// That is, the inverse is one divided by the determinant times the matrix's transpose.
+//
+// In the case your determinant is Zero (also known as "being non-Singular"), or you have a non-square Matrix
+// it will return the zero type.
 func (m Matrix) Inverse() (m2 Matrix) {
 	det := m.Det()
-	if math.Abs(det) < 1e-7 {
+	if FloatEqual(det, 0.) {
 		return
 	}
 	return m.Transpose().floatScale(float64(1.0) / det)
 }
 
+// INTERNAL: Same as floatScale on a vec, allows us to ease things over with integer-values matrices
 func (m Matrix) floatScale(c float64) Matrix {
 	dat := make([]Scalar, len(m.dat))
 	for i, el := range m.dat {
@@ -429,6 +489,14 @@ func (m Matrix) floatScale(c float64) Matrix {
 	return *unsafeMatrixFromSlice(dat, m.typ, m.m, m.n)
 }
 
+// AsArray returns the Matrix as a 1D array of the appropriate size and same Go type as the underlying Matrix
+// As with Vector, it has to return an interface{} because of the face that in Go arrays have a fixes length and type,
+// thus the user must cast the result to the correct type
+//
+// The array returned, as with the underlying slice, is in Row Major Order. If this doesn't work for you, call AsArray on the Matrix's transpose.
+// This function is useful for passing into OpenGL functions that take arrays
+//
+// It returns nil should the matrix have more than four rows or columns.
 func (m Matrix) AsArray() interface{} {
 	if m.n < 1 || m.m < 1 || m.m > 4 || m.n > 4 {
 		return nil
@@ -533,4 +601,39 @@ func (m Matrix) AsArray() interface{} {
 	}
 
 	return nil
+}
+
+// Unexported because it may be buggy
+func (m1 Matrix) cofactor(i, j int) float64 {
+	return math.Pow(float64(-1), float64(i+j)) * m1.minorMatrix(i, j).Det() // C^(i,j) * Minor(i,j)
+}
+
+// Unexported because it may be buggy, or possibly just slow
+func (m1 Matrix) minorMatrix(i, j int) Matrix {
+	dat := make([]Scalar, (m1.m-1)*(m1.n-1))
+
+	for k := 0; k < m1.m; k++ {
+		var q int
+		if k < j {
+			q = k
+		} else if k == j {
+			continue
+		} else {
+			q = k - q
+		}
+		for l := 0; l < m1.n; k++ {
+			var r int
+			if l < i {
+				r = l
+			} else if l == i {
+				continue
+			} else {
+				r = l - 1
+			}
+
+			dat[r*(m1.n-1)+q] = m1.dat[l*m1.n+k]
+		}
+	}
+
+	return *unsafeMatrixFromSlice(dat, m1.typ, m1.m-1, m1.n-1)
 }

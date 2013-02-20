@@ -220,7 +220,6 @@ func (v1 Vector) Sub(v2 Vector) (v3 Vector) {
 	return v3
 }
 
-
 // Dot returns the dot product of the two vectors
 //
 // [a] [d]
@@ -317,7 +316,7 @@ func (v Vector) Size() int {
 // This method works correctly on vectors of an integer type.
 func (v Vector) Normalize() (v2 Vector) {
 	length := v.Len()
-	if FloatEqual(length,0.) || FloatEqual(length,1) { // compare to 0
+	if FloatEqual(length, 0.) || FloatEqual(length, 1) { // compare to 0
 		return v
 	}
 	return v.floatScale(float64(1.0) / length)
@@ -365,6 +364,11 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 // If m is a Matrix, it returns a 1xo Matrix (where o is the number of columns in m) as if we had
 // multiplied a 1xn matrix with an nxo Matrix.
 //
+// In any case, if v is a size-1 vector, it will be treated as a Scalar, and the function will return a Matrix as if it had been multiplied by v.AsScalar()
+// in the case m is a vector, it will returned converted to a row vector multiplied by AsScalar.
+//
+//No special privileges are given if m is 1x1
+//
 // The result will be the zero-type for a Matrix if any of the following conditions are met:
 // v and m's underlying VecTypes don't match
 // m is a vector and m and v's Sizes aren't the same
@@ -374,12 +378,19 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 		if v.typ != v2.typ || len(v.dat) != len(v2.dat) {
 			return // We type check in Dot as well, but that will return a nil, I want to ensure we return a zero-val matrix
 		}
+		if len(v.dat) == 1 {
+			return v2.AsMatrix(true).ScalarMul(v.ToScalar())
+		}
 		return *unsafeMatrixFromSlice([]Scalar{v.Dot(v2)}, v.typ, 1, 1)
 	}
-	
+
 	mat := m.(Matrix)
 	if v.typ != mat.typ || len(v.dat) != mat.m {
 		return
+	}
+
+	if len(v.dat) == 1 {
+		return mat.ScalarMul(v.ToScalar())
 	}
 
 	dat := make([]Scalar, 1*mat.n) // If v is a matrix then 1 is its "m"
