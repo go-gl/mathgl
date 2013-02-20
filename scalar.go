@@ -165,8 +165,8 @@ func (i ScalarFloat32) sqrt() float64 {
 func (i ScalarFloat32) Equal(other Scalar) bool {
 	f1 := float64(i)
 	f2 := float64(other.(ScalarFloat32))
-	
-	return FloatEqual(f1,f2)
+
+	return FloatEqual(f1, f2)
 }
 
 func (i ScalarFloat32) mulFl64(c float64) Scalar {
@@ -221,8 +221,8 @@ func (i ScalarFloat64) sqrt() float64 {
 func (i ScalarFloat64) Equal(other Scalar) bool {
 	f1 := float64(i)
 	f2 := float64(other.(ScalarFloat64))
-	
-	return FloatEqual(f1,f2)
+
+	return FloatEqual(f1, f2)
 }
 
 func (i ScalarFloat64) mulFl64(c float64) Scalar {
