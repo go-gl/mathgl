@@ -55,7 +55,7 @@ func HomogRotate2D(angle float64) Matrix {
 // [0 s c ]
 func HomogRotate3DX(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1, 0, 0, 0, 0, cos, -sin, 0, 0, sin, cos, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1, 0, 0, 0, 0, cos, -sin, 0, 0, sin, cos, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
 }
 
 // Rotates around Y-axis
@@ -64,7 +64,7 @@ func HomogRotate3DX(angle float64) Matrix {
 // [s 0 c ]
 func HomogRotate3DY(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, 0, sin, 0, 0, 1, 0, 0, -sin, 0, cos, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, 0, sin, 0, 0, 1, 0, 0, -sin, 0, cos, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
 }
 
 // Rotates about Z-axis
@@ -73,7 +73,22 @@ func HomogRotate3DY(angle float64) Matrix {
 // [0 0 1 ]
 func HomogRotate3DZ(angle float64) Matrix {
 	sin, cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
+}
+
+// Only accepts a homogeneous 3D vector, if it's not returns the zero-type for Matrix. Vector must also be of type Float64
+// It will always return a Matrix of type Float64
+func HomogRotate3D(angle float64, axis Vector) Matrix {
+	if axis.Size() != 4 || axis.typ != FLOAT64 {
+		return Matrix{}
+	}
+	x, y, z := axis.dat[0].Fl64(), axis.dat[1].Fl64(), axis.dat[2].Fl64()
+	s, c := math.Sin(angle), math.Cos(angle)
+	k := 1 - c
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{x*x*k + c, x*y*k - z*s, x*z*k + y*s, 0,
+		x*y*k + z*s, y*y*k + c, y*z*k - x*s, 0,
+		x*z*k - y*s, y*z*k + x*s, z*z*k + c, 0,
+		0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
 }
 
 // Note: Vector type must be FLOAT64
