@@ -394,7 +394,7 @@ func (v Vector) Mul(m MatrixMultiplyable) (out Matrix) {
 	return *unsafeMatrixFromSlice(dat, v.typ, 1, mat.n)
 }
 
-// The outer product of a vector is similar to the dot product, in that
+// The outer product of a vector is similar to the dot (or "inner") product, in that
 // the dot product is equal to a row vector times a column vector, the outer product
 // is a column vector times a row vector. This results in an nxo matrix, where
 // n is the Size of the first vector and o is the Size of the second vector
