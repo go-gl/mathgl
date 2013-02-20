@@ -342,10 +342,11 @@ func MakeScalar(num interface{}, typ VecType) Scalar {
 //  All pieces of the scalar will be converted to the Scalar type specificed in the second argument, there is no need for them to be the "correct" type when passing in.
 //
 // Using the function can get ugly, my recommended syntax is:
-// ScalarSlice([]interface{}{
-// 		num, num, num...
-// 		num, num, num...
-// 		num, num, num... }, VECTYPE)
+//
+//    ScalarSlice([]interface{}{
+// 		 num, num, num...
+// 		 num, num, num...
+// 		 num, num, num... }, VECTYPE)
 //
 // Where the line of "nums" is in the shape of the matrix (vector etc) you're building
 func ScalarSlice(slice []interface{}, typ VecType) (out []Scalar) {
