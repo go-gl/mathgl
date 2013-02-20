@@ -41,7 +41,8 @@ func Transform2D(Tx, Ty float64) Matrix {
 
 // Returns a 3D homogeneous (4x4) transformation matrix
 func Transform3D(Tx, Ty, Tz float64) Matrix {
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,Tx,0,1,0,Ty,0,0, 1,Tz,0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,Tx,0,1,0,Ty,0,0, 1,Tz,0,0,0,1}, FLOAT64), FLOAT64, 4, 4)
 }
 
+// TODO: Homogeneous conversion, homogeneous rotation matrices
 // TODO: Quaternion rotation
