@@ -44,7 +44,7 @@ func Transform3D(Tx, Ty, Tz float64) Matrix {
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,Tx,0,1,0,Ty,0,0, 1,Tz,0,0,0,1}, FLOAT64), FLOAT64, 4, 4)
 }
 
-func HomoRotate2D(angle float64) Matrix {
+func HomogRotate2D(angle float64) Matrix {
 	sin,cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, sin, cos, 0, 0,0,1}, FLOAT64), FLOAT64, 2, 2)
 }
@@ -53,7 +53,7 @@ func HomoRotate2D(angle float64) Matrix {
 // [1 0 0]
 // [0 c -s]
 // [0 s c ]
-func HomoRotate3DX(angle float64) Matrix {
+func HomogRotate3DX(angle float64) Matrix {
 	sin,cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,0, 0,cos, -sin, 0, 0, sin, cos, 0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
 }
@@ -62,7 +62,7 @@ func HomoRotate3DX(angle float64) Matrix {
 // [c 0 s]
 // [0 1 0]
 // [s 0 c ]
-func HomoRotate3DY(angle float64) Matrix {
+func HomogRotate3DY(angle float64) Matrix {
 	sin,cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,0,sin,0, 0,1,0,0, -sin,0,cos,0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
 }
@@ -71,7 +71,7 @@ func HomoRotate3DY(angle float64) Matrix {
 // [c -s 0]
 // [s c 0]
 // [0 0 1 ]
-func HomoRotate3DZ(angle float64) Matrix {
+func HomogRotate3DZ(angle float64) Matrix {
 	sin,cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,-sin,0,0, -sin,cos,0,0, 0,0,1,0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
 }

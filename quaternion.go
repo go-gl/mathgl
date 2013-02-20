@@ -67,7 +67,7 @@ func (q1 Quaternion) Equal(q2 Quaternion) bool {
 	return q1.w.Equal(q2.w) && q1.v.Equal(q2.v)
 }
 
-func (q Quaternion) ToHomoRotationMatrix() Matrix {
+func (q Quaternion) ToHomogRotationMatrix() Matrix {
 	if math.Abs(q.Len()) > 1e-7 {
 		return Matrix{}
 	}
