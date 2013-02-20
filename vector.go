@@ -333,7 +333,7 @@ func (v Vector) Size() int {
 
 // If possible, Normalize will return a normalized version of the current vector -- aka a unit vector or a vector of Length 1
 //
-// 	||v|| = 1/Len(v) * v = 1/sqrt(v.v) * v, or a vector multiplied with one divided by its magnitude
+// 	v = 1/Len(v) * v = 1/sqrt(v.v) * v, or a vector multiplied with one divided by its magnitude
 //
 // If this is not possible (i.e. v is the zero vector), it simply returns v. It also returns v if normalization isn't necessary (Len(v) already is 1)
 // This method works correctly on vectors of an integer type.
