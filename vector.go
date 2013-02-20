@@ -390,7 +390,7 @@ func (v1 Vector) Equal(v2 Vector) (eq bool) {
 // In any case, if v is a size-1 vector, it will be treated as a Scalar, and the function will return a Matrix as if it had been multiplied by v.AsScalar()
 // in the case m is a vector, it will returned converted to a row vector multiplied by AsScalar.
 //
-// No special privileges are given if m is 1x1
+// No special privileges are given if m is 1x1.
 //
 // The result will be the zero-type for a Matrix if any of the following conditions are met:
 // v and m's underlying VecTypes don't match
