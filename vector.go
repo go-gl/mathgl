@@ -37,7 +37,8 @@ The associated consts should be self explanatory, as they correspond to the actu
 type VecType int8
 
 const (
-	INT32 = iota + 1
+	NOTYPE = iota
+	INT32
 	UINT32
 	FLOAT32
 	FLOAT64
