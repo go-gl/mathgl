@@ -133,7 +133,7 @@ func (m1 Matrix) Equal(m2 Matrix) (eq bool) {
 }
 
 func (m Matrix) AsSlice() []Scalar {
-	dat := make([]Scalar,len(m.dat))
+	dat := make([]Scalar, len(m.dat))
 	copy(dat, m.dat)
 	return dat
 }
@@ -167,7 +167,7 @@ func (mat Matrix) AsVector() (v Vector) {
 		return v
 	}
 
-	vPoint,err := VectorOf(mat.dat, mat.typ)
+	vPoint, err := VectorOf(mat.dat, mat.typ)
 	if err != nil {
 		return v
 	}
@@ -268,7 +268,7 @@ func (m1 Matrix) Mul(m2 MatrixMultiplyable) (m3 Matrix) {
 		for i := 0; i < m; i++ { // Rows of m1 and m3
 			for k := 0; k < n; k++ { // Columns of m1, rows of m2
 				if dat[i*o+j] == nil {
-					dat[i*o+j] = MakeScalar(0,m1.typ)
+					dat[i*o+j] = MakeScalar(0, m1.typ)
 				}
 				dat[i*o+j] = dat[i*o+j].Add(m1.dat[i*n+k].Mul(indat[k*o+j])) // I think, needs testing
 			}
@@ -340,28 +340,27 @@ func (m1 Matrix) Det() (det float64) {
 	if m1.m == 2 {
 		return m1.dat[0].Fl64()*m1.dat[3].Fl64() - m1.dat[1].Fl64()*m1.dat[2].Fl64()
 	} else if m1.m == 3 {
-		return m1.dat[0].Fl64() * (m1.dat[4].Fl64() * m1.dat[8].Fl64() - m1.dat[5].Fl64() * m1.dat[7].Fl64()) - 
-			   m1.dat[1].Fl64() * (m1.dat[3].Fl64() * m1.dat[8].Fl64() - m1.dat[5].Fl64() * m1.dat[6].Fl64()) +
-			   m1.dat[2].Fl64() * (m1.dat[3].Fl64() * m1.dat[7].Fl64() - m1.dat[4].Fl64() * m1.dat[6].Fl64())
+		return m1.dat[0].Fl64()*(m1.dat[4].Fl64()*m1.dat[8].Fl64()-m1.dat[5].Fl64()*m1.dat[7].Fl64()) -
+			m1.dat[1].Fl64()*(m1.dat[3].Fl64()*m1.dat[8].Fl64()-m1.dat[5].Fl64()*m1.dat[6].Fl64()) +
+			m1.dat[2].Fl64()*(m1.dat[3].Fl64()*m1.dat[7].Fl64()-m1.dat[4].Fl64()*m1.dat[6].Fl64())
 	} else if m1.m == 4 {
-		return m1.dat[0].Fl64() * 
-									(m1.dat[5].Fl64() * (m1.dat[10].Fl64()*  m1.dat[15].Fl64() - m1.dat[14].Fl64() * m1.dat[11].Fl64())  -
-									 m1.dat[6].Fl64() * (m1.dat[9].Fl64() *  m1.dat[15].Fl64() - m1.dat[13].Fl64() * m1.dat[11].Fl64())  +
-									 m1.dat[7].Fl64() * (m1.dat[9].Fl64() *  m1.dat[14].Fl64() - m1.dat[13].Fl64() * m1.dat[10].Fl64())) -
-			   m1.dat[1].Fl64() *
-									(m1.dat[4].Fl64() * (m1.dat[10].Fl64() * m1.dat[15].Fl64() - m1.dat[14].Fl64() * m1.dat[11].Fl64())  -
-									 m1.dat[6].Fl64() * (m1.dat[8].Fl64() *  m1.dat[15].Fl64() - m1.dat[12].Fl64() * m1.dat[11].Fl64())  +
-									 m1.dat[7].Fl64() * (m1.dat[8].Fl64() *  m1.dat[14].Fl64() - m1.dat[12].Fl64() * m1.dat[10].Fl64())) +
-			   m1.dat[2].Fl64() *
-									(m1.dat[4].Fl64() * (m1.dat[9].Fl64() *  m1.dat[15].Fl64() - m1.dat[13].Fl64() * m1.dat[11].Fl64())  -
-									 m1.dat[5].Fl64() * (m1.dat[8].Fl64() *  m1.dat[15].Fl64() - m1.dat[12].Fl64() * m1.dat[11].Fl64())  +
-									 m1.dat[7].Fl64() * (m1.dat[8].Fl64() *  m1.dat[13].Fl64() - m1.dat[12].Fl64() * m1.dat[9].Fl64()))  -
-			   m1.dat[3].Fl64() *
-									(m1.dat[4].Fl64() * (m1.dat[9].Fl64() *  m1.dat[14].Fl64() - m1.dat[13].Fl64() * m1.dat[10].Fl64())  -
-									 m1.dat[5].Fl64() * (m1.dat[8].Fl64() *  m1.dat[14].Fl64() - m1.dat[12].Fl64() * m1.dat[10].Fl64())  +
-									 m1.dat[6].Fl64() * (m1.dat[8].Fl64() *  m1.dat[13].Fl64() - m1.dat[12].Fl64() * m1.dat[9].Fl64()))
+		return m1.dat[0].Fl64()*
+			(m1.dat[5].Fl64()*(m1.dat[10].Fl64()*m1.dat[15].Fl64()-m1.dat[14].Fl64()*m1.dat[11].Fl64())-
+				m1.dat[6].Fl64()*(m1.dat[9].Fl64()*m1.dat[15].Fl64()-m1.dat[13].Fl64()*m1.dat[11].Fl64())+
+				m1.dat[7].Fl64()*(m1.dat[9].Fl64()*m1.dat[14].Fl64()-m1.dat[13].Fl64()*m1.dat[10].Fl64())) -
+			m1.dat[1].Fl64()*
+				(m1.dat[4].Fl64()*(m1.dat[10].Fl64()*m1.dat[15].Fl64()-m1.dat[14].Fl64()*m1.dat[11].Fl64())-
+					m1.dat[6].Fl64()*(m1.dat[8].Fl64()*m1.dat[15].Fl64()-m1.dat[12].Fl64()*m1.dat[11].Fl64())+
+					m1.dat[7].Fl64()*(m1.dat[8].Fl64()*m1.dat[14].Fl64()-m1.dat[12].Fl64()*m1.dat[10].Fl64())) +
+			m1.dat[2].Fl64()*
+				(m1.dat[4].Fl64()*(m1.dat[9].Fl64()*m1.dat[15].Fl64()-m1.dat[13].Fl64()*m1.dat[11].Fl64())-
+					m1.dat[5].Fl64()*(m1.dat[8].Fl64()*m1.dat[15].Fl64()-m1.dat[12].Fl64()*m1.dat[11].Fl64())+
+					m1.dat[7].Fl64()*(m1.dat[8].Fl64()*m1.dat[13].Fl64()-m1.dat[12].Fl64()*m1.dat[9].Fl64())) -
+			m1.dat[3].Fl64()*
+				(m1.dat[4].Fl64()*(m1.dat[9].Fl64()*m1.dat[14].Fl64()-m1.dat[13].Fl64()*m1.dat[10].Fl64())-
+					m1.dat[5].Fl64()*(m1.dat[8].Fl64()*m1.dat[14].Fl64()-m1.dat[12].Fl64()*m1.dat[10].Fl64())+
+					m1.dat[6].Fl64()*(m1.dat[8].Fl64()*m1.dat[13].Fl64()-m1.dat[12].Fl64()*m1.dat[9].Fl64()))
 
-									 
 	}
 	for i := 0; i < m1.n; i++ {
 		det += m1.GetElement(i, 0).Fl64() * m1.cofactor(i, 0)

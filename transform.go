@@ -3,7 +3,7 @@ package mathgl
 import "math"
 
 func Rotate2D(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
+	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, sin, cos}, FLOAT64), FLOAT64, 2, 2)
 }
 
@@ -12,8 +12,8 @@ func Rotate2D(angle float64) Matrix {
 // [0 c -s]
 // [0 s c ]
 func Rotate3DX(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,0,cos, -sin, 0, sin, cos}, FLOAT64), FLOAT64, 3, 3)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1, 0, 0, 0, cos, -sin, 0, sin, cos}, FLOAT64), FLOAT64, 3, 3)
 }
 
 // Rotates around Y-axis
@@ -21,8 +21,8 @@ func Rotate3DX(angle float64) Matrix {
 // [0 1 0]
 // [s 0 c ]
 func Rotate3DY(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,0,sin,0,1, 0, -sin, 0, cos}, FLOAT64), FLOAT64, 3, 3)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, 0, sin, 0, 1, 0, -sin, 0, cos}, FLOAT64), FLOAT64, 3, 3)
 }
 
 // Rotates about Z-axis
@@ -30,23 +30,23 @@ func Rotate3DY(angle float64) Matrix {
 // [s c 0]
 // [0 0 1 ]
 func Rotate3DZ(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,-sin,0,-sin,cos,0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, -sin, cos, 0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
 }
 
 // Returns a 2D homogeneous (3x3) transformation matrix
 func Transform2D(Tx, Ty float64) Matrix {
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,Tx,0,1,Ty,0,0, 1}, FLOAT64), FLOAT64, 3, 3)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1, 0, Tx, 0, 1, Ty, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
 }
 
 // Returns a 3D homogeneous (4x4) transformation matrix
 func Transform3D(Tx, Ty, Tz float64) Matrix {
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,Tx,0,1,0,Ty,0,0, 1,Tz,0,0,0,1}, FLOAT64), FLOAT64, 4, 4)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1, 0, 0, Tx, 0, 1, 0, Ty, 0, 0, 1, Tz, 0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
 }
 
 func HomogRotate2D(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, sin, cos, 0, 0,0,1}, FLOAT64), FLOAT64, 2, 2)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, sin, cos, 0, 0, 0, 1}, FLOAT64), FLOAT64, 2, 2)
 }
 
 // Rotates about X-axis
@@ -54,8 +54,8 @@ func HomogRotate2D(angle float64) Matrix {
 // [0 c -s]
 // [0 s c ]
 func HomogRotate3DX(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1,0,0,0, 0,cos, -sin, 0, 0, sin, cos, 0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{1, 0, 0, 0, 0, cos, -sin, 0, 0, sin, cos, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
 }
 
 // Rotates around Y-axis
@@ -63,8 +63,8 @@ func HomogRotate3DX(angle float64) Matrix {
 // [0 1 0]
 // [s 0 c ]
 func HomogRotate3DY(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,0,sin,0, 0,1,0,0, -sin,0,cos,0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, 0, sin, 0, 0, 1, 0, 0, -sin, 0, cos, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
 }
 
 // Rotates about Z-axis
@@ -72,38 +72,37 @@ func HomogRotate3DY(angle float64) Matrix {
 // [s c 0]
 // [0 0 1 ]
 func HomogRotate3DZ(angle float64) Matrix {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos,-sin,0,0, -sin,cos,0,0, 0,0,1,0, 0,0,0,1}, FLOAT64), FLOAT64, 3, 3)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}, FLOAT64), FLOAT64, 3, 3)
 }
-
 
 // Note: Vector type must be FLOAT64
 func QuaternionRotation(angle float64, axis Vector) Quaternion {
 	if axis.typ != FLOAT64 {
 		return Quaternion{}
 	}
-	
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	return Quaternion{MakeScalar(cos/float64(2) , FLOAT64), axis.ScalarMul(MakeScalar(sin/float64(2), FLOAT64)), FLOAT64}
+
+	sin, cos := math.Sin(angle), math.Cos(angle)
+	return Quaternion{MakeScalar(cos/float64(2), FLOAT64), axis.ScalarMul(MakeScalar(sin/float64(2), FLOAT64)), FLOAT64}
 }
 
 func QuaternionRoll(angle float64) Quaternion {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	
-	v,_ := VectorOf(ScalarSlice([]interface{}{sin/2.0,0,0}, FLOAT64), FLOAT64)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+
+	v, _ := VectorOf(ScalarSlice([]interface{}{sin / 2.0, 0, 0}, FLOAT64), FLOAT64)
 	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
 }
 
 func QuaternionPitch(angle float64) Quaternion {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	
-	v,_ := VectorOf(ScalarSlice([]interface{}{0, sin/2.0,0}, FLOAT64), FLOAT64)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+
+	v, _ := VectorOf(ScalarSlice([]interface{}{0, sin / 2.0, 0}, FLOAT64), FLOAT64)
 	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
 }
 
 func QuaternionYaw(angle float64) Quaternion {
-	sin,cos := math.Sin(angle), math.Cos(angle)
-	
-	v,_ := VectorOf(ScalarSlice([]interface{}{0,0,sin/2.0}, FLOAT64), FLOAT64)
+	sin, cos := math.Sin(angle), math.Cos(angle)
+
+	v, _ := VectorOf(ScalarSlice([]interface{}{0, 0, sin / 2.0}, FLOAT64), FLOAT64)
 	return Quaternion{MakeScalar(cos/2.0, FLOAT64), *v, FLOAT64}
 }
