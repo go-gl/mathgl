@@ -1,7 +1,7 @@
 MathGL
 ======
 
-This is a Go matrix and vector math library intended for Open GL graphics capabilities. Hopefully to one day be good enough for inclusion with go-gl. Feedback is very welcome, especially API improvements, and pull requests are welcome. Benchmarks, more test cases, and example code (probably something like following an OpenGL tutorial) are definitely needed.
+This is a Go matrix and vector math library intended to ease Open GL graphics computations (especially since GLRotate and so on have become deprecated with OpenGL 3+). Hopefully to one day be good enough for inclusion with go-gl. Feedback is very welcome, especially API improvements, and pull requests are welcome. Benchmarks, more test cases, and example code (probably something like following an OpenGL tutorial) are definitely needed.
 
 # Documentation
 
