@@ -31,7 +31,7 @@ func FloatEqual(a, b float64) bool {
 func FloatEqualThreshold(a, b, epsilon float64) bool {
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
 		return true
-	} else if a*b == 0 { // If a or b are 0
+	} else if a*b == 0 { // If a or b is 0
 		return math.Abs(a-b) < epsilon*epsilon
 	}
 
