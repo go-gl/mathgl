@@ -31,7 +31,7 @@ func Perspective(fovy, aspect, near, far float64) Matrix {
 	return *mp
 }
 
-func Frustrum(left,right,bottom,top,near,far float64) Matrix {
+func Frustum(left,right,bottom,top,near,far float64) Matrix {
 	rml,tmb,fmn := (right-left),(top-bottom),(far-near)
 	A,B,C,D := (right+left)/rml, (top+bottom)/tmb, -(far+near)/fmn, (2*far*near)/fmn
 	
