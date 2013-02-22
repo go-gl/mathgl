@@ -119,6 +119,66 @@ func HomogRotate3DZ(angle float64) Matrix {
 		0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
 }
 
+func Scale3D(scaleX, scaleY, scaleZ float64) Matrix {
+	mp,_ := InferMatrixFromSlice([]interface{}{
+		scaleX, 0., 0., 0.,
+		0., scaleY, 0., 0.,
+		0., 0., scaleZ, 0.,
+		0., 0., 0., 1.}, 4, 4)
+	return *mp
+}
+
+func Scale2D(scaleX, scaleY float64) Matrix {
+	mp,_ := InferMatrixFromSlice([]interface{}{
+		scaleX, 0., 0.,
+		0., scaleY, 0.,
+		0., 0., 1,}, 3, 3)
+	return *mp
+}
+
+func ShearX2D(shear float64) Matrix {
+	mp,_ := InferMatrixFromSlice([]interface{}{
+		1., shear, 0.,
+		0., 1., 0.,
+		0., 0., 1,}, 3, 3)
+	return *mp
+}
+
+func ShearY2D(shear float64) Matrix {
+	mp,_ := InferMatrixFromSlice([]interface{}{
+		1., 0., 0.,
+		shear, 1., 0.,
+		0., 0., 1,}, 3, 3)
+	return *mp
+}
+
+func ScaleX3D(shear float64) Matrix {
+	mp,_ := InferMatrixFromSlice([]interface{}{
+		1., shear, shear, 0.,
+		0., 1., 0., 0.,
+		0., 0., 1., 0.,
+		0., 0., 0., 1.}, 4, 4)
+	return *mp
+}
+
+func ScaleY3D(shear float64) Matrix {
+	mp,_ := InferMatrixFromSlice([]interface{}{
+		1., 0., 0., 0.,
+		shear, 1., shear, 0.,
+		0., 0., 1., 0.,
+		0., 0., 0., 1.}, 4, 4)
+	return *mp
+}
+
+func ScaleZ3D(shear float64) Matrix {
+	mp,_ := InferMatrixFromSlice([]interface{}{
+		1., 0., 0., 0.,
+		0., 1., 0., 0.,
+		shear, shear, 1., 0.,
+		0., 0., 0., 1.}, 4, 4)
+	return *mp
+}
+
 // HomogRotate3D creates a 3D rotation Matrix of type FLOAT64 that rotates by (radian) angle about some arbitrary axis given by a Vector.
 // It produces a homogeneous matrix (4x4)
 //
