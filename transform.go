@@ -160,29 +160,29 @@ func ShearY2D(shear float64) Matrix {
 	return *mp
 }
 
-func ScaleX3D(shear float64) Matrix {
+func ShearX3D(shearY, shearZ float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
-		1., shear, shear, 0.,
-		0., 1., 0., 0.,
-		0., 0., 1., 0.,
+		1., 0., 0., 0.,
+		shearY, 1., 0., 0.,
+		shearZ, 0., 1., 0.,
 		0., 0., 0., 1.}, 4, 4)
 	return *mp
 }
 
-func ScaleY3D(shear float64) Matrix {
+func ShearY3D(shearX, shearZ float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
-		1., 0., 0., 0.,
-		shear, 1., shear, 0.,
-		0., 0., 1., 0.,
+		1., shearX, 0., 0.,
+		0., 1., 0., 0.,
+		0., shearZ, 1., 0.,
 		0., 0., 0., 1.}, 4, 4)
 	return *mp
 }
 
-func ScaleZ3D(shear float64) Matrix {
+func ShearZ3D(shearX, shearY float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
-		1., 0., 0., 0.,
-		0., 1., 0., 0.,
-		shear, shear, 1., 0.,
+		1., 0., shearX, 0.,
+		0., 1., shearY, 0.,
+		0., 0., 1., 0.,
 		0., 0., 0., 1.}, 4, 4)
 	return *mp
 }
