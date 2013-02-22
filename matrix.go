@@ -561,7 +561,6 @@ func (m Matrix) floatScale(c float64) Matrix {
 // thus the user must cast the result to the correct type
 //
 // The array returned, as with the underlying slice, is in Row Major Order. If this doesn't work for you, call AsArray on the Matrix's transpose.
-// This function is useful for passing into OpenGL functions that take arrays
 //
 // It returns nil should the matrix have more than four rows or columns.
 func (m Matrix) AsArray(typ VecType) interface{} {
