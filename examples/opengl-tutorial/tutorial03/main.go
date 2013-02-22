@@ -52,7 +52,8 @@ func main() {
 	//View := mathgl.Identity(4,mathgl.FLOAT64)
 
 	Model := mathgl.Identity(4,mathgl.FLOAT64)
-	MVP := Projection.Mul(View).Mul(Model)
+	//Model := mathgl.Scale3D(2.,2.,2.).Mul(mathgl.HomogRotate3DX(25.0)).Mul(mathgl.Translate3D(.5,.2,-.7))
+	MVP := Projection.Mul(View).Mul(Model) // Remember, transform multiplication order is "backwards"
 	mvpArray := MVP.AsCMOArray(mathgl.FLOAT32).([16]float32) // OpenGL likes CMO
 	
 	vBufferData := [...]float32{
