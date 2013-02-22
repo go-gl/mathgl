@@ -27,7 +27,7 @@ func main() {
 	
 
 	
-	gl.Init() // Can't find gl.GLEW_OKAY or any variation, not sure how to check if this worked
+	gl.Init() // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	
 	glfw.SetWindowTitle("Tutorial 01")
 	glfw.Enable(glfw.StickyKeys)
@@ -39,5 +39,4 @@ func main() {
 		glfw.SwapBuffers()
 	}
 	
-	glfw.Terminate()
 }

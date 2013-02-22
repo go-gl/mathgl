@@ -360,3 +360,48 @@ func ScalarSlice(slice []interface{}, typ VecType) (out []Scalar) {
 
 	return out
 }
+
+func InferScalar(num interface{}) (Scalar,VecType) {
+	if n,ok := num.(float64); ok {
+		return ScalarFloat64(n), FLOAT64
+	} else if n,ok := num.(float32); ok {
+		return ScalarFloat32(n), FLOAT32
+	} else if n,ok := num.(int); ok {
+		return ScalarInt32(n), INT32
+	} else if n,ok := num.(int32); ok {
+		return ScalarInt32(n), INT32
+	} else if n,ok := num.(uint32); ok {
+		return ScalarUint32(n), UINT32
+	}
+	
+	return nil,NOTYPE
+}
+
+func InferScalarSlice(slice []interface{}) (out []Scalar,typ VecType) {
+	out = make([]Scalar, len(slice))
+	
+	initial,typ := InferScalar(slice[0])
+	out[0] = initial
+	for i,el := range slice[1:] {
+		out[i+1] = MakeScalar(el,typ)
+		if out[i+1] == nil {
+			return nil, NOTYPE
+		}
+	}
+
+	return out, typ
+}
+
+func ScalarType(scalar Scalar) VecType {
+	if _,ok := scalar.(ScalarFloat64); ok {
+		return FLOAT64
+	} else if _,ok := scalar.(ScalarFloat32); ok {
+		return FLOAT32
+	} else if _,ok := scalar.(ScalarInt32); ok {
+		return INT32
+	} else if _,ok := scalar.(ScalarUint32); ok {
+		return UINT32
+	}
+	
+	return NOTYPE
+}

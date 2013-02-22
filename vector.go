@@ -71,6 +71,11 @@ func VectorOf(el []Scalar, t VecType) (v *Vector, err error) {
 	return &Vector{t, el}, nil
 }
 
+func InferVectorOf(el []interface{}) (v *Vector, err error) {
+	in,typ := InferScalarSlice(el)
+	return VectorOf(in, typ)
+}
+
 // AddElements adds all the elements of the slice el to the vector in-place (as in, it modified the vector)
 // It returns an error iff any element of el does not match v's type. In this scenario, the vector is not altered
 func (v *Vector) AddElements(el []Scalar) error {

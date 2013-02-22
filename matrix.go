@@ -48,6 +48,39 @@ func Identity(size int, typ VecType) Matrix {
 	return *unsafeMatrixFromSlice(dat, typ, size, size)
 }
 
+func InferMatrixFromCols(el [][]interface{}) (mat *Matrix, err error) {
+	in := make([][]Scalar, len(el))
+	initial,typ := InferScalarSlice(el[0])
+	in[0] = initial
+	for i,sl := range el[1:] {
+		tmp,typ2 := InferScalarSlice(sl)
+		if typ != typ2 {
+			return nil,errors.New("Types didn't match")
+		}
+		in[i+1] = tmp
+	}
+	return unsafeMatrixFromCols(in,typ), nil
+}
+
+func InferMatrixFromRows(el [][]interface{}) (mat *Matrix, err error) {
+	in := make([][]Scalar, len(el))
+	initial,typ := InferScalarSlice(el[0])
+	in[0] = initial
+	for i,sl := range el[1:] {
+		tmp,typ2 := InferScalarSlice(sl)
+		if typ != typ2 {
+			return nil,errors.New("Types didn't match")
+		}
+		in[i+1] = tmp
+	}
+	return unsafeMatrixFromRows(in,typ), nil
+}
+
+func InferMatrixFromSlice(el []interface{}, m,n int) (mat *Matrix, err error) {
+	in,typ := InferScalarSlice(el)
+	return unsafeMatrixFromSlice(in, typ, m, n), nil
+}
+
 // MatrixFromCols takes in a slice of matrix columns (represented as slices of Scalars). m and n are inferred from the sizes of the slice
 // For instance:
 //
@@ -78,6 +111,23 @@ func MatrixFromCols(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	return mat, nil
 }
 
+func unsafeMatrixFromCols(el [][]Scalar, typ VecType) (mat *Matrix) {
+	mat = &Matrix{}
+	mat.typ = typ
+
+	mat.n = len(el)
+	mat.m = len(el[0])
+	mat.dat = make([]Scalar, mat.m*mat.n)
+
+	for i := 0; i < mat.m; i++ {
+		for j := 0; j < mat.n; j++ {
+			mat.dat[i*mat.n+j] = el[j][i]
+		}
+	}
+
+	return mat
+}
+
 // MatrixFromRows is MatrixFromCols, except is takes a slice of matrix columns (as Scalar slices), and makes them a matrix. m and n are inferred
 // For instance:
 //
@@ -106,6 +156,23 @@ func MatrixFromRows(el [][]Scalar, typ VecType) (mat *Matrix, err error) {
 	}
 
 	return mat, nil
+}
+
+func unsafeMatrixFromRows(el [][]Scalar, typ VecType) (mat *Matrix) {
+	mat = &Matrix{}
+	mat.typ = typ
+
+	mat.m = len(el)
+	mat.n = len(el[0])
+	mat.dat = make([]Scalar, mat.m*mat.n)
+
+	for i := 0; i < mat.m; i++ {
+		for j := 0; j < mat.n; j++ {
+			mat.dat[i*mat.n+j] = el[i][j]
+		}
+	}
+
+	return mat
 }
 
 // MatrixFromSlice takes in a slice of scalars, a type-checking argument, and its dimensions and gives a pointer to a Matrix
@@ -497,12 +564,12 @@ func (m Matrix) floatScale(c float64) Matrix {
 // This function is useful for passing into OpenGL functions that take arrays
 //
 // It returns nil should the matrix have more than four rows or columns.
-func (m Matrix) AsArray() interface{} {
+func (m Matrix) AsArray(typ VecType) interface{} {
 	if m.n < 1 || m.m < 1 || m.m > 4 || m.n > 4 {
 		return nil
 	}
 
-	switch m.typ {
+	switch typ {
 	case INT32:
 		switch m.m * m.n {
 		case 1:
