@@ -536,7 +536,7 @@ func (m Matrix) Transpose() Matrix {
 //
 // That is, the inverse is one divided by the determinant times the matrix's transpose.
 //
-// In the case your determinant is Zero (also known as "being non-Singular"), or you have a non-square Matrix
+// In the case your determinant is Zero (also known as "being Singular"), or you have a non-square Matrix
 // it will return the zero type.
 func (m Matrix) Inverse() (m2 Matrix) {
 	det := m.Det()
