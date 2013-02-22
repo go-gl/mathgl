@@ -46,10 +46,14 @@ func main() {
 	matrixID := prog.GetUniformLocation("MVP")
 	
 	Projection := mathgl.Perspective(45.0, 4.0/3.0, 0.1, 100.0)
+	//Projection := mathgl.Identity(4,mathgl.FLOAT64)
+	//Projection := mathgl.Ortho2D(-5,5,-5,5)
 	View := mathgl.LookAt(4.0,3.0,3.0, 0.0,0.0,0.0, 0.0,1.0,0.0)
+	//View := mathgl.Identity(4,mathgl.FLOAT64)
+
 	Model := mathgl.Identity(4,mathgl.FLOAT64)
 	MVP := Projection.Mul(View).Mul(Model)
-	mvpArray := MVP.AsArray(mathgl.FLOAT32).([16]float32)
+	mvpArray := MVP.AsCMOArray(mathgl.FLOAT32).([16]float32) // OpenGL likes CMO
 	
 	vBufferData := [...]float32{
 		-1., -1., 0.,

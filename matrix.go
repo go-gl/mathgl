@@ -670,6 +670,113 @@ func (m Matrix) AsArray(typ VecType) interface{} {
 	return nil
 }
 
+func (m Matrix) AsCMOArray(typ VecType) interface{} {
+	if m.n < 1 || m.m < 1 || m.m > 4 || m.n > 4 {
+		return nil
+	}
+	m = m.Transpose() // TODO: Spell out the CMO literally if benchmarks prove this too slow
+
+	switch typ {
+	case INT32:
+		switch m.m * m.n {
+		case 1:
+			return [1]int32{m.dat[0].Int32()}
+		case 2:
+			return [2]int32{m.dat[0].Int32(), m.dat[1].Int32()}
+		case 3:
+			return [3]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32()}
+		case 4:
+			return [4]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32(), m.dat[3].Int32()}
+		case 6:
+			return [6]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32(), m.dat[3].Int32(), m.dat[4].Int32(), m.dat[5].Int32()}
+		case 8:
+			return [8]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32(), m.dat[3].Int32(), m.dat[4].Int32(), m.dat[5].Int32(), m.dat[6].Int32(), m.dat[7].Int32()}
+		case 9:
+			return [9]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32(), m.dat[3].Int32(), m.dat[4].Int32(), m.dat[5].Int32(), m.dat[6].Int32(), m.dat[7].Int32(), m.dat[8].Int32()}
+		case 12:
+			return [12]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32(), m.dat[3].Int32(), m.dat[4].Int32(), m.dat[5].Int32(), m.dat[6].Int32(), m.dat[7].Int32(), m.dat[8].Int32(),
+				m.dat[9].Int32(), m.dat[10].Int32(), m.dat[11].Int32()}
+		case 16:
+			return [16]int32{m.dat[0].Int32(), m.dat[1].Int32(), m.dat[2].Int32(), m.dat[3].Int32(), m.dat[4].Int32(), m.dat[5].Int32(), m.dat[6].Int32(), m.dat[7].Int32(), m.dat[8].Int32(),
+				m.dat[9].Int32(), m.dat[10].Int32(), m.dat[11].Int32(), m.dat[12].Int32(), m.dat[13].Int32(), m.dat[14].Int32(), m.dat[15].Int32()}
+		}
+
+	case UINT32:
+		switch m.m * m.n {
+		case 1:
+			return [1]uint32{m.dat[0].Uint32()}
+		case 2:
+			return [2]uint32{m.dat[0].Uint32(), m.dat[1].Uint32()}
+		case 3:
+			return [3]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32()}
+		case 4:
+			return [4]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32(), m.dat[3].Uint32()}
+		case 6:
+			return [6]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32(), m.dat[3].Uint32(), m.dat[4].Uint32(), m.dat[5].Uint32()}
+		case 8:
+			return [8]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32(), m.dat[3].Uint32(), m.dat[4].Uint32(), m.dat[5].Uint32(), m.dat[6].Uint32(), m.dat[7].Uint32()}
+		case 9:
+			return [9]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32(), m.dat[3].Uint32(), m.dat[4].Uint32(), m.dat[5].Uint32(), m.dat[6].Uint32(), m.dat[7].Uint32(), m.dat[8].Uint32()}
+		case 12:
+			return [12]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32(), m.dat[3].Uint32(), m.dat[4].Uint32(), m.dat[5].Uint32(), m.dat[6].Uint32(), m.dat[7].Uint32(), m.dat[8].Uint32(),
+				m.dat[9].Uint32(), m.dat[10].Uint32(), m.dat[11].Uint32()}
+		case 16:
+			return [16]uint32{m.dat[0].Uint32(), m.dat[1].Uint32(), m.dat[2].Uint32(), m.dat[3].Uint32(), m.dat[4].Uint32(), m.dat[5].Uint32(), m.dat[6].Uint32(), m.dat[7].Uint32(), m.dat[8].Uint32(),
+				m.dat[9].Uint32(), m.dat[10].Uint32(), m.dat[11].Uint32(), m.dat[12].Uint32(), m.dat[13].Uint32(), m.dat[14].Uint32(), m.dat[15].Uint32()}
+		}
+
+	case FLOAT32:
+		switch m.m * m.n {
+		case 1:
+			return [1]float32{m.dat[0].Fl32()}
+		case 2:
+			return [2]float32{m.dat[0].Fl32(), m.dat[1].Fl32()}
+		case 3:
+			return [3]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32()}
+		case 4:
+			return [4]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32(), m.dat[3].Fl32()}
+		case 6:
+			return [6]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32(), m.dat[3].Fl32(), m.dat[4].Fl32(), m.dat[5].Fl32()}
+		case 8:
+			return [8]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32(), m.dat[3].Fl32(), m.dat[4].Fl32(), m.dat[5].Fl32(), m.dat[6].Fl32(), m.dat[7].Fl32()}
+		case 9:
+			return [9]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32(), m.dat[3].Fl32(), m.dat[4].Fl32(), m.dat[5].Fl32(), m.dat[6].Fl32(), m.dat[7].Fl32(), m.dat[8].Fl32()}
+		case 12:
+			return [12]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32(), m.dat[3].Fl32(), m.dat[4].Fl32(), m.dat[5].Fl32(), m.dat[6].Fl32(), m.dat[7].Fl32(), m.dat[8].Fl32(),
+				m.dat[9].Fl32(), m.dat[10].Fl32(), m.dat[11].Fl32()}
+		case 16:
+			return [16]float32{m.dat[0].Fl32(), m.dat[1].Fl32(), m.dat[2].Fl32(), m.dat[3].Fl32(), m.dat[4].Fl32(), m.dat[5].Fl32(), m.dat[6].Fl32(), m.dat[7].Fl32(), m.dat[8].Fl32(),
+				m.dat[9].Fl32(), m.dat[10].Fl32(), m.dat[11].Fl32(), m.dat[12].Fl32(), m.dat[13].Fl32(), m.dat[14].Fl32(), m.dat[15].Fl32()}
+		}
+
+	case FLOAT64:
+		switch m.m * m.n {
+		case 1:
+			return [1]float64{m.dat[0].Fl64()}
+		case 2:
+			return [2]float64{m.dat[0].Fl64(), m.dat[1].Fl64()}
+		case 3:
+			return [3]float64{m.dat[0].Fl64(), m.dat[1].Fl64(), m.dat[2].Fl64()}
+		case 4:
+			return [4]float64{m.dat[0].Fl64(), m.dat[1].Fl64(), m.dat[2].Fl64(), m.dat[3].Fl64()}
+		case 6:
+			return [6]float64{m.dat[0].Fl64(), m.dat[1].Fl64(), m.dat[2].Fl64(), m.dat[3].Fl64(), m.dat[4].Fl64(), m.dat[5].Fl64()}
+		case 8:
+			return [8]float64{m.dat[0].Fl64(), m.dat[1].Fl64(), m.dat[2].Fl64(), m.dat[3].Fl64(), m.dat[4].Fl64(), m.dat[5].Fl64(), m.dat[6].Fl64(), m.dat[7].Fl64()}
+		case 9:
+			return [9]float64{m.dat[0].Fl64(), m.dat[1].Fl64(), m.dat[2].Fl64(), m.dat[3].Fl64(), m.dat[4].Fl64(), m.dat[5].Fl64(), m.dat[6].Fl64(), m.dat[7].Fl64(), m.dat[8].Fl64()}
+		case 12:
+			return [12]float64{m.dat[0].Fl64(), m.dat[1].Fl64(), m.dat[2].Fl64(), m.dat[3].Fl64(), m.dat[4].Fl64(), m.dat[5].Fl64(), m.dat[6].Fl64(), m.dat[7].Fl64(), m.dat[8].Fl64(),
+				m.dat[9].Fl64(), m.dat[10].Fl64(), m.dat[11].Fl64()}
+		case 16:
+			return [16]float64{m.dat[0].Fl64(), m.dat[1].Fl64(), m.dat[2].Fl64(), m.dat[3].Fl64(), m.dat[4].Fl64(), m.dat[5].Fl64(), m.dat[6].Fl64(), m.dat[7].Fl64(), m.dat[8].Fl64(),
+				m.dat[9].Fl64(), m.dat[10].Fl64(), m.dat[11].Fl64(), m.dat[12].Fl64(), m.dat[13].Fl64(), m.dat[14].Fl64(), m.dat[15].Fl64()}
+		}
+	}
+
+	return nil
+}
+
 // Unexported because it may be buggy
 func (m1 Matrix) cofactor(i, j int) float64 {
 	return math.Pow(float64(-1), float64(i+j)) * m1.minorMatrix(i, j).Det() // C^(i,j) * Minor(i,j)

@@ -67,9 +67,11 @@ func LookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ float64) 
 	o,_ := InferScalar(1.0 )
 	
 	
-	return  *unsafeMatrixFromSlice([]Scalar{
+	M :=  *unsafeMatrixFromSlice([]Scalar{
 		ss[0], ss[1], ss[2], z,
 		us[0], us[1], us[2], z,
 		fs[0], fs[1], fs[2], z,
 		z, z, z, o}, FLOAT64, 4, 4)
+
+	return M.Mul(Translate3D(-eyeX,-eyeY,-eyeZ))
 }
