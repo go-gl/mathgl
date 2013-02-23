@@ -27,8 +27,7 @@ func main() {
 		return
 	}
 
-	// glewExperimental=true ?
-	gl.Init() // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
+	gl.Init()
 
 	glfw.SetWindowTitle("Tutorial 04")
 
