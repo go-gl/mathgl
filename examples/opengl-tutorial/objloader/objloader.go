@@ -20,7 +20,6 @@ func LoadObject(fname string) *MeshObject {
 	defer file.Close()
 
 	reader := bufio.NewReader(file)
-	obj := &MeshObject{make([]float32,0),make([]float32,0),make([]float32,0) }
 
 	vertices, uvs, normals :=  make([][3]float32,0),make([][2]float32,0),make([][3]float32,0)
 	vIndices, uvIndices, nIndices := make([]uint,0), make([]uint,0), make([]uint,0)
@@ -59,6 +58,7 @@ func LoadObject(fname string) *MeshObject {
 		}
 	}
 
+	obj := &MeshObject{make([]float32,0,len(vIndices)*3),make([]float32,0,len(uvIndices)*2),make([]float32,0,len(nIndices)*3) }
 	for i := range vIndices {
 		vIndex, uvIndex, nIndex := vIndices[i], uvIndices[i], nIndices[i]
 
