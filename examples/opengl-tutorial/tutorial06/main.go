@@ -1,9 +1,9 @@
 package main
 
-
 import (
 	"fmt"
 	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	"github.com/go-gl/glh"
@@ -36,10 +36,17 @@ func main() {
 	glfw.SetWindowTitle("Tutorial 05")
 
 	glfw.Enable(glfw.StickyKeys)
+	glfw.Disable(glfw.MouseCursor) // Not in the original tutorial, but IMO it SHOULD be there
+	glfw.SetMousePos(1024.0/2.0, 760.0/2.0)
+
 	gl.ClearColor(0., 0., 0.4, 0.)
 
 	gl.Enable(gl.DEPTH_TEST)
 	gl.DepthFunc(gl.LESS)
+
+	gl.Enable(gl.CULL_FACE)
+
+	camera := input.NewCamera()
 
 	vertexArray := gl.GenVertexArray()
 	defer vertexArray.Delete()
@@ -49,15 +56,6 @@ func main() {
 	defer prog.Delete()
 
 	matrixID := prog.GetUniformLocation("MVP")
-
-	Projection := mathgl.Perspective(45.0, 4.0/3.0, 0.1, 100.0)
-
-	View := mathgl.LookAt(4.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-
-	Model := mathgl.Identity(4, mathgl.FLOAT64)
-
-	MVP := Projection.Mul(View).Mul(Model)                   // Remember, transform multiplication order is "backwards"
-	mvpArray := MVP.AsCMOArray(mathgl.FLOAT32).([16]float32) // OpenGL likes CMO
 
 	texture := MakeTextureFromTGA("uvtemplate.tga")
 	defer texture.Delete()
@@ -150,12 +148,18 @@ func main() {
 	gl.BufferData(gl.ARRAY_BUFFER, len(uvBufferData)*4, &uvBufferData, gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
-	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE) {
+	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
 		func() {
 			gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 			prog.Use()
 			defer gl.ProgramUnuse()
+
+			view, proj := camera.ComputeViewPerspective()
+			model := mathgl.Identity(4, mathgl.FLOAT64)
+
+			mvp := proj.Mul(view).Mul(model)
+			mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
 
 			matrixID.UniformMatrix4fv(false, mvpArray)
 
