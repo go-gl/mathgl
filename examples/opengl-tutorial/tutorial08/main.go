@@ -35,7 +35,7 @@ func main() {
 
 	glfw.SetSwapInterval(0)
 
-	gl.GlewExperimental(true)
+	//gl.GlewExperimental(true)
 	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
 
@@ -71,26 +71,27 @@ func main() {
 
 	meshObj := objloader.LoadObject("suzanne.obj")
 	vertices, uvs, normals := meshObj.Vertices, meshObj.UVs, meshObj.Normals
-
+	
+	// Try copying this block around and deleting the "*3" part in the buffer data
+	// it will suddenly work after normBuffer, and be strange in a DIFFERENT way after uvBuffer
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	
 	// I'm going to be honest. I have ABSOLUTELY NO IDEA why it's len*3*4 instead of just len*4
 	// the vertices slice is flat, NOT a slice of arrays. This is really, incredibly weird
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*3*4, &vertices[0], gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices) * 4, vertices, gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
 	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*2*4, &uvs[0], gl.STATIC_DRAW)
+	// And yet, the weird length stuff doesn't seem to matter for UV or normal
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
 
 	normBuffer := gl.GenBuffer()
 	defer normBuffer.Delete()
 	normBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(normals)*3*4, &normals[0], gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(normals)*4, normals, gl.STATIC_DRAW)
 
-	prog.Use()
 	lightID := prog.GetUniformLocation("LightPosition_worldspace")
 
 	// Equivalent to a do... while

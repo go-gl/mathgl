@@ -35,7 +35,7 @@ func main() {
 
 	glfw.SetSwapInterval(0)
 
-	gl.GlewExperimental(true)
+	//gl.GlewExperimental(true)
 	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
 
@@ -67,20 +67,21 @@ func main() {
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
-	meshObj := objloader.LoadObject("cube.obj")
+	meshObj := objloader.LoadObject("suzanne.obj")
 	vertices, uvs := meshObj.Vertices, meshObj.UVs
 
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	// I'm going to be honest. I have ABSOLUTELY NO IDEA why it's len*5*4 instead of just len*4
+	// I'm going to be honest. I have ABSOLUTELY NO IDEA why it's len*3*4 instead of just len*4
 	// This is the weirdest bug ever
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*5*4, &vertices[0], gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, &vertices[0], gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
 	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*5*4, &uvs[0], gl.STATIC_DRAW)
+	// UV doesn't seem to care
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
 	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
