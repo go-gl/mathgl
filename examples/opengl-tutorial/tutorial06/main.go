@@ -40,7 +40,7 @@ func main() {
 
 	glfw.Enable(glfw.StickyKeys)
 	glfw.Disable(glfw.MouseCursor) // Not in the original tutorial, but IMO it SHOULD be there
-	glfw.SetMousePos(1024.0/2.0, 760.0/2.0)
+	glfw.SetMousePos(1024.0/2.0, 768.0/2.0)
 
 	gl.ClearColor(0., 0., 0.4, 0.)
 

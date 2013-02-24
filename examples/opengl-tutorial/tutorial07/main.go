@@ -35,15 +35,15 @@ func main() {
 
 	glfw.SetSwapInterval(0)
 
+	gl.GlewExperimental(true)
 	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
-	// With go-gl we also apparently can't set glewExperimental
 
 	glfw.SetWindowTitle("Tutorial 07")
 
 	glfw.Enable(glfw.StickyKeys)
 	glfw.Disable(glfw.MouseCursor) // Not in the original tutorial, but IMO it SHOULD be there
-	glfw.SetMousePos(1024.0/2.0, 760.0/2.0)
+	glfw.SetMousePos(1024.0/2.0, 768.0/2.0)
 
 	gl.ClearColor(0., 0., 0.4, 0.)
 
@@ -63,7 +63,7 @@ func main() {
 
 	matrixID := prog.GetUniformLocation("MVP")
 
-	texture := MakeTextureFromTGA("uvmap.tga")
+	texture := MakeTextureFromTGA("uvmap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
