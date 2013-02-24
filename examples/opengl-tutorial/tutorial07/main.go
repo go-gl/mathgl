@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"github.com/Jragonmiris/mathgl"
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	"github.com/go-gl/glh"
+	/*	"encoding/binary"
+		"bytes"
+		"bufio"*/
 	"io/ioutil"
 	"os"
 )
@@ -31,12 +35,11 @@ func main() {
 
 	glfw.SetSwapInterval(0)
 
-	gl.GlewExperimental(true)
 	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
-	// With go-gl we also apparently can't set glewExpe6rimental
+	// With go-gl we also apparently can't set glewExperimental
 
-	glfw.SetWindowTitle("Tutorial 05")
+	glfw.SetWindowTitle("Tutorial 07")
 
 	glfw.Enable(glfw.StickyKeys)
 	glfw.Disable(glfw.MouseCursor) // Not in the original tutorial, but IMO it SHOULD be there
@@ -60,95 +63,24 @@ func main() {
 
 	matrixID := prog.GetUniformLocation("MVP")
 
-	texture := MakeTextureFromTGA("uvtemplate.tga")
+	texture := MakeTextureFromTGA("uvmap.tga")
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
-	vBufferData := [...]float32{
-		-1.0, -1.0, -1.0,
-		-1.0, -1.0, 1.0,
-		-1.0, 1.0, 1.0,
-		1.0, 1.0, -1.0,
-		-1.0, -1.0, -1.0,
-		-1.0, 1.0, -1.0,
-		1.0, -1.0, 1.0,
-		-1.0, -1.0, -1.0,
-		1.0, -1.0, -1.0,
-		1.0, 1.0, -1.0,
-		1.0, -1.0, -1.0,
-		-1.0, -1.0, -1.0,
-		-1.0, -1.0, -1.0,
-		-1.0, 1.0, 1.0,
-		-1.0, 1.0, -1.0,
-		1.0, -1.0, 1.0,
-		-1.0, -1.0, 1.0,
-		-1.0, -1.0, -1.0,
-		-1.0, 1.0, 1.0,
-		-1.0, -1.0, 1.0,
-		1.0, -1.0, 1.0,
-		1.0, 1.0, 1.0,
-		1.0, -1.0, -1.0,
-		1.0, 1.0, -1.0,
-		1.0, -1.0, -1.0,
-		1.0, 1.0, 1.0,
-		1.0, -1.0, 1.0,
-		1.0, 1.0, 1.0,
-		1.0, 1.0, -1.0,
-		-1.0, 1.0, -1.0,
-		1.0, 1.0, 1.0,
-		-1.0, 1.0, -1.0,
-		-1.0, 1.0, 1.0,
-		1.0, 1.0, 1.0,
-		-1.0, 1.0, 1.0,
-		1.0, -1.0, 1.0}
-
-	uvBufferData := [...]float32{
-		0.000059, 1.0 - 0.000004,
-		0.000103, 1.0 - 0.336048,
-		0.335973, 1.0 - 0.335903,
-		1.000023, 1.0 - 0.000013,
-		0.667979, 1.0 - 0.335851,
-		0.999958, 1.0 - 0.336064,
-		0.667979, 1.0 - 0.335851,
-		0.336024, 1.0 - 0.671877,
-		0.667969, 1.0 - 0.671889,
-		1.000023, 1.0 - 0.000013,
-		0.668104, 1.0 - 0.000013,
-		0.667979, 1.0 - 0.335851,
-		0.000059, 1.0 - 0.000004,
-		0.335973, 1.0 - 0.335903,
-		0.336098, 1.0 - 0.000071,
-		0.667979, 1.0 - 0.335851,
-		0.335973, 1.0 - 0.335903,
-		0.336024, 1.0 - 0.671877,
-		1.000004, 1.0 - 0.671847,
-		0.999958, 1.0 - 0.336064,
-		0.667979, 1.0 - 0.335851,
-		0.668104, 1.0 - 0.000013,
-		0.335973, 1.0 - 0.335903,
-		0.667979, 1.0 - 0.335851,
-		0.335973, 1.0 - 0.335903,
-		0.668104, 1.0 - 0.000013,
-		0.336098, 1.0 - 0.000071,
-		0.000103, 1.0 - 0.336048,
-		0.000004, 1.0 - 0.671870,
-		0.336024, 1.0 - 0.671877,
-		0.000103, 1.0 - 0.336048,
-		0.336024, 1.0 - 0.671877,
-		0.335973, 1.0 - 0.335903,
-		0.667969, 1.0 - 0.671889,
-		1.000004, 1.0 - 0.671847,
-		0.667979, 1.0 - 0.335851}
+	meshObj := objloader.LoadObject("cube.obj")
+	vertices, uvs := meshObj.Vertices, meshObj.UVs
 
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vBufferData)*4, &vBufferData, gl.STATIC_DRAW)
+	// &vertices[0] because a slice isn't like an array, it has len/cap header data. You need the pointer to the first elements
+	// since after that all the pieces are GUARANTEED to be laid out contiguously
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, &vertices[0], gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
 	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvBufferData)*4, &uvBufferData, gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, &uvs[0], gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
 	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
@@ -185,7 +117,7 @@ func main() {
 			defer uvBuffer.Unbind(gl.ARRAY_BUFFER)
 			uvAttrib.AttribPointer(2, gl.FLOAT, false, 0, nil)
 
-			gl.DrawArrays(gl.TRIANGLES, 0, 12*3)
+			gl.DrawArrays(gl.TRIANGLES, 0, len(vertices))
 
 			glfw.SwapBuffers()
 		}() // Defers unbinds and disables to here, end of the loop
@@ -222,3 +154,88 @@ func MakeTextureFromTGA(fname string) gl.Texture {
 
 	return tex
 }
+
+/*func MakeTextureFromDDS(fname string) gl.Texture {
+	var header [124]byte
+	file, err := os.Open(fname)
+	defer file.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	reader := bufio.NewReader(file)
+
+	var code [4]byte
+	reader.Read(&code)
+	if string(code) != "DDS " {
+		panic("File code not correct")
+	}
+
+	reader.Read(&header)
+
+	var height, width, linearSize, mipMapCount uint32
+	var fourcc [4]byte
+
+	buf := bytes.NewBuffer(header[8:12])
+	binary.Read(buf, binary.BigEndian, &height)
+
+	buf := bytes.NewBuffer(header[12:16])
+	binary.Read(buf, binary.BigEndian, &width)
+
+	buf := bytes.NewBuffer(header[16:20])
+	binary.Read(buf, binary.BigEndian, &linearSize)
+
+	buf := bytes.NewBuffer(header[24:28])
+	binary.Read(buf, binary.BigEndian, &mipMapCount)
+
+	buf := bytes.NewBuffer(header[80:84])
+	binary.Read(buf, binary.BigEndian, &fourCC)
+
+	var bufSize
+	if mipMapCount > 1 {
+		bufSize = linearSize * 2
+	} else {
+		bufSize = linearSize
+	}
+
+	buffer := make([]byte, bufSize)
+	reader.Read(&buffer)
+
+	var components uint32
+	var format gl.GLEnum
+	if string(fourcc) == "DXT1" {
+		components = 3
+	} else {
+		components = 4
+	}
+
+	switch string(fourcc) {
+	case "DXT1":
+		format = gl.COMPRESSED_RGBA_S3TC_DXT1_EXT
+	case "DXT3":
+		format = gl.COMPRESSED_RGBA_S3TC_DXT3_EXT
+	case "DXT5":
+		format = gl.COMPRESSED_RGBA_S3TC_DXT5_EXT
+	default:
+		panic("No recognized DXT code")
+	}
+
+	tex := gl.GenTexture()
+
+	tex.Bind(gl.TEXTURE_2D)
+	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
+
+	var blockSize uint32
+	if format ==  gl.COMPRESSED_RGBA_S3TC_DXT1_EXT {
+		blockSize = uint32(8)
+	} else {
+		blockSize = uint32(16)
+	}
+
+	offset := uint32(0)
+
+	for level := uint32(0); level < mipMapCount && (width != 0 || height != 0); level++ {
+		size := ((width+3)/4)*((height+3)/4)*blockSize
+		gl.
+	}
+}*/

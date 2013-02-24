@@ -22,9 +22,11 @@ const (
 
 func NewCamera() *Camera {
 	v, _ := mathgl.InferVectorOf([]interface{}{0., 0., 5.})
-	return &Camera{pos: *v, hAngle: math.Pi, vAngle: 0.0, time: -1.0} // Make time negative since it will never naturally be
+	return &Camera{pos: *v, hAngle: math.Pi, vAngle: 0.0, time: -1.0} // Make time -1 since it will never naturally be, this acts as a "first time?" flag
 }
 
+
+// Since go has multiple return values, I just went ahead and made it return the view and perspective matrices (in that order) rather than messing with getter methods
 func (c *Camera) ComputeViewPerspective() (mathgl.Matrix, mathgl.Matrix) {
 	if mathgl.FloatEqual(-1.0, c.time) {
 		c.time = glfw.Time()
