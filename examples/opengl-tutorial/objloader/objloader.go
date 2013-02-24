@@ -32,16 +32,25 @@ func LoadObject(fname string) *MeshObject {
 		switch header[:len(header)-1] {
 		case "v": 
 			vert := [3]float32{}
-			fmt.Sscanf(restOfLine, "%f %f %f\n", &vert[0], &vert[1], &vert[2])
+			count,_ := fmt.Sscanf(restOfLine, "%f %f %f\n", &vert[0], &vert[1], &vert[2])
+			if count != 3 {
+				panic("Wrong vert count")
+			}
 			vertices = append(vertices, vert)
 		
 		case "vt":
 			uv := [2]float32{}
-			fmt.Sscanf(restOfLine, "%f %f\n", &uv[0], &uv[1] )
+			count,_ := fmt.Sscanf(restOfLine, "%f %f\n", &uv[0], &uv[1] )
+			if count != 2 {
+				panic("Wrong uv count")
+			}
 			uvs = append(uvs, uv)
 		case "vn":
 			norm := [3]float32{}
-			fmt.Sscanf(restOfLine, "%f %f %f\n", &norm[0], &norm[1], &norm[2])
+			count,_ := fmt.Sscanf(restOfLine, "%f %f %f\n", &norm[0], &norm[1], &norm[2])
+			if count != 3 {
+				panic("Wrong norm count")
+			}
 			normals = append(normals, norm)
 		case "f":
 			//vert1, vert2, vert3 string
@@ -68,7 +77,7 @@ func LoadObject(fname string) *MeshObject {
 		obj.UVs = append(obj.UVs, uv[:]...)
 		obj.Normals = append(obj.Normals, norm[:]...)
 	}
-
+	
 	return obj
 }
 

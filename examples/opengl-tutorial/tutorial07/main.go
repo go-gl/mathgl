@@ -7,7 +7,7 @@ import (
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
-	"github.com/go-gl/glh"
+	// "github.com/go-gl/glh"
 	/*	"encoding/binary"
 		"bytes"
 		"bufio"*/
@@ -63,7 +63,7 @@ func main() {
 
 	matrixID := prog.GetUniformLocation("MVP")
 
-	texture := MakeTextureFromTGA("uvmap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
+	texture := MakeTextureFromTGA("colormap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
@@ -73,14 +73,14 @@ func main() {
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	// &vertices[0] because a slice isn't like an array, it has len/cap header data. You need the pointer to the first elements
-	// since after that all the pieces are GUARANTEED to be laid out contiguously
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, &vertices[0], gl.STATIC_DRAW)
+	// I'm going to be honest. I have ABSOLUTELY NO IDEA why it's len*3*4 instead of just len*4
+	// the vertices slice is flat, NOT a slice of arrays. This is really, incredibly weird
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*3*4, &vertices[0], gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
 	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, &uvs[0], gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*3*4, &uvs[0], gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
 	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
@@ -125,7 +125,7 @@ func main() {
 
 }
 
-func MakeProgram(vertFname, fragFname string) gl.Program {
+/*func MakeProgram(vertFname, fragFname string) gl.Program {
 	vertSource, err := ioutil.ReadFile(vertFname)
 	if err != nil {
 		panic(err)
@@ -136,6 +136,35 @@ func MakeProgram(vertFname, fragFname string) gl.Program {
 		panic(err)
 	}
 	return glh.NewProgram(glh.Shader{gl.VERTEX_SHADER, string(vertSource)}, glh.Shader{gl.FRAGMENT_SHADER, string(fragSource)})
+}*/
+
+func MakeProgram(vertFname, fragFname string) gl.Program {
+	vertSource, err := ioutil.ReadFile(vertFname)
+	if err != nil {
+		panic(err)
+	}
+	
+	fragSource, err := ioutil.ReadFile(fragFname)
+	if err != nil {
+		panic(err)
+	}
+	
+	
+	vertShader,fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
+	vertShader.Source(string(vertSource))
+	fragShader.Source(string(fragSource))
+	
+	vertShader.Compile()
+	fragShader.Compile()
+	
+	prog := gl.CreateProgram()
+	prog.AttachShader(vertShader)
+	prog.AttachShader(fragShader)
+	prog.Link()
+	prog.Validate()
+	fmt.Println(prog.GetInfoLog())
+	
+	return prog
 }
 
 func MakeTextureFromTGA(fname string) gl.Texture {
@@ -150,7 +179,7 @@ func MakeTextureFromTGA(fname string) gl.Texture {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
-	glh.OpenGLSentinel() // check for errors
+	// glh.OpenGLSentinel() // check for errors
 
 	return tex
 }
