@@ -73,14 +73,14 @@ func main() {
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	// I'm going to be honest. I have ABSOLUTELY NO IDEA why it's len*3*4 instead of just len*4
-	// the vertices slice is flat, NOT a slice of arrays. This is really, incredibly weird
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*3*4, &vertices[0], gl.STATIC_DRAW)
+	// I'm going to be honest. I have ABSOLUTELY NO IDEA why it's len*5*4 instead of just len*4
+	// This is the weirdest bug ever
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*5*4, &vertices[0], gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
 	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*3*4, &uvs[0], gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*5*4, &uvs[0], gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
 	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
