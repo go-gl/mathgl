@@ -319,6 +319,30 @@ func (v1 Vector) ScalarMul(c Scalar) (v2 Vector) {
 	return v2
 }
 
+
+// AutoScalarMul performs element-wise scalar multiplication on a vector. It differs
+// from ScalarMul in that you can pass in any Scalar-acceptable arithmetic type, and it will
+// automatically be converted to the type of the vector. (It is not called InferScalarMul due to the fact
+// that it doesn't infer the type of the scalar from the value itself, but rather the thing it's being multiplied by)
+//
+//    [x]   [c*x]
+//  c [y] = [c*y]
+//    [z]   [c*z]
+//
+// If c's type doesn't match the vector's, it will return the Zero-type of a vector
+func (v1 Vector) AutoScalarMul(c interface{}) (v2 Vector) {
+	scalar := MakeScalar(c,v1.typ)
+
+	v2.typ = v1.typ
+	v2.dat = make([]Scalar, len(v1.dat))
+
+	for i := range v1.dat {
+		v2.dat[i] = v1.dat[i].Mul(scalar)
+	}
+
+	return v2
+}
+
 // Len returns the Vector Length. Also known as *magnitude*
 // This is equivalent to sqrt(v.v) -- the square root of the dot product of v with itself
 // If you want the dimension or number of elements of a vector, use Size()

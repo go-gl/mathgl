@@ -52,29 +52,29 @@ func (c *Camera) ComputeViewPerspective() (mathgl.Matrix, mathgl.Matrix) {
 	up := right.Cross(*dir)
 
 	if glfw.Key(glfw.KeyUp) == glfw.KeyPress || glfw.Key('W') == glfw.KeyPress {
-		c.pos = c.pos.Add(dir.ScalarMul(mathgl.MakeScalar(deltaT*speed, mathgl.FLOAT64)))
+		c.pos = c.pos.Add(dir.AutoScalarMul(deltaT*speed))
 	}
 
 	if glfw.Key(glfw.KeyDown) == glfw.KeyPress || glfw.Key('S') == glfw.KeyPress {
-		c.pos = c.pos.Sub(dir.ScalarMul(mathgl.MakeScalar(deltaT*speed, mathgl.FLOAT64)))
+		c.pos = c.pos.Sub(dir.AutoScalarMul(deltaT*speed))
 	}
 
 	if glfw.Key(glfw.KeyRight) == glfw.KeyPress || glfw.Key('D') == glfw.KeyPress {
-		c.pos = c.pos.Add(right.ScalarMul(mathgl.MakeScalar(deltaT*speed, mathgl.FLOAT64)))
+		c.pos = c.pos.Add(right.AutoScalarMul(deltaT*speed))
 	}
 
 	if glfw.Key(glfw.KeyLeft) == glfw.KeyPress || glfw.Key('A') == glfw.KeyPress {
-		c.pos = c.pos.Sub(right.ScalarMul(mathgl.MakeScalar(deltaT*speed, mathgl.FLOAT64)))
+		c.pos = c.pos.Sub(right.AutoScalarMul(deltaT*speed))
 	}
 
 	// Adding to the original tutorial, Space goes up
 	if glfw.Key(glfw.KeySpace) == glfw.KeyPress {
-		c.pos = c.pos.Add(up.ScalarMul(mathgl.MakeScalar(deltaT*speed,mathgl.FLOAT64)))
+		c.pos = c.pos.Add(up.AutoScalarMul(deltaT*speed))
 	}
 
 	// Adding to the original tutorial, left control goes down
 	if glfw.Key(glfw.KeyLctrl) == glfw.KeyPress {
-		c.pos = c.pos.Sub(up.ScalarMul(mathgl.MakeScalar(deltaT*speed,mathgl.FLOAT64)))
+		c.pos = c.pos.Sub(up.AutoScalarMul(deltaT*speed))
 	}
 
 	fov := initialFOV - 5.0*float64(glfw.MouseWheel())

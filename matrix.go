@@ -360,6 +360,27 @@ func (m1 Matrix) ScalarMul(c Scalar) (mat Matrix) {
 
 }
 
+// AutoScalarMul does an element-wise multiplcation of a Matrix's elements and a scalar value.
+// It differs from ScalarMul in that it accepts any scalar-friendly go base type and automatically
+// converts it to the matrix's scalar type. (It's not called <Infer> because Infer infers the type of
+// the scalar from the value itself, whereas Auto infers it from the type it's being multiplied by)
+//
+//       [[w, x]]    [[c*w, c*x]]
+//     c*[[y, z]] =  [[c*y, c*z]]
+//
+// It returns the Matrix zero-type if c is not of the same underlying type as the matrix
+func (m1 Matrix) AutoScalarMul(c interface{}) (mat Matrix) {
+	scalar := MakeScalar(c, m1.typ)
+
+	dat := make([]Scalar, len(m1.dat))
+	for i := range m1.dat {
+		dat[i] = m1.dat[i].Mul(scalar)
+	}
+
+	return *unsafeMatrixFromSlice(dat, m1.typ, m1.m, m1.n)
+
+}
+
 // TODO: Maybe look into the Strassen algorithm for large square matrices and hard code common cases
 
 // Mul does a simple textbook Matrix multiplication between MatrixMultiplyables
