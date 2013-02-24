@@ -67,6 +67,8 @@ func LoadObject(fname string) *MeshObject {
 		}
 	}
 
+	//fmt.Println(vertices)
+	
 	obj := &MeshObject{make([]float32,0,len(vIndices)*3),make([]float32,0,len(uvIndices)*2),make([]float32,0,len(nIndices)*3) }
 	for i := range vIndices {
 		vIndex, uvIndex, nIndex := vIndices[i], uvIndices[i], nIndices[i]

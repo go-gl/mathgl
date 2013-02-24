@@ -72,14 +72,18 @@ func main() {
 	meshObj := objloader.LoadObject("suzanne.obj")
 	vertices, uvs, normals := meshObj.Vertices, meshObj.UVs, meshObj.Normals
 	
+	//fmt.Println(len(vertices)*4, len(uvs), len(normals))
+	
 	// Try copying this block around and deleting the "*3" part in the buffer data
 	// it will suddenly work after normBuffer, and be strange in a DIFFERENT way after uvBuffer
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	// I'm going to be honest. I have ABSOLUTELY NO IDEA why it's len*3*4 instead of just len*4
-	// the vertices slice is flat, NOT a slice of arrays. This is really, incredibly weird
+	// There appears to be a driver bug with my Radeon HD 7970 on drivers 13.1,
+	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
+	// On other cards this should work with just len(vertices)*4.
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices) * 4, vertices, gl.STATIC_DRAW)
+	
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
