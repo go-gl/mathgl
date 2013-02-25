@@ -3,20 +3,23 @@ MathGL
 
 This is a Go matrix and vector math library intended to ease Open GL graphics computations (especially since GLRotate and so on have become deprecated with OpenGL 3+). Hopefully to one day be good enough for inclusion with go-gl. Feedback is very welcome, especially API improvements, and pull requests are welcome. Benchmarks, more test cases, and example code (probably something like following an OpenGL tutorial) are definitely needed.
 
+# API Decisions
+
+Should InferMatrixFromSlice take var-args for the matrix elements or not? I tried both ways and it looks messy with also needing to pass in mxn.
+
 # Documentation
 
-The package (the base package, not mathglfast) is more or less fully documented at the moment. However, suggestions for improvement or correction of obvious errors are obviously welcome.
+The package (the base package, not mathglfast) is more or less fully documented at the moment. Some of it could be better done, or more fleshed out.
 
-The package-level documentation is in vector.go
+The package-level documentation is in vector.go (may be moved to its own file later)
 
 # Mathglfast
 
 This (sub-)package is also in development, to be a closer-to-OpenGL library. It is unfortunately a complete pain to write. I'm working on a code generation script at the moment for it.
 
-
 # TODO (Contribution welcome)
 
-Benchmarks (important!)
+More benchmarks -- I also need somebody who knows things about performance to actually analyze the benchmarks. Right now I only see a bunch of really meaningless numbers
 
 Make more unit tests. Right now basic functionality is essentially tested, but a lot of corner cases potentially aren't covered. Additionally, no new content (Quaternions and anything in transform.go) is untested
 
