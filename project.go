@@ -46,17 +46,17 @@ func Frustum(left, right, bottom, top, near, far float64) Matrix {
 }
 
 func LookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ float64) Matrix {
-	F, _ := InferVectorOf([]interface{}{
+	F, _ := InferVectorOf(
 		centerX - eyeX,
 		centerY - eyeY,
-		centerZ - eyeZ})
+		centerZ - eyeZ)
 
 	f := F.Normalize()
 
-	Up, _ := InferVectorOf([]interface{}{
+	Up, _ := InferVectorOf(
 		upX,
 		upY,
-		upZ})
+		upZ)
 
 	Upp := Up.Normalize()
 

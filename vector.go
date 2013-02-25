@@ -71,7 +71,9 @@ func VectorOf(el []Scalar, t VecType) (v *Vector, err error) {
 	return &Vector{t, el}, nil
 }
 
-func InferVectorOf(el []interface{}) (v *Vector, err error) {
+// Infer VectorOf takes a variable number of scalar-friendly types and automatically makes a vector of the appropriate type
+// The type of the vector will be the type of the first element passed in.
+func InferVectorOf(el ...interface{}) (v *Vector, err error) {
 	in,typ := InferScalarSlice(el)
 	return VectorOf(in, typ)
 }

@@ -127,6 +127,11 @@ func HomogRotate3DZ(angle float64) Matrix {
 		0, 0, 0, 1}, FLOAT64), FLOAT64, 4, 4)
 }
 
+// Scale3D creates a homogeneous 3D scaling matrix
+// [[ scaleX, 0     , 0     , 0 ]]
+// [[ 0     , scaleY, 0     , 0 ]]
+// [[ 0     , 0     , scaleZ, 0 ]]
+// [[ 0     , 0     , 0     , 1 ]]
 func Scale3D(scaleX, scaleY, scaleZ float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
 		scaleX, 0., 0., 0.,
@@ -136,6 +141,10 @@ func Scale3D(scaleX, scaleY, scaleZ float64) Matrix {
 	return *mp
 }
 
+// Scale2D creates a homogeneous 2D scaling matrix
+// [[ scaleX, 0     , 0 ]]
+// [[ 0     , scaleY, 0 ]]
+// [[ 0     , 0     , 1 ]]
 func Scale2D(scaleX, scaleY float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
 		scaleX, 0., 0.,
@@ -144,6 +153,7 @@ func Scale2D(scaleX, scaleY float64) Matrix {
 	return *mp
 }
 
+// ShearX2D creates a homogeneous 2D shear matrix along the X-axis
 func ShearX2D(shear float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
 		1., shear, 0.,
@@ -152,6 +162,7 @@ func ShearX2D(shear float64) Matrix {
 	return *mp
 }
 
+// ShearY2D creates a homogeneous 2D shear matrix along the Y-axis
 func ShearY2D(shear float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
 		1., 0., 0.,
@@ -160,6 +171,7 @@ func ShearY2D(shear float64) Matrix {
 	return *mp
 }
 
+// ShearX3D creates a homogeneous 3D shear matrix along the X-axis
 func ShearX3D(shearY, shearZ float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
 		1., 0., 0., 0.,
@@ -169,6 +181,7 @@ func ShearX3D(shearY, shearZ float64) Matrix {
 	return *mp
 }
 
+// ShearY3D creates a homogeneous 3D shear matrix along the Y-axis
 func ShearY3D(shearX, shearZ float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
 		1., shearX, 0., 0.,
@@ -178,6 +191,7 @@ func ShearY3D(shearX, shearZ float64) Matrix {
 	return *mp
 }
 
+// ShearZ3D creates a homogeneous 3D shear matrix along the Z-axis
 func ShearZ3D(shearX, shearY float64) Matrix {
 	mp,_ := InferMatrixFromSlice([]interface{}{
 		1., 0., shearX, 0.,

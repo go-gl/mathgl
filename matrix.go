@@ -48,6 +48,8 @@ func Identity(size int, typ VecType) Matrix {
 	return *unsafeMatrixFromSlice(dat, typ, size, size)
 }
 
+// InferMatrixFromCols is the same as MatrixFromCols, except it takes in a 2-D array of scalar-friendly types
+// and converts the slices to the appropraite type. The first element of each slice must be the same or it will return nil
 func InferMatrixFromCols(el [][]interface{}) (mat *Matrix, err error) {
 	in := make([][]Scalar, len(el))
 	initial,typ := InferScalarSlice(el[0])
@@ -62,6 +64,8 @@ func InferMatrixFromCols(el [][]interface{}) (mat *Matrix, err error) {
 	return unsafeMatrixFromCols(in,typ), nil
 }
 
+// InferMatrixFromRows is the same as MatrixFromRows, except it takes in a 2-D array of scalar-friendly types
+// and converts the slices to the appropraite type. The first element of each slice must be the same or it will return nil
 func InferMatrixFromRows(el [][]interface{}) (mat *Matrix, err error) {
 	in := make([][]Scalar, len(el))
 	initial,typ := InferScalarSlice(el[0])
@@ -76,6 +80,8 @@ func InferMatrixFromRows(el [][]interface{}) (mat *Matrix, err error) {
 	return unsafeMatrixFromRows(in,typ), nil
 }
 
+// InferMatrixFromSlice returns an mxn matrix with an underlying type matching that of the first element of the 
+// scalar-friendly type passed in.
 func InferMatrixFromSlice(el []interface{}, m,n int) (mat *Matrix, err error) {
 	in,typ := InferScalarSlice(el)
 	return unsafeMatrixFromSlice(in, typ, m, n), nil
