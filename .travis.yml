@@ -3,6 +3,9 @@ language: go
 script:
  - go test -v
 
+after_failure: failure
+after_error: failure
+
 notifications:
   email:
     recipients:
