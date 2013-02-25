@@ -21,7 +21,7 @@ const (
 )
 
 func NewCamera() *Camera {
-	v, _ := mathgl.InferVectorOf([]interface{}{0., 0., 5.})
+	v, _ := mathgl.InferVectorOf(0., 0., 5.)
 	return &Camera{pos: *v, hAngle: math.Pi, vAngle: 0.0, time: -1.0} // Make time -1 since it will never naturally be, this acts as a "first time?" flag
 }
 
@@ -41,15 +41,15 @@ func (c *Camera) ComputeViewPerspective() (mathgl.Matrix, mathgl.Matrix) {
 	c.hAngle += mouseSpeed* ((width/2.0) - float64(xPos))
 	c.vAngle += mouseSpeed* ((height/2.0) - float64(yPos))
 
-	dir, _ := mathgl.InferVectorOf([]interface{}{
+	dir, _ := mathgl.InferVectorOf(
 		math.Cos(c.vAngle) * math.Sin(c.hAngle),
 		math.Sin(c.vAngle),
-		math.Cos(c.vAngle) * math.Cos(c.hAngle)})
+		math.Cos(c.vAngle) * math.Cos(c.hAngle))
 
-	right, _ := mathgl.InferVectorOf([]interface{}{
+	right, _ := mathgl.InferVectorOf(
 		math.Sin(c.hAngle - math.Pi/2.0),
 		0.0,
-		math.Cos(c.hAngle - math.Pi/2.0)})
+		math.Cos(c.hAngle - math.Pi/2.0))
 
 	up := right.Cross(*dir)
 
