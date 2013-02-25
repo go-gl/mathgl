@@ -7,6 +7,9 @@ This is a Go matrix and vector math library intended to ease Open GL graphics co
 
 Should InferMatrixFromSlice take var-args for the matrix elements or not? I tried both ways and it looks messy with also needing to pass in mxn.
 
+After some more experience with using the package making examples. I'm considering making everything just be of type float64, with an option to convert to float32 when making an array. It seems to me that there's very little good reason to make a matrix
+of ints or uints. Though OpenGl does take ints and uints as uniforms, the utility of making them mathgl matrices is limited at best.
+
 # Documentation
 
 The package (the base package, not mathglfast) is more or less fully documented at the moment. Some of it could be better done, or more fleshed out.
