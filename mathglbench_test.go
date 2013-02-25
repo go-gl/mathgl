@@ -84,3 +84,23 @@ func BenchmarkInferVectorOf(b *testing.B) {
 			1.0)
 	}
 }
+
+func BenchmarkDot(b *testing.B) {
+	b.StopTimer()
+	u,_ := mathgl.VectorOf([]mathgl.Scalar {
+			mathgl.MakeScalar(4.0, mathgl.FLOAT64),
+			mathgl.MakeScalar(3.1, mathgl.FLOAT64),
+			mathgl.MakeScalar(9.2, mathgl.FLOAT64),
+			mathgl.MakeScalar(1.0, mathgl.FLOAT64)}, mathgl.FLOAT64)
+
+	v,_ := mathgl.VectorOf([]mathgl.Scalar {
+			mathgl.MakeScalar(9.0, mathgl.FLOAT64),
+			mathgl.MakeScalar(2.1, mathgl.FLOAT64),
+			mathgl.MakeScalar(1.2, mathgl.FLOAT64),
+			mathgl.MakeScalar(7.0, mathgl.FLOAT64)}, mathgl.FLOAT64)
+
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		u.Dot(*v)
+	}
+}
