@@ -64,6 +64,7 @@ func BenchmarkLookAtV(b *testing.B) {
 	}
 }
 
+// This benchmark may not be fair compared to Infer, not sure
 func BenchmarkVectorOf(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		mathgl.VectorOf([]mathgl.Scalar {
