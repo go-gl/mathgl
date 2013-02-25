@@ -6,7 +6,7 @@ import "math"
 // It is a 2x2 matrix, if you need a 3x3 for Homogeneous math (e.g. composition with a Translation matrix)
 // see HomogRotate2D
 func Rotate2D(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{cos, -sin,
 		sin, cos}, FLOAT64), FLOAT64, 2, 2)
@@ -19,7 +19,7 @@ func Rotate2D(angle float64) Matrix {
 //    [0 c -s]
 //    [0 s c ]
 func Rotate3DX(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		1, 0, 0,
@@ -34,7 +34,7 @@ func Rotate3DX(angle float64) Matrix {
 //    [0 1 0]
 //    [s 0 c ]
 func Rotate3DY(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		cos, 0, sin,
@@ -49,7 +49,7 @@ func Rotate3DY(angle float64) Matrix {
 //    [s c 0]
 //    [0 0 1 ]
 func Rotate3DZ(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		cos, -sin, 0,
@@ -86,7 +86,7 @@ func Translate3D(Tx, Ty, Tz float64) Matrix {
 
 // Same as Rotate2D, except homogeneous (3x3 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate2D(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		cos, -sin, 0,
@@ -96,7 +96,7 @@ func HomogRotate2D(angle float64) Matrix {
 
 // Same as Rotate3DX, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DX(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		1, 0, 0, 0,
@@ -107,7 +107,7 @@ func HomogRotate3DX(angle float64) Matrix {
 
 // Same as Rotate3DY, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DY(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		cos, 0, sin, 0,
@@ -118,7 +118,7 @@ func HomogRotate3DY(angle float64) Matrix {
 
 // Same as Rotate3DZ, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DZ(angle float64) Matrix {
-	angle = (angle*math.Pi)/180.0
+	angle = (angle * math.Pi) / 180.0
 	sin, cos := math.Sin(angle), math.Cos(angle)
 	return *unsafeMatrixFromSlice(ScalarSlice([]interface{}{
 		cos, -sin, 0, 0,
@@ -133,7 +133,7 @@ func HomogRotate3DZ(angle float64) Matrix {
 // [[ 0     , 0     , scaleZ, 0 ]]
 // [[ 0     , 0     , 0     , 1 ]]
 func Scale3D(scaleX, scaleY, scaleZ float64) Matrix {
-	mp,_ := InferMatrixFromSlice([]interface{}{
+	mp, _ := InferMatrixFromSlice([]interface{}{
 		scaleX, 0., 0., 0.,
 		0., scaleY, 0., 0.,
 		0., 0., scaleZ, 0.,
@@ -146,34 +146,34 @@ func Scale3D(scaleX, scaleY, scaleZ float64) Matrix {
 // [[ 0     , scaleY, 0 ]]
 // [[ 0     , 0     , 1 ]]
 func Scale2D(scaleX, scaleY float64) Matrix {
-	mp,_ := InferMatrixFromSlice([]interface{}{
+	mp, _ := InferMatrixFromSlice([]interface{}{
 		scaleX, 0., 0.,
 		0., scaleY, 0.,
-		0., 0., 1,}, 3, 3)
+		0., 0., 1}, 3, 3)
 	return *mp
 }
 
 // ShearX2D creates a homogeneous 2D shear matrix along the X-axis
 func ShearX2D(shear float64) Matrix {
-	mp,_ := InferMatrixFromSlice([]interface{}{
+	mp, _ := InferMatrixFromSlice([]interface{}{
 		1., shear, 0.,
 		0., 1., 0.,
-		0., 0., 1,}, 3, 3)
+		0., 0., 1}, 3, 3)
 	return *mp
 }
 
 // ShearY2D creates a homogeneous 2D shear matrix along the Y-axis
 func ShearY2D(shear float64) Matrix {
-	mp,_ := InferMatrixFromSlice([]interface{}{
+	mp, _ := InferMatrixFromSlice([]interface{}{
 		1., 0., 0.,
 		shear, 1., 0.,
-		0., 0., 1,}, 3, 3)
+		0., 0., 1}, 3, 3)
 	return *mp
 }
 
 // ShearX3D creates a homogeneous 3D shear matrix along the X-axis
 func ShearX3D(shearY, shearZ float64) Matrix {
-	mp,_ := InferMatrixFromSlice([]interface{}{
+	mp, _ := InferMatrixFromSlice([]interface{}{
 		1., 0., 0., 0.,
 		shearY, 1., 0., 0.,
 		shearZ, 0., 1., 0.,
@@ -183,7 +183,7 @@ func ShearX3D(shearY, shearZ float64) Matrix {
 
 // ShearY3D creates a homogeneous 3D shear matrix along the Y-axis
 func ShearY3D(shearX, shearZ float64) Matrix {
-	mp,_ := InferMatrixFromSlice([]interface{}{
+	mp, _ := InferMatrixFromSlice([]interface{}{
 		1., shearX, 0., 0.,
 		0., 1., 0., 0.,
 		0., shearZ, 1., 0.,
@@ -193,7 +193,7 @@ func ShearY3D(shearX, shearZ float64) Matrix {
 
 // ShearZ3D creates a homogeneous 3D shear matrix along the Z-axis
 func ShearZ3D(shearX, shearY float64) Matrix {
-	mp,_ := InferMatrixFromSlice([]interface{}{
+	mp, _ := InferMatrixFromSlice([]interface{}{
 		1., 0., shearX, 0.,
 		0., 1., shearY, 0.,
 		0., 0., 1., 0.,

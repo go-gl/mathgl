@@ -1,6 +1,5 @@
 package main
 
-
 import (
 	"fmt"
 	"github.com/Jragonmiris/mathgl"
@@ -33,7 +32,6 @@ func main() {
 	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
 	// With go-gl we also apparently can't set glewExperimental
-
 
 	glfw.SetWindowTitle("Tutorial 05")
 

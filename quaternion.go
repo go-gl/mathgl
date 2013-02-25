@@ -1,7 +1,6 @@
 package mathgl
 
-import (
-)
+import ()
 
 // A Quaternion is a representation of a 3D rotation, it is an extension of the complex numbers
 // The quaternion is represented by 4 characteristic "pieces": 1, i, j, k

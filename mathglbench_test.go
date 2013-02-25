@@ -8,7 +8,7 @@ import (
 // Benchmarks a standard model-view-projection multiplication
 func BenchmarkMVPMul(b *testing.B) {
 	b.StopTimer()
-	
+
 	M := mathgl.Identity(4, mathgl.FLOAT64)
 	V := mathgl.LookAt(4., 3., 3., 0., 0., 0., 0, 1., 0)
 	P := mathgl.Perspective(45.0, 4./3., .1, 100.0)
@@ -25,7 +25,7 @@ func BenchmarkMVPMul(b *testing.B) {
 func BenchmarkMVPMake(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
-	
+
 		M := mathgl.Identity(4, mathgl.FLOAT64)
 		V := mathgl.LookAt(4., 3., 3., 0., 0., 0., 0, 1., 0)
 		P := mathgl.Perspective(45.0, 4./3., .1, 100.0)
@@ -54,9 +54,9 @@ func BenchmarkLookAt(b *testing.B) {
 
 func BenchmarkLookAtV(b *testing.B) {
 	b.StopTimer()
-	eye,_ := mathgl.InferVectorOf(4., 3., 3.)
-	center,_ := mathgl.InferVectorOf(0.,0.,0.)
-	up,_ := mathgl.InferVectorOf(0.,1.,0.)
+	eye, _ := mathgl.InferVectorOf(4., 3., 3.)
+	center, _ := mathgl.InferVectorOf(0., 0., 0.)
+	up, _ := mathgl.InferVectorOf(0., 1., 0.)
 
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
@@ -67,7 +67,7 @@ func BenchmarkLookAtV(b *testing.B) {
 // This benchmark may not be fair compared to Infer, not sure
 func BenchmarkVectorOf(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		mathgl.VectorOf([]mathgl.Scalar {
+		mathgl.VectorOf([]mathgl.Scalar{
 			mathgl.MakeScalar(4.0, mathgl.FLOAT64),
 			mathgl.MakeScalar(3.1, mathgl.FLOAT64),
 			mathgl.MakeScalar(9.2, mathgl.FLOAT64),
@@ -87,17 +87,17 @@ func BenchmarkInferVectorOf(b *testing.B) {
 
 func BenchmarkDot(b *testing.B) {
 	b.StopTimer()
-	u,_ := mathgl.VectorOf([]mathgl.Scalar {
-			mathgl.MakeScalar(4.0, mathgl.FLOAT64),
-			mathgl.MakeScalar(3.1, mathgl.FLOAT64),
-			mathgl.MakeScalar(9.2, mathgl.FLOAT64),
-			mathgl.MakeScalar(1.0, mathgl.FLOAT64)}, mathgl.FLOAT64)
+	u, _ := mathgl.VectorOf([]mathgl.Scalar{
+		mathgl.MakeScalar(4.0, mathgl.FLOAT64),
+		mathgl.MakeScalar(3.1, mathgl.FLOAT64),
+		mathgl.MakeScalar(9.2, mathgl.FLOAT64),
+		mathgl.MakeScalar(1.0, mathgl.FLOAT64)}, mathgl.FLOAT64)
 
-	v,_ := mathgl.VectorOf([]mathgl.Scalar {
-			mathgl.MakeScalar(9.0, mathgl.FLOAT64),
-			mathgl.MakeScalar(2.1, mathgl.FLOAT64),
-			mathgl.MakeScalar(1.2, mathgl.FLOAT64),
-			mathgl.MakeScalar(7.0, mathgl.FLOAT64)}, mathgl.FLOAT64)
+	v, _ := mathgl.VectorOf([]mathgl.Scalar{
+		mathgl.MakeScalar(9.0, mathgl.FLOAT64),
+		mathgl.MakeScalar(2.1, mathgl.FLOAT64),
+		mathgl.MakeScalar(1.2, mathgl.FLOAT64),
+		mathgl.MakeScalar(7.0, mathgl.FLOAT64)}, mathgl.FLOAT64)
 
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {

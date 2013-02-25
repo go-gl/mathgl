@@ -47,9 +47,9 @@ func Frustum(left, right, bottom, top, near, far float64) Matrix {
 
 func LookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ float64) Matrix {
 	F, _ := InferVectorOf(
-		centerX - eyeX,
-		centerY - eyeY,
-		centerZ - eyeZ)
+		centerX-eyeX,
+		centerY-eyeY,
+		centerZ-eyeZ)
 
 	f := F.Normalize()
 

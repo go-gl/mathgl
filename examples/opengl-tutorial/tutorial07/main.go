@@ -145,27 +145,26 @@ func MakeProgram(vertFname, fragFname string) gl.Program {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	fragSource, err := ioutil.ReadFile(fragFname)
 	if err != nil {
 		panic(err)
 	}
-	
-	
-	vertShader,fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
+
+	vertShader, fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
 	vertShader.Source(string(vertSource))
 	fragShader.Source(string(fragSource))
-	
+
 	vertShader.Compile()
 	fragShader.Compile()
-	
+
 	prog := gl.CreateProgram()
 	prog.AttachShader(vertShader)
 	prog.AttachShader(fragShader)
 	prog.Link()
 	prog.Validate()
 	fmt.Println(prog.GetInfoLog())
-	
+
 	return prog
 }
 

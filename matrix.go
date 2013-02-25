@@ -52,38 +52,38 @@ func Identity(size int, typ VecType) Matrix {
 // and converts the slices to the appropraite type. The first element of each slice must be the same or it will return nil
 func InferMatrixFromCols(el [][]interface{}) (mat *Matrix, err error) {
 	in := make([][]Scalar, len(el))
-	initial,typ := InferScalarSlice(el[0])
+	initial, typ := InferScalarSlice(el[0])
 	in[0] = initial
-	for i,sl := range el[1:] {
-		tmp,typ2 := InferScalarSlice(sl)
+	for i, sl := range el[1:] {
+		tmp, typ2 := InferScalarSlice(sl)
 		if typ != typ2 {
-			return nil,errors.New("Types didn't match")
+			return nil, errors.New("Types didn't match")
 		}
 		in[i+1] = tmp
 	}
-	return unsafeMatrixFromCols(in,typ), nil
+	return unsafeMatrixFromCols(in, typ), nil
 }
 
 // InferMatrixFromRows is the same as MatrixFromRows, except it takes in a 2-D array of scalar-friendly types
 // and converts the slices to the appropraite type. The first element of each slice must be the same or it will return nil
 func InferMatrixFromRows(el [][]interface{}) (mat *Matrix, err error) {
 	in := make([][]Scalar, len(el))
-	initial,typ := InferScalarSlice(el[0])
+	initial, typ := InferScalarSlice(el[0])
 	in[0] = initial
-	for i,sl := range el[1:] {
-		tmp,typ2 := InferScalarSlice(sl)
+	for i, sl := range el[1:] {
+		tmp, typ2 := InferScalarSlice(sl)
 		if typ != typ2 {
-			return nil,errors.New("Types didn't match")
+			return nil, errors.New("Types didn't match")
 		}
 		in[i+1] = tmp
 	}
-	return unsafeMatrixFromRows(in,typ), nil
+	return unsafeMatrixFromRows(in, typ), nil
 }
 
-// InferMatrixFromSlice returns an mxn matrix with an underlying type matching that of the first element of the 
+// InferMatrixFromSlice returns an mxn matrix with an underlying type matching that of the first element of the
 // scalar-friendly type passed in.
-func InferMatrixFromSlice(el []interface{}, m,n int) (mat *Matrix, err error) {
-	in,typ := InferScalarSlice(el)
+func InferMatrixFromSlice(el []interface{}, m, n int) (mat *Matrix, err error) {
+	in, typ := InferScalarSlice(el)
 	return unsafeMatrixFromSlice(in, typ, m, n), nil
 }
 

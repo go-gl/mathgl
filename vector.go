@@ -74,7 +74,7 @@ func VectorOf(el []Scalar, t VecType) (v *Vector, err error) {
 // Infer VectorOf takes a variable number of scalar-friendly types and automatically makes a vector of the appropriate type
 // The type of the vector will be the type of the first element passed in.
 func InferVectorOf(el ...interface{}) (v *Vector, err error) {
-	in,typ := InferScalarSlice(el)
+	in, typ := InferScalarSlice(el)
 	return VectorOf(in, typ)
 }
 
@@ -321,7 +321,6 @@ func (v1 Vector) ScalarMul(c Scalar) (v2 Vector) {
 	return v2
 }
 
-
 // AutoScalarMul performs element-wise scalar multiplication on a vector. It differs
 // from ScalarMul in that you can pass in any Scalar-acceptable arithmetic type, and it will
 // automatically be converted to the type of the vector. (It is not called InferScalarMul due to the fact
@@ -333,7 +332,7 @@ func (v1 Vector) ScalarMul(c Scalar) (v2 Vector) {
 //
 // If c's type doesn't match the vector's, it will return the Zero-type of a vector
 func (v1 Vector) AutoScalarMul(c interface{}) (v2 Vector) {
-	scalar := MakeScalar(c,v1.typ)
+	scalar := MakeScalar(c, v1.typ)
 
 	v2.typ = v1.typ
 	v2.dat = make([]Scalar, len(v1.dat))

@@ -71,9 +71,9 @@ func main() {
 
 	meshObj := objloader.LoadObject("suzanne.obj")
 	vertices, uvs, normals := meshObj.Vertices, meshObj.UVs, meshObj.Normals
-	
+
 	//fmt.Println(len(vertices)*4, len(uvs), len(normals))
-	
+
 	// Try copying this block around and deleting the "*3" part in the buffer data
 	// it will suddenly work after normBuffer, and be strange in a DIFFERENT way after uvBuffer
 	vertexBuffer := gl.GenBuffer()
@@ -82,8 +82,7 @@ func main() {
 	// There appears to be a driver bug with my Radeon HD 7970 on drivers 13.1,
 	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
 	// On other cards this should work with just len(vertices)*4.
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices) * 4, vertices, gl.STATIC_DRAW)
-	
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
@@ -159,27 +158,26 @@ func MakeProgram(vertFname, fragFname string) gl.Program {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	fragSource, err := ioutil.ReadFile(fragFname)
 	if err != nil {
 		panic(err)
 	}
-	
-	
-	vertShader,fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
+
+	vertShader, fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
 	vertShader.Source(string(vertSource))
 	fragShader.Source(string(fragSource))
-	
+
 	vertShader.Compile()
 	fragShader.Compile()
-	
+
 	prog := gl.CreateProgram()
 	prog.AttachShader(vertShader)
 	prog.AttachShader(fragShader)
 	prog.Link()
 	prog.Validate()
 	fmt.Println(prog.GetInfoLog())
-	
+
 	return prog
 }
 
@@ -195,11 +193,10 @@ func MakeTextureFromTGA(fname string) gl.Texture {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
-//	glh.OpenGLSentinel() // check for errors
+	//	glh.OpenGLSentinel() // check for errors
 
 	return tex
 }
-
 
 // GLH doesn't compile on my windows machine, but I keep this around for other machines
 /*func MakeProgram(vertFname, fragFname string) gl.Program {
