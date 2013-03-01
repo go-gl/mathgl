@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl/mathgl"
-	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/input"
-	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/objloader"
+	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	// "github.com/go-gl/glh"
@@ -69,12 +69,6 @@ func main() {
 
 	meshObj := objloader.LoadObject("cube.obj")
 	vertices, uvs := meshObj.Vertices, meshObj.UVs
-
-	uvBuffer := gl.GenBuffer()
-	defer uvBuffer.Delete()
-	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	// UV doesn't seem to care
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
 	
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
@@ -83,6 +77,12 @@ func main() {
 	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
 	// On other cards this should work with just len(vertices)*4.
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
+
+	uvBuffer := gl.GenBuffer()
+	defer uvBuffer.Delete()
+	uvBuffer.Bind(gl.ARRAY_BUFFER)
+	// UV doesn't seem to care
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
 	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
@@ -93,12 +93,11 @@ func main() {
 			defer gl.ProgramUnuse()
 
 			view, proj := camera.ComputeViewPerspective()
-			model := mathgl.Identity(4, mathgl.FLOAT64)
+			model := mathgl.Ident4f()
 
-			mvp := proj.Mul(view).Mul(model)
-			mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			MVP := proj.Mul4(view).Mul4(model)
 
-			matrixID.UniformMatrix4fv(false, mvpArray)
+			matrixID.UniformMatrix4fv(false, MVP)
 
 			gl.ActiveTexture(gl.TEXTURE0)
 			texture.Bind(gl.TEXTURE_2D)

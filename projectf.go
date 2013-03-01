@@ -92,7 +92,7 @@ func LookAtV(eye, center, up Vec3f) Mat4f {
 		fs[0], fs[1], fs[2], z,
 		z, z, z, o}, FLOAT64, 4, 4)*/
 		
-	M := Mat4f{s[0],u[0],-f[0],0, s[1],u[1],f[1],0, s[2],u[2],-f[2],0, 0,0,0,1}
+	M := Mat4f{s[0],u[0],-f[0],0, s[1],u[1],-f[1],0, s[2],u[2],-f[2],0, 0,0,0,1}
 
 	return M.Mul4(Translate3D(float64(-eye[0]), float64(-eye[1]), float64(-eye[2])))
 }

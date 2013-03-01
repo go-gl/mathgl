@@ -50,10 +50,9 @@ func main() {
 
 	View := mathgl.LookAt(4.0, 3.0, -3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
 
-	Model := mathgl.Identity(4, mathgl.FLOAT64)
+	Model := mathgl.Ident4f()
 
-	MVP := Projection.Mul(View).Mul(Model)                   // Remember, transform multiplication order is "backwards"
-	mvpArray := MVP.AsCMOArray(mathgl.FLOAT32).([16]float32) // OpenGL likes CMO
+	MVP := Projection.Mul4(View).Mul4(Model)                   // Remember, transform multiplication order is "backwards"
 
 	vBufferData := [...]float32{
 		-1.0, -1.0, -1.0,
@@ -149,7 +148,7 @@ func main() {
 
 		prog.Use()
 
-		matrixID.UniformMatrix4fv(false, mvpArray)
+		matrixID.UniformMatrix4fv(false, MVP)
 
 		vertexAttrib := gl.AttribLocation(0)
 		vertexAttrib.EnableArray()

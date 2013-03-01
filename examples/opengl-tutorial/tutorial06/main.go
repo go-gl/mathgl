@@ -6,7 +6,7 @@ import (
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
-	"github.com/go-gl/glh"
+	//"github.com/go-gl/glh"
 	"io/ioutil"
 	"os"
 )
@@ -31,7 +31,7 @@ func main() {
 
 	glfw.SetSwapInterval(0)
 
-	gl.GlewExperimental(true)
+	//gl.GlewExperimental(true)
 	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
 	// With go-gl we also apparently can't set glewExpe6rimental
@@ -159,12 +159,12 @@ func main() {
 			defer gl.ProgramUnuse()
 
 			view, proj := camera.ComputeViewPerspective()
-			model := mathgl.Identity(4, mathgl.FLOAT64)
+			model := mathgl.Ident4f()
 
-			mvp := proj.Mul(view).Mul(model)
-			mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			MVP := proj.Mul4(view).Mul4(model)
+			//mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
 
-			matrixID.UniformMatrix4fv(false, mvpArray)
+			matrixID.UniformMatrix4fv(false, MVP)
 
 			gl.ActiveTexture(gl.TEXTURE0)
 			texture.Bind(gl.TEXTURE_2D)
@@ -193,7 +193,7 @@ func main() {
 
 }
 
-func MakeProgram(vertFname, fragFname string) gl.Program {
+/*func MakeProgram(vertFname, fragFname string) gl.Program {
 	vertSource, err := ioutil.ReadFile(vertFname)
 	if err != nil {
 		panic(err)
@@ -204,6 +204,34 @@ func MakeProgram(vertFname, fragFname string) gl.Program {
 		panic(err)
 	}
 	return glh.NewProgram(glh.Shader{gl.VERTEX_SHADER, string(vertSource)}, glh.Shader{gl.FRAGMENT_SHADER, string(fragSource)})
+}*/
+
+func MakeProgram(vertFname, fragFname string) gl.Program {
+	vertSource, err := ioutil.ReadFile(vertFname)
+	if err != nil {
+		panic(err)
+	}
+
+	fragSource, err := ioutil.ReadFile(fragFname)
+	if err != nil {
+		panic(err)
+	}
+
+	vertShader, fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
+	vertShader.Source(string(vertSource))
+	fragShader.Source(string(fragSource))
+
+	vertShader.Compile()
+	fragShader.Compile()
+
+	prog := gl.CreateProgram()
+	prog.AttachShader(vertShader)
+	prog.AttachShader(fragShader)
+	prog.Link()
+	prog.Validate()
+	fmt.Println(prog.GetInfoLog())
+
+	return prog
 }
 
 func MakeTextureFromTGA(fname string) gl.Texture {
@@ -218,7 +246,7 @@ func MakeTextureFromTGA(fname string) gl.Texture {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
-	glh.OpenGLSentinel() // check for errors
+	//glh.OpenGLSentinel() // check for errors
 
 	return tex
 }

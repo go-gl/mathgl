@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl/mathgl"
-	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/input"
-	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/objloader"
+	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	// "github.com/go-gl/glh"
@@ -73,18 +73,6 @@ func main() {
 	vertices, uvs, normals := meshObj.Vertices, meshObj.UVs, meshObj.Normals
 
 	//fmt.Println(len(vertices)*4, len(uvs), len(normals))
-
-
-	uvBuffer := gl.GenBuffer()
-	defer uvBuffer.Delete()
-	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	// And yet, the weird length stuff doesn't seem to matter for UV or normal
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
-
-	normBuffer := gl.GenBuffer()
-	defer normBuffer.Delete()
-	normBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(normals)*4, normals, gl.STATIC_DRAW)
 	
 	// Try copying this block around and adding "*3" to the size argument
 	// it will suddenly work after normBuffer, and break before normBuffer or uvBuffer
@@ -94,7 +82,18 @@ func main() {
 	// There appears to be a driver bug with my Radeon HD 7970 on drivers 13.1,
 	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
 	// On other cards this should work with just len(vertices)*4.
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*3*4, vertices, gl.STATIC_DRAW)
+
+	uvBuffer := gl.GenBuffer()
+	defer uvBuffer.Delete()
+	uvBuffer.Bind(gl.ARRAY_BUFFER)
+	// And yet, the weird length stuff doesn't seem to matter for UV or normal
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*2*4, uvs, gl.STATIC_DRAW)
+
+	normBuffer := gl.GenBuffer()
+	defer normBuffer.Delete()
+	normBuffer.Bind(gl.ARRAY_BUFFER)
+	gl.BufferData(gl.ARRAY_BUFFER, len(normals)*3*4, normals, gl.STATIC_DRAW)
 
 	lightID := prog.GetUniformLocation("LightPosition_worldspace")
 
@@ -107,16 +106,16 @@ func main() {
 			defer gl.ProgramUnuse()
 
 			view, proj := camera.ComputeViewPerspective()
-			model := mathgl.Identity(4, mathgl.FLOAT64)
+			model := mathgl.Ident4f()
 
-			mvp := proj.Mul(view).Mul(model)
-			mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
-			vArray := view.AsCMOArray(mathgl.FLOAT32).([16]float32)
-			mArray := model.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			MVP := proj.Mul4(view).Mul4(model)
+			//mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			//vArray := view.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			//mArray := model.AsCMOArray(mathgl.FLOAT32).([16]float32)
 
-			matrixID.UniformMatrix4fv(false, mvpArray)
-			viewMatrixID.UniformMatrix4fv(false, vArray)
-			modelMatrixID.UniformMatrix4fv(false, mArray)
+			matrixID.UniformMatrix4fv(false, MVP)
+			viewMatrixID.UniformMatrix4fv(false, view)
+			modelMatrixID.UniformMatrix4fv(false, model)
 
 			lightID.Uniform3f(4., 4., 4.)
 

@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"github.com/Jragonmiris/mathgl"
 )
 
 type MeshObject struct {
-	Vertices []float32
-	UVs      []float32
-	Normals  []float32
+	Vertices []mathgl.Vec3f
+	UVs      []mathgl.Vec2f
+	Normals  []mathgl.Vec3f
 }
 
 func LoadObject(fname string) *MeshObject {
@@ -21,7 +22,7 @@ func LoadObject(fname string) *MeshObject {
 
 	reader := bufio.NewReader(file)
 
-	vertices, uvs, normals := make([][3]float32, 0), make([][2]float32, 0), make([][3]float32, 0)
+	vertices, uvs, normals := make([]mathgl.Vec3f, 0), make([]mathgl.Vec2f, 0), make([]mathgl.Vec3f, 0)
 	vIndices, uvIndices, nIndices := make([]uint, 0), make([]uint, 0), make([]uint, 0)
 
 	for line, err := reader.ReadString('\n'); err == nil; line, err = reader.ReadString('\n') {
@@ -31,7 +32,7 @@ func LoadObject(fname string) *MeshObject {
 
 		switch header[:len(header)-1] {
 		case "v":
-			vert := [3]float32{}
+			vert := mathgl.Vec3f{}
 			count, _ := fmt.Sscanf(restOfLine, "%f %f %f\n", &vert[0], &vert[1], &vert[2])
 			if count != 3 {
 				panic("Wrong vert count")
@@ -39,14 +40,14 @@ func LoadObject(fname string) *MeshObject {
 			vertices = append(vertices, vert)
 
 		case "vt":
-			uv := [2]float32{}
+			uv := mathgl.Vec2f{}
 			count, _ := fmt.Sscanf(restOfLine, "%f %f\n", &uv[0], &uv[1])
 			if count != 2 {
 				panic("Wrong uv count")
 			}
 			uvs = append(uvs, uv)
 		case "vn":
-			norm := [3]float32{}
+			norm := mathgl.Vec3f{}
 			count, _ := fmt.Sscanf(restOfLine, "%f %f %f\n", &norm[0], &norm[1], &norm[2])
 			if count != 3 {
 				panic("Wrong norm count")
@@ -69,15 +70,15 @@ func LoadObject(fname string) *MeshObject {
 
 	//fmt.Println(vertices)
 
-	obj := &MeshObject{make([]float32, 0, len(vIndices)*3), make([]float32, 0, len(uvIndices)*2), make([]float32, 0, len(nIndices)*3)}
+	obj := &MeshObject{make([]mathgl.Vec3f, 0, len(vIndices)), make([]mathgl.Vec2f, 0, len(uvIndices)), make([]mathgl.Vec3f, 0, len(nIndices))}
 	for i := range vIndices {
 		vIndex, uvIndex, nIndex := vIndices[i], uvIndices[i], nIndices[i]
 
 		vert, uv, norm := vertices[vIndex-1], uvs[uvIndex-1], normals[nIndex-1]
 
-		obj.Vertices = append(obj.Vertices, vert[:]...)
-		obj.UVs = append(obj.UVs, uv[:]...)
-		obj.Normals = append(obj.Normals, norm[:]...)
+		obj.Vertices = append(obj.Vertices, vert)
+		obj.UVs = append(obj.UVs, uv)
+		obj.Normals = append(obj.Normals, norm)
 	}
 
 	return obj
