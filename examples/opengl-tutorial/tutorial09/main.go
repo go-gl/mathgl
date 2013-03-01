@@ -2,16 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl/mathgl"
-	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/input"
-	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/objloader"
+	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/indexer"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
-	// "github.com/go-gl/glh"
-	/*	"encoding/binary"
-		"bytes"
-		"bufio"*/
-	"io/ioutil"
 	"os"
 )
 
@@ -39,7 +36,7 @@ func main() {
 	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
 
-	glfw.SetWindowTitle("Tutorial 08")
+	glfw.SetWindowTitle("Tutorial 09")
 
 	glfw.Enable(glfw.StickyKeys)
 	glfw.Disable(glfw.MouseCursor) // Not in the original tutorial, but IMO it SHOULD be there
@@ -58,47 +55,56 @@ func main() {
 	defer vertexArray.Delete()
 	vertexArray.Bind()
 
-	prog := MakeProgram("StandardShading.vertexshader", "StandardShading.fragmentshader")
+	prog := helper.MakeProgram("StandardShading.vertexshader", "StandardShading.fragmentshader")
 	defer prog.Delete()
 
 	matrixID := prog.GetUniformLocation("MVP")
 	viewMatrixID := prog.GetUniformLocation("V")
 	modelMatrixID := prog.GetUniformLocation("M")
 
-	texture := MakeTextureFromTGA("uvmap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
+	texture := helper.MakeTextureFromTGA("uvmap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
 	meshObj := objloader.LoadObject("suzanne.obj")
-	vertices, uvs, normals := meshObj.Vertices, meshObj.UVs, meshObj.Normals
 
-	//fmt.Println(len(vertices)*4, len(uvs), len(normals))
+	indices, indexedVertices, indexedUVs, indexedNormals := indexer.IndexVBO(meshObj.Vertices, meshObj.UVs, meshObj.Normals)
+
+	vertexBuffer := gl.GenBuffer()
+	defer vertexBuffer.Delete()
+	vertexBuffer.Bind(gl.ARRAY_BUFFER)
+	gl.BufferData(gl.ARRAY_BUFFER, len(indexedVertices)*3*4, indexedVertices, gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
 	uvBuffer.Bind(gl.ARRAY_BUFFER)
 	// And yet, the weird length stuff doesn't seem to matter for UV or normal
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(indexedUVs)*2*4, indexedUVs, gl.STATIC_DRAW)
 
 	normBuffer := gl.GenBuffer()
 	defer normBuffer.Delete()
 	normBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(normals)*4, normals, gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(indexedNormals)*3*4, indexedNormals, gl.STATIC_DRAW)
 
-	// Try copying this block around and adding "*3" to the size argument
-	// it will suddenly work after normBuffer, and break before normBuffer or uvBuffer
-	vertexBuffer := gl.GenBuffer()
-	defer vertexBuffer.Delete()
-	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	// There appears to be a driver bug with my Radeon HD 7970 on drivers 13.1,
-	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
-	// On other cards this should work with just len(vertices)*4.
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
+	elementBuffer := gl.GenBuffer()
+	defer elementBuffer.Delete()
+	elementBuffer.Bind(gl.ELEMENT_ARRAY_BUFFER)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*2, indices, gl.STATIC_DRAW) // NOTE: a GL_UNSIGNED_SHORT is 16-bits
 
 	lightID := prog.GetUniformLocation("LightPosition_worldspace")
-
+	lastTime := glfw.Time()
+	nbFrames := 0
 	// Equivalent to a do... while
 	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
+
+		currTime := glfw.Time()
+		nbFrames++
+		if currTime-lastTime >= 1.0 {
+			fmt.Printf("%f ms/frame\n", 1000.0/float64(nbFrames))
+			nbFrames = 0
+			lastTime += 1.0
+		}
+
 		func() {
 			gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -106,16 +112,16 @@ func main() {
 			defer gl.ProgramUnuse()
 
 			view, proj := camera.ComputeViewPerspective()
-			model := mathgl.Identity(4, mathgl.FLOAT64)
+			model := mathgl.Ident4f()
 
-			mvp := proj.Mul(view).Mul(model)
-			mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
-			vArray := view.AsCMOArray(mathgl.FLOAT32).([16]float32)
-			mArray := model.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			MVP := proj.Mul4(view).Mul4(model)
+			//mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			//vArray := view.AsCMOArray(mathgl.FLOAT32).([16]float32)
+			//mArray := model.AsCMOArray(mathgl.FLOAT32).([16]float32)
 
-			matrixID.UniformMatrix4fv(false, mvpArray)
-			viewMatrixID.UniformMatrix4fv(false, vArray)
-			modelMatrixID.UniformMatrix4fv(false, mArray)
+			matrixID.UniformMatrix4fv(false, MVP)
+			viewMatrixID.UniformMatrix4fv(false, view)
+			modelMatrixID.UniformMatrix4fv(false, model)
 
 			lightID.Uniform3f(4., 4., 4.)
 
@@ -145,72 +151,16 @@ func main() {
 			defer normBuffer.Unbind(gl.ARRAY_BUFFER)
 			normAttrib.AttribPointer(3, gl.FLOAT, false, 0, nil)
 
-			gl.DrawArrays(gl.TRIANGLES, 0, len(vertices))
+			elementBuffer.Bind(gl.ELEMENT_ARRAY_BUFFER)
+			defer elementBuffer.Unbind(gl.ELEMENT_ARRAY_BUFFER)
+
+			gl.DrawElements(gl.TRIANGLES, len(indices), gl.UNSIGNED_SHORT, nil)
 
 			glfw.SwapBuffers()
 		}() // Defers unbinds and disables to here, end of the loop
 	}
 
 }
-
-func MakeProgram(vertFname, fragFname string) gl.Program {
-	vertSource, err := ioutil.ReadFile(vertFname)
-	if err != nil {
-		panic(err)
-	}
-
-	fragSource, err := ioutil.ReadFile(fragFname)
-	if err != nil {
-		panic(err)
-	}
-
-	vertShader, fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
-	vertShader.Source(string(vertSource))
-	fragShader.Source(string(fragSource))
-
-	vertShader.Compile()
-	fragShader.Compile()
-
-	prog := gl.CreateProgram()
-	prog.AttachShader(vertShader)
-	prog.AttachShader(fragShader)
-	prog.Link()
-	prog.Validate()
-	fmt.Println(prog.GetInfoLog())
-
-	return prog
-}
-
-func MakeTextureFromTGA(fname string) gl.Texture {
-	tex := gl.GenTexture()
-
-	tex.Bind(gl.TEXTURE_2D)
-	glfw.LoadTexture2D(fname, 0)
-
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-
-	//	glh.OpenGLSentinel() // check for errors
-
-	return tex
-}
-
-// GLH doesn't compile on my windows machine, but I keep this around for other machines
-/*func MakeProgram(vertFname, fragFname string) gl.Program {
-	vertSource, err := ioutil.ReadFile(vertFname)
-	if err != nil {
-		panic(err)
-	}
-
-	fragSource, err := ioutil.ReadFile(fragFname)
-	if err != nil {
-		panic(err)
-	}
-	return glh.NewProgram(glh.Shader{gl.VERTEX_SHADER, string(vertSource)}, glh.Shader{gl.FRAGMENT_SHADER, string(fragSource)})
-}*/
 
 /*func MakeTextureFromDDS(fname string) gl.Texture {
 	var header [124]byte
