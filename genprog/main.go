@@ -6,41 +6,40 @@ import (
 )
 
 func main() {
-	fmt.Println("Making vectorf.go")
+	//fmt.Println("Making vectorf.go")
 	vecs := GenVec()
 	//fmt.Println(vecs)
-	vecf,err := os.Create("..vectorf.go")
+	vecf, err := os.Create("..vectorf.go")
 	if err != nil {
 		panic(err)
 	}
 	defer vecf.Close()
 
-	_,err = vecf.Write([]byte(vecs))
+	_, err = vecf.Write([]byte(vecs))
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Making matrixf.go")
+	//fmt.Println("Making matrixf.go")
 	mats := GenMat()
 	//fmt.Println(mats)
-	matf,err := os.Create("..matrixf.go")
+	matf, err := os.Create("..matrixf.go")
 	if err != nil {
 		panic(err)
 	}
 	defer matf.Close()
 
-	_,err = matf.Write([]byte(mats))
+	_, err = matf.Write([]byte(mats))
 	if err != nil {
 		panic(err)
 	}
-
-	
-	fmt.Println("Done")
+	fmt.Println(mats)
+	//fmt.Println("Done")
 }
 
 func GenVec() (s string) {
 	vecs := "package mathgl\n\nimport(\n\t \"math\"\n)\n\n"
-	
+
 	for m := 2; m <= 4; m++ {
 		vecs += GenVecDef(m)
 	}
@@ -69,7 +68,7 @@ func GenVec() (s string) {
 	for m := 2; m <= 4; m++ {
 		vecs += GenVecNormalize(m)
 	}
-	
+
 	vecs += GenVecCross()
 
 	/*for m := 2; m <= 4; m++ {
@@ -196,38 +195,44 @@ func GenMat() string {
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
-			mats += GenMatDef(m,n)
+			mats += GenMatDef(m, n)
 		}
 	}
 	mats += "\n"
-	
+
 	for m := 2; m <= 4; m++ {
 		mats += GenMatIden(m)
 	}
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
-			mats += GenMatAdd(m,n)
+			mats += GenMatAdd(m, n)
 		}
 	}
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
-			mats += GenMatSub(m,n)
+			mats += GenMatSub(m, n)
 		}
 	}
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
-			mats += GenScalarMul(m,n)
+			mats += GenScalarMul(m, n)
 		}
 	}
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
 			for o := 1; o <= 4; o++ {
-				mats += GenMatMul(m,n,o)
+				mats += GenMatMul(m, n, o)
 			}
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenTranspose(m, n)
 		}
 	}
 
@@ -236,8 +241,8 @@ func GenMat() string {
 }
 
 func GenMatIden(m int) (s string) {
-	s = fmt.Sprintf("func Ident%df() %sf {\n\treturn %sf{", m, GenMatName(m,m), GenMatName(m,m))
-	
+	s = fmt.Sprintf("func Ident%df() %sf {\n\treturn %sf{", m, GenMatName(m, m), GenMatName(m, m))
+
 	for i := 0; i < m; i++ {
 		for j := 0; j < m; j++ {
 			if i != j {
@@ -245,24 +250,24 @@ func GenMatIden(m int) (s string) {
 			} else {
 				s += "1"
 			}
-			
+
 			if i != m-1 || j != m-1 {
 				s += ","
 			}
 		}
 	}
-	
+
 	s += "}\n}\n\n"
-	
+
 	return s
 }
 
-func GenMatDef(m,n int) (s string) {
-	return fmt.Sprintf("type %sf [%d]float32\n", GenMatName(m,n), m*n)
+func GenMatDef(m, n int) (s string) {
+	return fmt.Sprintf("type %sf [%d]float32\n", GenMatName(m, n), m*n)
 }
 
-func GenMatAdd(m,n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) Add(m2 %sf) %sf {\n\treturn %sf {", GenMatName(m,n), GenMatName(m,n), GenMatName(m,n), GenMatName(m,n))
+func GenMatAdd(m, n int) (s string) {
+	s = fmt.Sprintf("func (m1 %sf) Add(m2 %sf) %sf {\n\treturn %sf {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] + m2[%d]", i, i)
 		if i != (m*n)-1 {
@@ -273,8 +278,8 @@ func GenMatAdd(m,n int) (s string) {
 	return s
 }
 
-func GenMatSub(m,n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) Sub(m2 %sf) %sf {\n\treturn %sf {", GenMatName(m,n), GenMatName(m,n), GenMatName(m,n), GenMatName(m,n))
+func GenMatSub(m, n int) (s string) {
+	s = fmt.Sprintf("func (m1 %sf) Sub(m2 %sf) %sf {\n\treturn %sf {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] - m2[%d]", i, i)
 		if i != (m*n)-1 {
@@ -285,8 +290,8 @@ func GenMatSub(m,n int) (s string) {
 	return s
 }
 
-func GenScalarMul(m,n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) Mul(c float32) %sf {\n\treturn %sf{", GenMatName(m,n), GenMatName(m,n), GenMatName(m,n))
+func GenScalarMul(m, n int) (s string) {
+	s = fmt.Sprintf("func (m1 %sf) Mul(c float32) %sf {\n\treturn %sf{", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] *c", i)
 		if i != (m*n)-1 {
@@ -298,13 +303,13 @@ func GenScalarMul(m,n int) (s string) {
 }
 
 func GenMatMul(m, n, o int) (s string) {
-	s = "func " + "(m1 " + GenMatName(m,n) + "f) Mul" + fmt.Sprintf("%d",n)
+	s = "func " + "(m1 " + GenMatName(m, n) + "f) Mul" + fmt.Sprintf("%d", n)
 
 	if n != o {
-		s += fmt.Sprintf("x%d",o)
+		s += fmt.Sprintf("x%d", o)
 	}
 
-	s += "(m2 " + GenMatName(n,o) + "f) " + GenMatName(m,o) + "f {\n\treturn " + GenMatName(m,o) + "f{"
+	s += "(m2 " + GenMatName(n, o) + "f) " + GenMatName(m, o) + "f {\n\treturn " + GenMatName(m, o) + "f{"
 	for j := 0; j < o; j++ { // For each element of the output array
 		for i := 0; i < m; i++ {
 			for k := 0; k < n; k++ { // For each element of the vector we're multiplying
@@ -320,24 +325,40 @@ func GenMatMul(m, n, o int) (s string) {
 	return s
 }
 
+func GenTranspose(m, n int) (s string) {
+	s = fmt.Sprintf("func (m1 %sf) Transpose() %sf {\n\treturn %sf{", GenMatName(m, n), GenMatName(n, m), GenMatName(n, m))
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < m; j++ {
+			s += fmt.Sprintf("m1[%d]", i+j*n)
+			if i != m-1 || j != n-1 {
+				s += ","
+			}
+		}
+	}
+	s += "}\n}\n\n"
+
+	return s
+}
+
 /*func GenDet(m,n int) (s string) {
 	s = fmt.Sprintf("func (m1 %s) Mul() float32 {\n\treturn %s{", GenMatName(m,n), GenMatName(n,o), GenMatName(m,o), GenMatName(m,o))
 }*/
 
 func GenMatName(m, n int) string {
 	if m == 1 {
-		return fmt.Sprintf("Vec%d",n)
+		return fmt.Sprintf("Vec%d", n)
 	}
-	
+
 	if n == 1 {
-		return fmt.Sprintf("Vec%d",m)
+		return fmt.Sprintf("Vec%d", m)
 	}
-	
-	s :=  fmt.Sprintf("Mat%d",m)
-	
+
+	s := fmt.Sprintf("Mat%d", m)
+
 	if m != n {
-		s +=  fmt.Sprintf("x%d",n)
+		s += fmt.Sprintf("x%d", n)
 	}
-	
+
 	return s
 }

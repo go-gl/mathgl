@@ -277,3 +277,39 @@ func (m1 Mat4d) Mul4x3(m2 Mat4x3d) Mat4x3d {
 func (m1 Mat4d) Mul4(m2 Mat4d) Mat4d {
 	return Mat4d{m1[0]*m2[0] + m1[4]*m2[1] + m1[8]*m2[2] + m1[12]*m2[3], m1[1]*m2[0] + m1[5]*m2[1] + m1[9]*m2[2] + m1[13]*m2[3], m1[2]*m2[0] + m1[6]*m2[1] + m1[10]*m2[2] + m1[14]*m2[3], m1[3]*m2[0] + m1[7]*m2[1] + m1[11]*m2[2] + m1[15]*m2[3], m1[0]*m2[4] + m1[4]*m2[5] + m1[8]*m2[6] + m1[12]*m2[7], m1[1]*m2[4] + m1[5]*m2[5] + m1[9]*m2[6] + m1[13]*m2[7], m1[2]*m2[4] + m1[6]*m2[5] + m1[10]*m2[6] + m1[14]*m2[7], m1[3]*m2[4] + m1[7]*m2[5] + m1[11]*m2[6] + m1[15]*m2[7], m1[0]*m2[8] + m1[4]*m2[9] + m1[8]*m2[10] + m1[12]*m2[11], m1[1]*m2[8] + m1[5]*m2[9] + m1[9]*m2[10] + m1[13]*m2[11], m1[2]*m2[8] + m1[6]*m2[9] + m1[10]*m2[10] + m1[14]*m2[11], m1[3]*m2[8] + m1[7]*m2[9] + m1[11]*m2[10] + m1[15]*m2[11], m1[0]*m2[12] + m1[4]*m2[13] + m1[8]*m2[14] + m1[12]*m2[15], m1[1]*m2[12] + m1[5]*m2[13] + m1[9]*m2[14] + m1[13]*m2[15], m1[2]*m2[12] + m1[6]*m2[13] + m1[10]*m2[14] + m1[14]*m2[15], m1[3]*m2[12] + m1[7]*m2[13] + m1[11]*m2[14] + m1[15]*m2[15]}
 }
+
+func (m1 Mat2d) Transpose() Mat2d {
+	return Mat2d{m1[0], m1[2], m1[1], m1[3]}
+}
+
+func (m1 Mat2x3d) Transpose() Mat3x2d {
+	return Mat3x2d{m1[0], m1[3], m1[1], m1[4], m1[2], m1[5]}
+}
+
+func (m1 Mat2x4d) Transpose() Mat4x2d {
+	return Mat4x2d{m1[0], m1[4], m1[1], m1[5], m1[2], m1[6], m1[3], m1[7]}
+}
+
+func (m1 Mat3x2d) Transpose() Mat2x3d {
+	return Mat2x3d{m1[0], m1[2], m1[4], m1[1], m1[3], m1[5]}
+}
+
+func (m1 Mat3d) Transpose() Mat3d {
+	return Mat3d{m1[0], m1[3], m1[6], m1[1], m1[4], m1[7], m1[2], m1[5], m1[8]}
+}
+
+func (m1 Mat3x4d) Transpose() Mat4x3d {
+	return Mat4x3d{m1[0], m1[4], m1[8], m1[1], m1[5], m1[9], m1[2], m1[6], m1[10], m1[3], m1[7], m1[11]}
+}
+
+func (m1 Mat4x2d) Transpose() Mat2x4d {
+	return Mat2x4d{m1[0], m1[2], m1[4], m1[6], m1[1], m1[3], m1[5], m1[7]}
+}
+
+func (m1 Mat4x3d) Transpose() Mat3x4d {
+	return Mat3x4d{m1[0], m1[3], m1[6], m1[9], m1[1], m1[4], m1[7], m1[10], m1[2], m1[5], m1[8], m1[11]}
+}
+
+func (m1 Mat4d) Transpose() Mat4d {
+	return Mat4d{m1[0], m1[4], m1[8], m1[12], m1[1], m1[5], m1[9], m1[13], m1[2], m1[6], m1[10], m1[14], m1[3], m1[7], m1[11], m1[15]}
+}
