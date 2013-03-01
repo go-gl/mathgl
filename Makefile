@@ -1,4 +1,4 @@
-all:	vectors matrices
+all:	vectors matrices quaternions
 
 vectors: vectorf vectord
 
@@ -53,3 +53,17 @@ matrixd: matrixf
 	gofmt -w=true -r="Ident3f -> Ident3d" matrixd.go
 	gofmt -w=true -r="Ident4f -> Ident4d" matrixd.go
 	gofmt -w=true -r="Identf -> Identd" matrixd.go
+
+quaternions: quatf quatd
+
+quatf: quatf.go
+	gofmt -w=true quatf.go
+
+quatd: quatf
+	cp quatf.go quatd.go
+	gofmt -w=true -r="float32 -> float64" quatd.go
+	gofmt -w=true -r="Vec3f -> Vec3d" quatd.go
+	gofmt -w=true -r="Quatf -> Quatd" quatd.go
+	gofmt -w=true -r="Mat4f -> Mat4d" quatd.go
+	gofmt -w=true -r="QuatIdentf -> QuatIdentd" quatd.go
+	gofmt -w=true -r="QuatRotatef -> QuatRotated" quatd.go
