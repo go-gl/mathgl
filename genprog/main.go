@@ -8,7 +8,7 @@ import (
 func main() {
 	fmt.Println("Making vectorf.go")
 	vecs := GenVec()
-	vecf,err := os.Create("vectorf.go")
+	vecf,err := os.Create("..vectorf.go")
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func main() {
 	fmt.Println("Making matrixf.go")
 	mats := GenMat()
 	//fmt.Println(mats)
-	matf,err := os.Create("matrixf.go")
+	matf,err := os.Create("..matrixf.go")
 	if err != nil {
 		panic(err)
 	}
@@ -68,6 +68,8 @@ func GenVec() (s string) {
 	for m := 2; m <= 4; m++ {
 		vecs += GenVecNormalize(m)
 	}
+	
+	vecs += GenVecCross()
 
 	/*for m := 2; m <= 4; m++ {
 		for o := 2; o <= 4; o++ {
@@ -76,6 +78,10 @@ func GenVec() (s string) {
 	}*/
 
 	return vecs
+}
+
+func GenVecCross() string {
+	return "func (v1 Vec3f) Cross(v2 Vec3f) Vec3f {\n\treturn Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}\n}\n\n"
 }
 
 func GenVecDef(m int) (s string) {
@@ -186,6 +192,10 @@ func VecName(m int) (s string) {
 
 func GenMat() string {
 	mats := "package mathgl\n\nimport(\n\t //\"math\"\n)\n\n"
+	
+	for m := 2; m <= 4; m++ {
+		mats += GenMatIden(m)
+	}
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
@@ -221,6 +231,28 @@ func GenMat() string {
 	}
 
 	return mats
+}
+
+func GenMatIden(m int) (s string) {
+	s = fmt.Sprintf("func Ident%df() %sf {\n\treturn %sf{", m, GenMatName(m,m), GenMatName(m,m))
+	
+	for i := 0; i < m; i++ {
+		for j := 0; j < m; j++ {
+			if i != j {
+				s += "0"
+			} else {
+				s += "1"
+			}
+			
+			if i != m-1 || j != m-1 {
+				s += ","
+			}
+		}
+	}
+	
+	s += "}\n}\n\n"
+	
+	return s
 }
 
 func GenMatDef(m,n int) (s string) {
