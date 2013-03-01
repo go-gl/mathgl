@@ -5,7 +5,7 @@ import (
 	"github.com/Jragonmiris/mathgl"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
-	"io/ioutil"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"os"
 )
 
@@ -27,8 +27,8 @@ func main() {
 		return
 	}
 
-	// glewExperimental=true ?
 	gl.Init() // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
+	gl.GetError() // Ignore error
 
 	glfw.SetWindowTitle("Tutorial 03")
 
@@ -39,7 +39,7 @@ func main() {
 	defer vertexArray.Delete()
 	vertexArray.Bind()
 
-	prog := MakeProgram("SimpleTransform.vertexshader", "SingleColor.fragmentshader")
+	prog := helper.MakeProgram("SimpleTransform.vertexshader", "SingleColor.fragmentshader")
 	defer prog.Delete()
 
 	matrixID := prog.GetUniformLocation("MVP")
@@ -85,32 +85,4 @@ func main() {
 		glfw.SwapBuffers()
 	}
 
-}
-
-func MakeProgram(vertFname, fragFname string) gl.Program {
-	vertSource, err := ioutil.ReadFile(vertFname)
-	if err != nil {
-		panic(err)
-	}
-
-	fragSource, err := ioutil.ReadFile(fragFname)
-	if err != nil {
-		panic(err)
-	}
-
-	vertShader, fragShader := gl.CreateShader(gl.VERTEX_SHADER), gl.CreateShader(gl.FRAGMENT_SHADER)
-	vertShader.Source(string(vertSource))
-	fragShader.Source(string(fragSource))
-
-	vertShader.Compile()
-	fragShader.Compile()
-
-	prog := gl.CreateProgram()
-	prog.AttachShader(vertShader)
-	prog.AttachShader(fragShader)
-	prog.Link()
-	prog.Validate()
-	fmt.Println(prog.GetInfoLog())
-
-	return prog
 }

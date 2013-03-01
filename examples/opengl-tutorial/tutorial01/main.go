@@ -25,6 +25,7 @@ func main() {
 	}
 
 	gl.Init()
+	gl.GetError() // Ignore error
 
 	glfw.SetWindowTitle("Tutorial 01")
 	glfw.Enable(glfw.StickyKeys)
