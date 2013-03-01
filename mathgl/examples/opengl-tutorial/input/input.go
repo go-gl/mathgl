@@ -1,7 +1,7 @@
 package input
 
 import (
-	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/mathgl"
 	"github.com/go-gl/glfw"
 	"math"
 )

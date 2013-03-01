@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
+	"github.com/Jragonmiris/mathgl/mathgl"
+	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/input"
+	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	// "github.com/go-gl/glh"
@@ -74,15 +74,6 @@ func main() {
 
 	//fmt.Println(len(vertices)*4, len(uvs), len(normals))
 
-	// Try copying this block around and deleting the "*3" part in the buffer data
-	// it will suddenly work after normBuffer, and be strange in a DIFFERENT way after uvBuffer
-	vertexBuffer := gl.GenBuffer()
-	defer vertexBuffer.Delete()
-	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	// There appears to be a driver bug with my Radeon HD 7970 on drivers 13.1,
-	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
-	// On other cards this should work with just len(vertices)*4.
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
@@ -94,6 +85,16 @@ func main() {
 	defer normBuffer.Delete()
 	normBuffer.Bind(gl.ARRAY_BUFFER)
 	gl.BufferData(gl.ARRAY_BUFFER, len(normals)*4, normals, gl.STATIC_DRAW)
+	
+	// Try copying this block around and adding "*3" to the size argument
+	// it will suddenly work after normBuffer, and break before normBuffer or uvBuffer
+	vertexBuffer := gl.GenBuffer()
+	defer vertexBuffer.Delete()
+	vertexBuffer.Bind(gl.ARRAY_BUFFER)
+	// There appears to be a driver bug with my Radeon HD 7970 on drivers 13.1,
+	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
+	// On other cards this should work with just len(vertices)*4.
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
 
 	lightID := prog.GetUniformLocation("LightPosition_worldspace")
 

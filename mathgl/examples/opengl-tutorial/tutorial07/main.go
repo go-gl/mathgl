@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
+	"github.com/Jragonmiris/mathgl/mathgl"
+	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/input"
+	"github.com/Jragonmiris/mathgl/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	// "github.com/go-gl/glh"
@@ -63,13 +63,19 @@ func main() {
 
 	matrixID := prog.GetUniformLocation("MVP")
 
-	texture := MakeTextureFromTGA("colormap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
+	texture := MakeTextureFromTGA("uvmap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
-	meshObj := objloader.LoadObject("suzanne.obj")
+	meshObj := objloader.LoadObject("cube.obj")
 	vertices, uvs := meshObj.Vertices, meshObj.UVs
 
+	uvBuffer := gl.GenBuffer()
+	defer uvBuffer.Delete()
+	uvBuffer.Bind(gl.ARRAY_BUFFER)
+	// UV doesn't seem to care
+	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
+	
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
@@ -77,12 +83,6 @@ func main() {
 	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
 	// On other cards this should work with just len(vertices)*4.
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
-
-	uvBuffer := gl.GenBuffer()
-	defer uvBuffer.Delete()
-	uvBuffer.Bind(gl.ARRAY_BUFFER)
-	// UV doesn't seem to care
-	gl.BufferData(gl.ARRAY_BUFFER, len(uvs)*4, uvs, gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
 	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
