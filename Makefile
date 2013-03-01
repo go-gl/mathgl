@@ -12,16 +12,16 @@ vectord: vectorf
 	gofmt -w=true -r="Vec3f -> Vec3d" vectord.go
 	gofmt -w=true -r="Vec4f -> Vec4d" vectord.go
 	gofmt -w=true -r="Vecf -> Vecd" vectord.go
-	gofmt -w=true -r="Matrix2f -> Matrix2d" vectord.go
-	gofmt -w=true -r="Matrix3f -> Matrix3d" vectord.go
-	gofmt -w=true -r="Matrix4f -> Matrix4d" vectord.go
-	gofmt -w=true -r="Matrix2x3f -> Matrix2x3d" vectord.go
-	gofmt -w=true -r="Matrix2x4f -> Matrix2x4d" vectord.go
-	gofmt -w=true -r="Matrix3x2f -> Matrix3x2d" vectord.go
-	gofmt -w=true -r="Matrix3x4f -> Matrix3x4d" vectord.go
-	gofmt -w=true -r="Matrix4x2f -> Matrix4x2d" vectord.go
-	gofmt -w=true -r="Matrix4x3f -> Matrix4x3d" vectord.go
-	gofmt -w=true -r="Matrixf -> Matrixd" vectord.go
+	gofmt -w=true -r="Mat2f -> Mat2d" vectord.go
+	gofmt -w=true -r="Mat3f -> Mat3d" vectord.go
+	gofmt -w=true -r="Mat4f -> Mat4d" vectord.go
+	gofmt -w=true -r="Mat2x3f -> Mat2x3d" vectord.go
+	gofmt -w=true -r="Mat2x4f -> Mat2x4d" vectord.go
+	gofmt -w=true -r="Mat3x2f -> Mat3x2d" vectord.go
+	gofmt -w=true -r="Mat3x4f -> Mat3x4d" vectord.go
+	gofmt -w=true -r="Mat4x2f -> Mat4x2d" vectord.go
+	gofmt -w=true -r="Mat4x3f -> Mat4x3d" vectord.go
+	gofmt -w=true -r="Matf -> Matd" vectord.go
 	gofmt -w=true -r="Ident2f -> Ident2d" vectord.go
 	gofmt -w=true -r="Ident3f -> Ident3d" vectord.go
 	gofmt -w=true -r="Ident4f -> Ident4d" vectord.go
@@ -39,16 +39,16 @@ matrixd: matrixf
 	gofmt -w=true -r="Vec3f -> Vec3d" matrixd.go
 	gofmt -w=true -r="Vec4f -> Vec4d" matrixd.go
 	gofmt -w=true -r="Vecf -> Vecd" matrixd.go
-	gofmt -w=true -r="Matrix2f -> Matrix2d" matrixd.go
-	gofmt -w=true -r="Matrix3f -> Matrix3d" matrixd.go
-	gofmt -w=true -r="Matrix4f -> Matrix4d" matrixd.go
-	gofmt -w=true -r="Matrix2x3f -> Matrix2x3d" matrixd.go
-	gofmt -w=true -r="Matrix2x4f -> Matrix2x4d" matrixd.go
-	gofmt -w=true -r="Matrix3x2f -> Matrix3x2d" matrixd.go
-	gofmt -w=true -r="Matrix3x4f -> Matrix3x4d" matrixd.go
-	gofmt -w=true -r="Matrix4x2f -> Matrix4x2d" matrixd.go
-	gofmt -w=true -r="Matrix4x3f -> Matrix4x3d" matrixd.go
-	gofmt -w=true -r="Matrixf -> Matrixd" matrixd.go
+	gofmt -w=true -r="Mat2f -> Mat2d" matrixd.go
+	gofmt -w=true -r="Mat3f -> Mat3d" matrixd.go
+	gofmt -w=true -r="Mat4f -> Mat4d" matrixd.go
+	gofmt -w=true -r="Mat2x3f -> Mat2x3d" matrixd.go
+	gofmt -w=true -r="Mat2x4f -> Mat2x4d" matrixd.go
+	gofmt -w=true -r="Mat3x2f -> Mat3x2d" matrixd.go
+	gofmt -w=true -r="Mat3x4f -> Mat3x4d" matrixd.go
+	gofmt -w=true -r="Mat4x2f -> Mat4x2d" matrixd.go
+	gofmt -w=true -r="Mat4x3f -> Mat4x3d" matrixd.go
+	gofmt -w=true -r="Matf -> Matd" matrixd.go
 	gofmt -w=true -r="Ident2f -> Ident2d" matrixd.go
 	gofmt -w=true -r="Ident3f -> Ident3d" matrixd.go
 	gofmt -w=true -r="Ident4f -> Ident4d" matrixd.go

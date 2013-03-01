@@ -84,6 +84,6 @@ func (v1 Vec4f) Normalize() Vec4f {
 }
 
 func (v1 Vec3f) Cross(v2 Vec3f) Vec3f {
-	return Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}
+	return Vec3f{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}
 }
 
