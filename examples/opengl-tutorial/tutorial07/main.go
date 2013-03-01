@@ -73,9 +73,6 @@ func main() {
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	// There appears to be a driver bug with my Radeon HD 7970 on drivers 13.1,
-	// This only works if it is allocated after normBuffer OR the size is len(vertices)*4*3
-	// On other cards this should work with just len(vertices)*4.
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
 
 	uvBuffer := gl.GenBuffer()
