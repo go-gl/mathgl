@@ -1,9 +1,9 @@
 package helper
 
 import (
-	"github.com/go-gl/glh"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
+	"github.com/go-gl/glh"
 	"io/ioutil"
 )
 

@@ -55,7 +55,7 @@ func main() {
 
 	Model := mathgl.Ident4f()
 
-	MVP := Projection.Mul4(View).Mul4(Model)                   // Remember, transform multiplication order is "backwards"
+	MVP := Projection.Mul4(View).Mul4(Model) // Remember, transform multiplication order is "backwards"
 
 	texture := helper.MakeTextureFromTGA("uvtemplate.tga")
 	defer texture.Delete()

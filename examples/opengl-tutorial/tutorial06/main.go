@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/Jragonmiris/mathgl"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	"os"

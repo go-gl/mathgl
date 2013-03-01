@@ -74,7 +74,6 @@ func main() {
 
 	//fmt.Println(len(vertices)*4, len(uvs), len(normals))
 
-
 	uvBuffer := gl.GenBuffer()
 	defer uvBuffer.Delete()
 	uvBuffer.Bind(gl.ARRAY_BUFFER)
@@ -85,7 +84,7 @@ func main() {
 	defer normBuffer.Delete()
 	normBuffer.Bind(gl.ARRAY_BUFFER)
 	gl.BufferData(gl.ARRAY_BUFFER, len(normals)*4, normals, gl.STATIC_DRAW)
-	
+
 	// Try copying this block around and adding "*3" to the size argument
 	// it will suddenly work after normBuffer, and break before normBuffer or uvBuffer
 	vertexBuffer := gl.GenBuffer()

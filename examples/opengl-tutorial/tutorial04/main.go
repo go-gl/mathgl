@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"os"
 )
 
@@ -53,7 +53,7 @@ func main() {
 
 	Model := mathgl.Ident4f()
 
-	MVP := Projection.Mul4(View).Mul4(Model)                   // Remember, transform multiplication order is "backwards"
+	MVP := Projection.Mul4(View).Mul4(Model) // Remember, transform multiplication order is "backwards"
 
 	vBufferData := [...]float32{
 		-1.0, -1.0, -1.0,

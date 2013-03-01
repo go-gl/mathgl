@@ -3,8 +3,8 @@ package objloader
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"github.com/Jragonmiris/mathgl"
+	"os"
 )
 
 type MeshObject struct {

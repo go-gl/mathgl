@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
 	"os"
@@ -65,7 +65,7 @@ func main() {
 
 	meshObj := objloader.LoadObject("cube.obj")
 	vertices, uvs := meshObj.Vertices, meshObj.UVs
-	
+
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)

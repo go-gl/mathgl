@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"os"
 )
 
@@ -26,7 +26,7 @@ func main() {
 		return
 	}
 
-	gl.Init() // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
+	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
 	gl.GetError() // Ignore error
 
 	glfw.SetWindowTitle("Tutorial 02")

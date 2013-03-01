@@ -21,7 +21,7 @@ const (
 )
 
 func NewCamera() *Camera {
-	return &Camera{pos: mathgl.Vec3f{0.,0.,5.}, hAngle: math.Pi, vAngle: 0.0, time: -1.0} // Make time -1 since it will never naturally be, this acts as a "first time?" flag
+	return &Camera{pos: mathgl.Vec3f{0., 0., 5.}, hAngle: math.Pi, vAngle: 0.0, time: -1.0} // Make time -1 since it will never naturally be, this acts as a "first time?" flag
 }
 
 // Since go has multiple return values, I just went ahead and made it return the view and perspective matrices (in that order) rather than messing with getter methods
@@ -40,14 +40,14 @@ func (c *Camera) ComputeViewPerspective() (mathgl.Mat4f, mathgl.Mat4f) {
 	c.vAngle += mouseSpeed * ((height / 2.0) - float64(yPos))
 
 	dir := mathgl.Vec3f{
-		float32(math.Cos(c.vAngle)*math.Sin(c.hAngle)),
+		float32(math.Cos(c.vAngle) * math.Sin(c.hAngle)),
 		float32(math.Sin(c.vAngle)),
-		float32(math.Cos(c.vAngle)*math.Cos(c.hAngle))}
+		float32(math.Cos(c.vAngle) * math.Cos(c.hAngle))}
 
 	right := mathgl.Vec3f{
-		float32(math.Sin(c.hAngle-math.Pi/2.0)),
+		float32(math.Sin(c.hAngle - math.Pi/2.0)),
 		0.0,
-		float32(math.Cos(c.hAngle-math.Pi/2.0))}
+		float32(math.Cos(c.hAngle - math.Pi/2.0))}
 
 	up := right.Cross(dir)
 

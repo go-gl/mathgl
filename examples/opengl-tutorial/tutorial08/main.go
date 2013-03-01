@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/Jragonmiris/mathgl"
+	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
 	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
 	"os"
 )
 
@@ -68,7 +68,6 @@ func main() {
 	meshObj := objloader.LoadObject("suzanne.obj")
 	vertices, uvs, normals := meshObj.Vertices, meshObj.UVs, meshObj.Normals
 
-	
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
