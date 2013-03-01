@@ -1,7 +1,7 @@
 language: go
 
 script:
- - go test -v
+ - go test
 
 after_failure: failure
 after_error: failure
