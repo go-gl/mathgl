@@ -67,3 +67,6 @@ quatd: quatf
 	gofmt -w=true -r="Mat4f -> Mat4d" quatd.go
 	gofmt -w=true -r="QuatIdentf -> QuatIdentd" quatd.go
 	gofmt -w=true -r="QuatRotatef -> QuatRotated" quatd.go
+	gofmt -w=true -r="QuatSlerpf -> QuatSlerpd" quatd.go
+	gofmt -w=true -r="QuatLerpf -> QuatLerpd" quatd.go
+	gofmt -w=true -r="QuatNlerpf -> QuatNlerpd" quatd.go

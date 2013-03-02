@@ -60,3 +60,24 @@ func FloatEqualThreshold32(a, b, epsilon float32) bool {
 	// Else compare difference
 	return math.Abs(float64(a-b))/(math.Abs(float64(a))+math.Abs(float64(b))) < float64(epsilon)
 }
+
+func Clampf(a, t1, t2 float32) float32 {
+	if a > t1 {
+		return t1
+	} else if a < t2 {
+		return t2
+	}
+
+	return a
+}
+
+func Clampd(a, t1, t2 float64) float64{
+	if a > t1 {
+		return t1
+	} else if a < t2 {
+		return t2
+	}
+
+	return a
+
+}
