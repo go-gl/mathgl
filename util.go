@@ -62,9 +62,9 @@ func FloatEqualThreshold32(a, b, epsilon float32) bool {
 }
 
 func Clampf(a, t1, t2 float32) float32 {
-	if a > t1 {
+	if a < t1 {
 		return t1
-	} else if a < t2 {
+	} else if a > t2 {
 		return t2
 	}
 
@@ -72,9 +72,9 @@ func Clampf(a, t1, t2 float32) float32 {
 }
 
 func Clampd(a, t1, t2 float64) float64{
-	if a > t1 {
+	if a < t1 {
 		return t1
-	} else if a < t2 {
+	} else if a > t2 {
 		return t2
 	}
 
