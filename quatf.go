@@ -77,7 +77,6 @@ func (q1 Quatf) Normalize() Quatf {
 
 func (q1 Quatf) Inverse() Quatf {
 	return q1.Conjugate()
-
 }
 
 func (q1 Quatf) Rotate(v Vec3f) Vec3f {
