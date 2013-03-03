@@ -76,7 +76,8 @@ func (q1 Quatf) Normalize() Quatf {
 }
 
 func (q1 Quatf) Inverse() Quatf {
-	return Quatf{q1.w, q1.v.Mul(-1)}.Scale(1 / q1.Len())
+	leng := q1.Len()
+	return Quatf{q1.w, q1.v.Mul(-1)}.Scale(1 / (leng * leng))
 }
 
 func (q1 Quatf) Rotate(v Vec3f) Vec3f {
