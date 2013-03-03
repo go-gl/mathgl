@@ -76,7 +76,7 @@ func (q1 Quatd) Normalize() Quatd {
 }
 
 func (q1 Quatd) Inverse() Quatd {
-	return Quatd{q1.w, q1.v.Mul(-1)}
+	return Quatd{q1.w, q1.v.Mul(-1)}.Scale(1 / q1.Len())
 }
 
 func (q1 Quatd) Rotate(v Vec3d) Vec3d {
