@@ -76,7 +76,6 @@ func (q1 Quatf) Normalize() Quatf {
 }
 
 func (q1 Quatf) Inverse() Quatf {
-	q1 = q1.Normalize()
 	return q1.Conjugate()
 
 }
