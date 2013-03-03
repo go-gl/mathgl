@@ -81,7 +81,7 @@ func (q1 Quatd) Inverse() Quatd {
 }
 
 func (q1 Quatd) Rotate(v Vec3d) Vec3d {
-	return q1.Mul(Quatd{0, v}).Mul(q1.Inverse()).v
+	return q1.Mul(Quatd{0, v}).Mul(q1.Conjugate()).v
 }
 
 func (q1 Quatd) Mat4() Mat4d {
