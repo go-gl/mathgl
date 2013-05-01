@@ -2,8 +2,6 @@ language: go
 
 script:
  - go build -v
-
-after-script:
  - go test -v
 
 after_failure: failure
