@@ -5,6 +5,7 @@ before_script:
  - mv ./* /tmp/gopath/src/github.com/Jragonmiris/mathgl
  - export "GOPATH=/tmp/gopath"
  - export "GOSRC=$GOPATH/src"
+ - cd $GOSRC/github.com/Jragonmiris/mathgl
 
 script:
  - go build -v
