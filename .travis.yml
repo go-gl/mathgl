@@ -1,7 +1,11 @@
 language: go
 
+before_script:
+ - mkdir github.com/Jragonmiris/mathgl
+ - mv github.com/Jragonmiris/* github.com/Jragonmiris/mathgl
+
 script:
- - go test
+ - go test -v
 
 after_failure: failure
 after_error: failure
