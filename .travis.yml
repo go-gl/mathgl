@@ -1,8 +1,9 @@
 language: go
 
 before_script:
- - mkdir github.com/Jragonmiris/mathgl
- - mv github.com/Jragonmiris/* github.com/Jragonmiris/mathgl
+ - cd ../..
+ - mkdir -p github.com/Jragonmiris/mathgl
+ - mv Jragonmiris/mathgl/* github.com/Jragonmiris/mathgl
 
 script:
  - go test -v
