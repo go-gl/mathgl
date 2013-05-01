@@ -1,12 +1,9 @@
 language: go
 
-before_script:
- - cd ../..
- - mkdir -p github.com/Jragonmiris/mathgl
- - mv Jragonmiris/mathgl/* github.com/Jragonmiris/mathgl
- - cd github.com/Jragonmiris/mathgl
-
 script:
+ - go build -v
+
+after-script:
  - go test -v
 
 after_failure: failure
@@ -16,5 +13,5 @@ notifications:
   email:
     recipients:
       - jragonmiris@gmail.com
-    on_success: always
+    on_success: change
     on_failure: always
