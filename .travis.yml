@@ -1,5 +1,11 @@
 language: go
 
+before_script:
+ - mkdir -p /tmp/gopath/src/github.com/Jragonmiris/mathgl
+ - mv ./* /tmp/gopath/src/github.com/Jragonmiris/mathgl
+ - export "GOPATH=/tmp/gopath"
+ - export "GOSRC=$GOPATH/src"
+
 script:
  - go build -v
  - go test -v
