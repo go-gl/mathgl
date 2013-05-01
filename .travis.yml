@@ -4,6 +4,7 @@ before_script:
  - cd ../..
  - mkdir -p github.com/Jragonmiris/mathgl
  - mv Jragonmiris/mathgl/* github.com/Jragonmiris/mathgl
+ - cd github.com/Jragonmiris/mathgl
 
 script:
  - go test -v
