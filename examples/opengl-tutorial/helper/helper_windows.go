@@ -3,6 +3,8 @@ package helper
 import (
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw"
+	"io/ioutil"
+	"fmt"
 )
 
 func MakeProgram(vertFname, fragFname string) gl.Program {

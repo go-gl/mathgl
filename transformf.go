@@ -96,7 +96,7 @@ func HomogRotate3DY(angle float64) Mat4f {
 func HomogRotate3DZ(angle float64) Mat4f {
 	angle = (angle * math.Pi) / 180.0
 	sin, cos := float32(math.Sin(angle)), float32(math.Cos(angle))
-	return Mat4f{cos, -sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
+	return Mat4f{cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
 }
 
 // Scale3D creates a homogeneous 3D scaling matrix
