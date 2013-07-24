@@ -32,6 +32,18 @@ func FloatEqual32(a, b float32) bool {
 	return math.Abs(float64(a-b))/(math.Abs(float64(a))+math.Abs(float64(b))) < epsilon
 }
 
+func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
+	return func(a, b float64) bool {
+		return FloatEqualThreshold(a, b, epsilon)
+	}
+}
+
+func FloatEqual32Func(epsilon float32) func(float32, float32) bool {
+	return func(a, b float32) bool {
+		return FloatEqualThreshold32(a, b, epsilon)
+	}
+}
+
 // FloatEqualThreshold is a utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
 //
@@ -71,7 +83,7 @@ func Clampf(a, t1, t2 float32) float32 {
 	return a
 }
 
-func Clampd(a, t1, t2 float64) float64{
+func Clampd(a, t1, t2 float64) float64 {
 	if a < t1 {
 		return t1
 	} else if a > t2 {
