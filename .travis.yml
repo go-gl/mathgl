@@ -4,8 +4,8 @@ go:
  - 1.1
 
 script:
- - go get -d -v ./... && go build -v ./...
- - go test -v ./...
+ - go get -d -v . && go build -v .
+ - go test -v .
  - gofmt -d .
 
 after_failure: failure
