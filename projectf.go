@@ -1,6 +1,7 @@
 package mathgl
 
 import (
+	"errors"
 	"math"
 )
 
@@ -95,4 +96,29 @@ func LookAtV(eye, center, up Vec3f) Mat4f {
 	M := Mat4f{s[0], u[0], -f[0], 0, s[1], u[1], -f[1], 0, s[2], u[2], -f[2], 0, 0, 0, 0, 1}
 
 	return M.Mul4(Translate3D(float64(-eye[0]), float64(-eye[1]), float64(-eye[2])))
+}
+
+func Projectf(obj Vec3f, modelview, projection Mat4f, initialX, initialY, width, height int) (win Vec3f) {
+	obj4 := Vec4f{obj[0], obj[1], obj[2], 1.0}
+
+	vpp := projection.Mul4(modelview).Mul4x1(obj4)
+	win[0] = float32(initialX) + (float32(width)*(vpp[0]+1))/2
+	win[1] = float32(initialY) + (float32(height)*(vpp[1]+1))/2
+	win[2] = (vpp[2] + 1) / 2
+
+	return win
+}
+
+func UnProjectf(win Vec3f, modelview, projection Mat4f, initialX, initialY, width, height int) (obj Vec3f, err error) {
+	inv := projection.Mul4(modelview).Inv()
+	blank := Mat4f{}
+	if inv == blank {
+		return Vec3f{}, errors.New("Could not find matrix inverse (projection times modelview is probably non-singular)")
+	}
+
+	obj[0] = (2 * (win[0] - float32(initialX)) / float32(width)) - 1
+	obj[1] = (2 * (win[1] - float32(initialY)) / float32(height)) - 1
+	obj[2] = 2*win[2] - 1
+
+	return obj, nil
 }

@@ -392,8 +392,8 @@ func GenDet(m int) string {
 
 func GenInv(m int) string {
 	s := fmt.Sprintf("func (m %sf) Inv() %sf {\n\t", GenMatName(m, m), GenMatName(m, m))
-	s += "det := m.Det()\n\t if FloatEqual32(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "{}\n\t}\n\t"
-	s += "retMat := " + GenMatName(m, m) + "{"
+	s += "det := m.Det()\n\t if FloatEqual32(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "f{}\n\t}\n\t"
+	s += "retMat := " + GenMatName(m, m) + "f{"
 
 	switch m {
 	case 2:
@@ -419,7 +419,7 @@ func GenInv(m int) string {
 			"-m[2] * m[5] * m[8] +m[1] * m[6] * m[8] +m[2] * m[4] * m[9] -m[0] * m[6] * m[9] -m[1] * m[4] * m[10] +m[0] * m[5] * m[10]"
 	}
 
-	s += "}\n\t return retMat.ScalarMul(1/det)\n}\n\n"
+	s += "}\n\t return retMat.Mul(1/det)\n}\n\n"
 
 	return s
 }
