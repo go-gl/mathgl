@@ -1,15 +1,12 @@
 language: go
 
-before_script:
- - mkdir -p /tmp/gopath/src/github.com/Jragonmiris/mathgl
- - mv ./* /tmp/gopath/src/github.com/Jragonmiris/mathgl
- - export "GOPATH=/tmp/gopath"
- - export "GOSRC=$GOPATH/src"
- - cd $GOSRC/github.com/Jragonmiris/mathgl
+go:
+ - 1.1
 
 script:
- - go build -v
- - go test -v
+ - go get -d -v ./... && go build -v ./...
+ - go test -v ./...
+ - gofmt -d .
 
 after_failure: failure
 after_error: failure
