@@ -35,6 +35,7 @@ matrixf: matrixf.go
 matrixd: matrixf
 	cp matrixf.go matrixd.go
 	gofmt -w=true -r="float32 -> float64" matrixd.go
+	gofmt -w=true -r="FloatEqual32 -> FloatEqual" matrixd.go
 	gofmt -w=true -r="Vec2f -> Vec2d" matrixd.go
 	gofmt -w=true -r="Vec3f -> Vec3d" matrixd.go
 	gofmt -w=true -r="Vec4f -> Vec4d" matrixd.go

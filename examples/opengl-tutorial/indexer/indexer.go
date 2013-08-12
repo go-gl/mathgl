@@ -12,7 +12,6 @@ type PackedVertex struct {
 	Norm     mathgl.Vec3f
 }
 
-
 // Only implementing the fast version
 func IndexVBO(vertices []mathgl.Vec3f, uvs []mathgl.Vec2f, normals []mathgl.Vec3f) (outIndices []uint16, outVertices []mathgl.Vec3f, outUVs []mathgl.Vec2f, outNorms []mathgl.Vec3f) {
 	vertToOutIndex := make(map[PackedVertex]uint16, 0)
@@ -61,10 +60,10 @@ func SimilarVertexIndexSlow(vertex mathgl.Vec3f, uv mathgl.Vec2f, normal mathgl.
 		if mathgl.FloatEqualThreshold32(vertex[0], vertices[i][0], .01) && mathgl.FloatEqualThreshold32(vertex[1], vertices[i][1], .01) && mathgl.FloatEqualThreshold32(vertex[2], vertices[i][2], .01) &&
 			mathgl.FloatEqualThreshold32(uv[0], uvs[i][0], .01) && mathgl.FloatEqualThreshold32(uv[1], uvs[i][1], .01) &&
 			mathgl.FloatEqualThreshold32(normal[0], normals[i][0], .01) && mathgl.FloatEqualThreshold32(normal[1], normals[i][1], .01) && mathgl.FloatEqualThreshold32(normal[2], normals[i][2], .01) {
-			return uint16(i),true
+			return uint16(i), true
 		}
 	}
 	// No other vertex could be used instead.
 	// Looks like we'll have to add it to the VBO.
-	return uint16(0),false;
+	return uint16(0), false
 }
