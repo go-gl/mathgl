@@ -42,7 +42,7 @@ func (q1 Quatd) Sub(q2 Quatd) Quatd {
 }
 
 func (q1 Quatd) Mul(q2 Quatd) Quatd {
-	return Quatd{q1.W * q1.V.Dot(q2.V), q1.V.Cross(q2.V).Add(q2.V.Mul(q1.W)).Add(q1.V.Mul(q2.W))}
+	return Quatd{q1.W - q1.V.Dot(q2.V), q1.V.Cross(q2.V).Add(q2.V.Mul(q1.W)).Add(q1.V.Mul(q2.W))}
 }
 
 func (q1 Quatd) Scale(c float64) Quatd {
@@ -78,7 +78,7 @@ func (q1 Quatd) Rotate(v Vec3d) Vec3d {
 
 func (q1 Quatd) Mat4() Mat4d {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
-	return Mat4d{1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0, 2*x*y - 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z - 2*w*x, 0, 2*x*z + 2*w*y, 2*y*z + 2*w*z, 2*x*x - 2*y*y, 0, 0, 0, 0, 1}
+	return Mat4d{1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0, 2*x*y - 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z - 2*w*x, 0, 2*x*z + 2*w*y, 2*y*z + 2*w*x, 1 - 2*x*x - 2*y*y, 0, 0, 0, 0, 1}
 }
 
 func (q1 Quatd) Dot(q2 Quatd) float64 {
