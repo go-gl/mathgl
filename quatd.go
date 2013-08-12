@@ -5,8 +5,8 @@ import (
 )
 
 type Quatd struct {
-	w float64
-	v Vec3d
+	W float64
+	V Vec3d
 }
 
 func QuatIdentd() Quatd {
@@ -21,48 +21,40 @@ func QuatRotated(angle float64, axis Vec3d) Quatd {
 	return Quatd{c, axis.Mul(s)}
 }
 
-func (q Quatd) W() float64 {
-	return q.w
-}
-
-func (q Quatd) V() Vec3d {
-	return q.v
-}
-
 func (q Quatd) X() float64 {
-	return q.v[0]
+	return q.V[0]
 }
 
 func (q Quatd) Y() float64 {
-	return q.v[1]
+	return q.V[1]
 }
 
 func (q Quatd) Z() float64 {
-	return q.v[2]
+	return q.V[2]
 }
 
 func (q1 Quatd) Add(q2 Quatd) Quatd {
-	return Quatd{q1.w + q2.w, q1.v.Add(q2.v)}
+	return Quatd{q1.W + q2.W, q1.V.Add(q2.V)}
 }
 
 func (q1 Quatd) Sub(q2 Quatd) Quatd {
-	return Quatd{q1.w - q2.w, q1.v.Sub(q2.v)}
+	return Quatd{q1.W - q2.W, q1.V.Sub(q2.V)}
 }
 
 func (q1 Quatd) Mul(q2 Quatd) Quatd {
-	return Quatd{q1.w * q1.v.Dot(q2.v), q1.v.Cross(q2.v).Add(q2.v.Mul(q1.w)).Add(q1.v.Mul(q2.w))}
+	return Quatd{q1.W * q1.V.Dot(q2.V), q1.V.Cross(q2.V).Add(q2.V.Mul(q1.W)).Add(q1.V.Mul(q2.W))}
 }
 
 func (q1 Quatd) Scale(c float64) Quatd {
-	return Quatd{q1.w * c, Vec3d{q1.v[0] * c, q1.v[1] * c, q1.v[2] * c}}
+	return Quatd{q1.W * c, Vec3d{q1.V[0] * c, q1.V[1] * c, q1.V[2] * c}}
 }
 
 func (q1 Quatd) Conjugate() Quatd {
-	return Quatd{q1.w, q1.v.Mul(-1)}
+	return Quatd{q1.W, q1.V.Mul(-1)}
 }
 
 func (q1 Quatd) Len() float64 {
-	return float64(math.Sqrt(float64(q1.w*q1.w + q1.v[0]*q1.v[0] + q1.v[1]*q1.v[1] + q1.v[2]*q1.v[2])))
+	return float64(math.Sqrt(float64(q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2])))
 }
 
 func (q1 Quatd) Normalize() Quatd {
@@ -72,25 +64,25 @@ func (q1 Quatd) Normalize() Quatd {
 		return q1
 	}
 
-	return Quatd{q1.w * 1 / length, q1.v.Mul(1 / length)}
+	return Quatd{q1.W * 1 / length, q1.V.Mul(1 / length)}
 }
 
 func (q1 Quatd) Inverse() Quatd {
 	leng := q1.Len()
-	return Quatd{q1.w, q1.v.Mul(-1)}.Scale(1 / (leng * leng))
+	return Quatd{q1.W, q1.V.Mul(-1)}.Scale(1 / (leng * leng))
 }
 
 func (q1 Quatd) Rotate(v Vec3d) Vec3d {
-	return q1.Mul(Quatd{0, v}).Mul(q1.Conjugate()).v
+	return q1.Mul(Quatd{0, v}).Mul(q1.Conjugate()).V
 }
 
 func (q1 Quatd) Mat4() Mat4d {
-	w, x, y, z := q1.w, q1.v[0], q1.v[1], q1.v[2]
+	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
 	return Mat4d{1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0, 2*x*y - 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z - 2*w*x, 0, 2*x*z + 2*w*y, 2*y*z + 2*w*z, 2*x*x - 2*y*y, 0, 0, 0, 0, 1}
 }
 
 func (q1 Quatd) Dot(q2 Quatd) float64 {
-	return q1.w*q1.w + q1.v[0]*q1.v[0] + q1.v[1]*q1.v[1] + q1.v[2]*q1.v[2]
+	return q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2]
 }
 
 func QuatSlerpd(q1, q2 Quatd, amount float64) Quatd {
