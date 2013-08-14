@@ -86,3 +86,84 @@ func (v1 Vec4d) Normalize() Vec4d {
 func (v1 Vec3d) Cross(v2 Vec3d) Vec3d {
 	return Vec3d{v1[1]*v2[2] - v1[2]*v2[1], v1[2]*v2[0] - v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}
 }
+
+func (v1 Vec2d) ApproxEqual(v2 Vec2d) bool {
+	for i := range v1 {
+		if !FloatEqual(v1[i], v2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec3d) ApproxEqual(v2 Vec3d) bool {
+	for i := range v1 {
+		if !FloatEqual(v1[i], v2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec4d) ApproxEqual(v2 Vec4d) bool {
+	for i := range v1 {
+		if !FloatEqual(v1[i], v2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec2d) ApproxEqualTheshold(v2 Vec2d, threshold float64) bool {
+	for i := range v1 {
+		if !FloatEqualThreshold(v1[i], v2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec3d) ApproxEqualTheshold(v2 Vec3d, threshold float64) bool {
+	for i := range v1 {
+		if !FloatEqualThreshold(v1[i], v2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec4d) ApproxEqualTheshold(v2 Vec4d, threshold float64) bool {
+	for i := range v1 {
+		if !FloatEqualThreshold(v1[i], v2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec2d) ApproxFuncEqual(v2 Vec2d, eq func(float64, float64) bool) bool {
+	for i := range v1 {
+		if !eq(v1[i], v2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec3d) ApproxFuncEqual(v2 Vec3d, eq func(float64, float64) bool) bool {
+	for i := range v1 {
+		if !eq(v1[i], v2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (v1 Vec4d) ApproxFuncEqual(v2 Vec4d, eq func(float64, float64) bool) bool {
+	for i := range v1 {
+		if !eq(v1[i], v2[i]) {
+			return false
+		}
+	}
+	return true
+}

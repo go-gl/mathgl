@@ -1,4 +1,5 @@
 all:	vectors matrices quaternions
+	go fmt
 
 vectors: vectorf vectord
 
@@ -26,6 +27,8 @@ vectord: vectorf
 	gofmt -w=true -r="Ident3f -> Ident3d" vectord.go
 	gofmt -w=true -r="Ident4f -> Ident4d" vectord.go
 	gofmt -w=true -r="Identf -> Identd" vectord.go
+	gofmt -w=true -r="FloatEqual32 -> FloatEqual" vectord.go
+	gofmt -w=true -r="FloatEqualThreshold32 -> FloatEqualThreshold" vectord.go
 	
 matrices: matrixf matrixd
 
@@ -54,6 +57,8 @@ matrixd: matrixf
 	gofmt -w=true -r="Ident3f -> Ident3d" matrixd.go
 	gofmt -w=true -r="Ident4f -> Ident4d" matrixd.go
 	gofmt -w=true -r="Identf -> Identd" matrixd.go
+	gofmt -w=true -r="FloatEqual32 -> FloatEqual" matrixd.go
+	gofmt -w=true -r="FloatEqualThreshold32 -> FloatEqualThreshold" matrixd.go
 
 quaternions: quatf quatd
 
@@ -72,3 +77,5 @@ quatd: quatf
 	gofmt -w=true -r="QuatLerpf -> QuatLerpd" quatd.go
 	gofmt -w=true -r="QuatNlerpf -> QuatNlerpd" quatd.go
 	gofmt -w=true -r="Clampf -> Clampd" quatd.go
+	gofmt -w=true -r="FloatEqual32 -> FloatEqual" quatd.go
+	gofmt -w=true -r="FloatEqualThreshold32 -> FloatEqualThreshold" quatd.go

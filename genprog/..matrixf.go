@@ -353,3 +353,246 @@ func (m Mat4f) Inv() Mat4f {
 	 return retMat.Mul(1/det)
 }
 
+func (m1 Mat2f) ApproxEqual(m2 Mat2f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2x3f) ApproxEqual(m2 Mat2x3f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2x4f) ApproxEqual(m2 Mat2x4f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3x2f) ApproxEqual(m2 Mat3x2f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3f) ApproxEqual(m2 Mat3f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3x4f) ApproxEqual(m2 Mat3x4f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4x2f) ApproxEqual(m2 Mat4x2f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4x3f) ApproxEqual(m2 Mat4x3f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4f) ApproxEqual(m2 Mat4f) bool {
+	for i := range m1 {
+		if !FloatEqual32(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2f) ApproxEqualThreshold(m2 Mat2f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2x3f) ApproxEqualThreshold(m2 Mat2x3f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2x4f) ApproxEqualThreshold(m2 Mat2x4f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3x2f) ApproxEqualThreshold(m2 Mat3x2f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3f) ApproxEqualThreshold(m2 Mat3f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3x4f) ApproxEqualThreshold(m2 Mat3x4f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4x2f) ApproxEqualThreshold(m2 Mat4x2f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4x3f) ApproxEqualThreshold(m2 Mat4x3f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4f) ApproxEqualThreshold(m2 Mat4f, threshold float32) bool {
+	for i := range m1 {
+		if !FloatEqualThreshold32(m1[i],m2[i], threshold) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2f) ApproxFuncEqual(m2 Mat2f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2x3f) ApproxFuncEqual(m2 Mat2x3f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat2x4f) ApproxFuncEqual(m2 Mat2x4f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3x2f) ApproxFuncEqual(m2 Mat3x2f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3f) ApproxFuncEqual(m2 Mat3f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat3x4f) ApproxFuncEqual(m2 Mat3x4f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4x2f) ApproxFuncEqual(m2 Mat4x2f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4x3f) ApproxFuncEqual(m2 Mat4x3f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+func (m1 Mat4f) ApproxFuncEqual(m2 Mat4f, eq func(float32,float32) bool) bool {
+	for i := range m1 {
+		if !eq(m1[i],m2[i]) {
+			return false
+		}
+	}
+	return true
+}
+
