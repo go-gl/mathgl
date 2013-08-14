@@ -28,8 +28,24 @@ func TestEqual(t *testing.T) {
 		t.Errorf("Float Equal gives false positive on large difference")
 	}
 
+	if FloatEqual(1.5, 1.5000001) {
+		t.Errorf("Float Equal gives false positive on small difference")
+	}
+
 	if FloatEqual(1.5, 0.0) {
 		t.Errorf("Float Equal gives false positive comparing with zero")
+	}
+}
+
+func TestEqualThreshold(t *testing.T) {
+	// |1.0 - 1.01| < .1
+	if !FloatEqualThreshold(1.0, 1.01, 1e-1) {
+		t.Errorf("Thresholded equal returns negative on threshold")
+	}
+
+	// Comes out to |1.0 - 1.01| < .0001
+	if FloatEqualThreshold(1.0, 1.01, 1e-3) {
+		t.Errorf("Thresholded equal returns false positive on tolerant threshold")
 	}
 }
 
