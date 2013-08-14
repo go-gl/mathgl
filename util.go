@@ -2,7 +2,7 @@ package mathgl
 
 import "math"
 
-// Epsilon is some tiny value that determines how precisely equal we want out floats to be
+// Epsilon is some tiny value that determines how precisely equal we want our floats to be
 const epsilon float64 = 1e-15
 
 // FloatEqual is a safe utility function to compare floats.
@@ -106,6 +106,9 @@ func Clampd(a, t1, t2 float64) float64 {
 
 }
 
+/* The IsClamped functions use strict equality (meaning: not the FloatEqual function)
+there shouldn't be any major issues with this since clamp is often used to fix minor errors*/
+
 func IsClampedf(a, t1, t2 float32) bool {
 	return a >= t1 && a <= t2
 }
@@ -114,13 +117,25 @@ func IsClampedd(a, t1, t2 float64) bool {
 	return a >= t1 && a <= t2
 }
 
-func SetMin(a, b *float32) {
+func SetMinf(a, b *float32) {
 	if *b < *a {
 		*a = *b
 	}
 }
 
-func SetMax(a, b *float32) {
+func SetMaxf(a, b *float32) {
+	if *a < *b {
+		*a = *b
+	}
+}
+
+func SetMind(a, b *float64) {
+	if *b < *a {
+		*a = *b
+	}
+}
+
+func SetMaxd(a, b *float64) {
 	if *a < *b {
 		*a = *b
 	}
