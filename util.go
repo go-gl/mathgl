@@ -83,6 +83,18 @@ func Clampf(a, t1, t2 float32) float32 {
 	return a
 }
 
+func ClampfFunc(t1, t2 float32) func(float32) {
+	return func(a float32) {
+		Clampf(a, t1, t2)
+	}
+}
+
+func ClampdFunc(t1, t2 float64) func(float64) {
+	return func(a float64) {
+		Clampd(a, t1, t2)
+	}
+}
+
 func Clampd(a, t1, t2 float64) float64 {
 	if a < t1 {
 		return t1
@@ -92,4 +104,24 @@ func Clampd(a, t1, t2 float64) float64 {
 
 	return a
 
+}
+
+func IsClampedf(a, t1, t2 float32) bool {
+	return a >= t1 && a <= t2
+}
+
+func IsClampedd(a, t1, t2 float64) bool {
+	return a >= t1 && a <= t2
+}
+
+func SetMin(a, b *float32) {
+	if *b < *a {
+		*a = *b
+	}
+}
+
+func SetMax(a, b *float32) {
+	if *a < *b {
+		*a = *b
+	}
 }
