@@ -42,7 +42,7 @@ func (q1 Quatd) Sub(q2 Quatd) Quatd {
 }
 
 func (q1 Quatd) Mul(q2 Quatd) Quatd {
-	return Quatd{q1.W - q1.V.Dot(q2.V), q1.V.Cross(q2.V).Add(q2.V.Mul(q1.W)).Add(q1.V.Mul(q2.W))}
+	return Quatd{q1.W*q2.W - q1.V.Dot(q2.V), q1.V.Cross(q2.V).Add(q2.V.Mul(q1.W)).Add(q1.V.Mul(q2.W))}
 }
 
 func (q1 Quatd) Scale(c float64) Quatd {
