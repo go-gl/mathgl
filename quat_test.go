@@ -55,3 +55,25 @@ func TestQuatRotateOffAxis(t *testing.T) {
 		}
 	}
 }
+
+func TestQuatIdentityToMatrix(t *testing.T) {
+	quat := QuatIdentd()
+	matrix := quat.Mat4()
+	answer := Ident4d()
+
+	if !matrix.ApproxEqual(answer) {
+		t.Errorf("Identity quaternion does not yield identity matrix")
+	}
+}
+
+func TestQuatRotationToMatrix(t *testing.T) {
+	angle := 45.0
+	axis := Vec3d{1, 2, 3}.Normalize()
+	quat := QuatRotated(angle, axis)
+	matrix := quat.Mat4()
+	answer := HomogRotate3Dd(angle*math.Pi/180, axis)
+
+	if !matrix.ApproxEqual(answer) {
+		t.Errorf("Rotation quaternion does not yield correct rotation matrix")
+	}
+}
