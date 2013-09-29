@@ -78,7 +78,7 @@ func (q1 Quatf) Rotate(v Vec3f) Vec3f {
 
 func (q1 Quatf) Mat4() Mat4f {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
-	return Mat4f{1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0, 2*x*y - 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z - 2*w*x, 0, 2*x*z + 2*w*y, 2*y*z + 2*w*x, 1 - 2*x*x - 2*y*y, 0, 0, 0, 0, 1}
+	return Mat4f{1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0, 2*x*y - 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z + 2*w*x, 0, 2*x*z + 2*w*y, 2*y*z - 2*w*x, 1 - 2*x*x - 2*y*y, 0, 0, 0, 0, 1}
 }
 
 func (q1 Quatf) Dot(q2 Quatf) float32 {
