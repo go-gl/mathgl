@@ -245,7 +245,7 @@ func BezierSplineInterpolate3Df(t float32, ranges [][2]float32, cPoints [][]Vec3
 }
 
 // Reticulates ALL the Splines
-func ReticulateSplines(ranges [][][2]float32, cPoints [][][]Vec2f, withLlamas bool) {
+func ReticulateSplinesf(ranges [][][2]float32, cPoints [][][]Vec2f, withLlamas bool) {
 	if !withLlamas {
 		fmt.Println("You can't reticulate splines without llamas, silly.")
 	} else {
