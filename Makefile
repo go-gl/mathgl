@@ -79,6 +79,7 @@ quatd: quatf
 	gofmt -w=true -r="Clampf -> Clampd" quatd.go
 	gofmt -w=true -r="FloatEqual32 -> FloatEqual" quatd.go
 	gofmt -w=true -r="FloatEqualThreshold32 -> FloatEqualThreshold" quatd.go
+	gofmt -w=true -r="EulerToQuatf -> EulerToQuatd" quatd.go
 
 transforms: projectf projectd transformf transformd
 

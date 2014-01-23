@@ -21,6 +21,26 @@ func QuatRotated(angle float64, axis Vec3d) Quatd {
 	return Quatd{c, axis.Mul(s)}
 }
 
+func EulerToQuatd(xAngle, yAngle, zAngle float64) Quatd {
+	sinz, cosz := math.Sincos(float64(zAngle))
+	sz, cz := float64(sinz), float64(cosz)
+
+	siny, cosy := math.Sincos(float64(yAngle))
+	sy, cy := float64(siny), float64(cosy)
+
+	sinx, cosx := math.Sincos(float64(xAngle))
+	sx, cx := float64(sinx), float64(cosx)
+
+	return Quatd{
+		W: cx*cy*cz + sx*sy*sz,
+		V: Vec3d{
+			sx*cy*cz - cx*sy*sz,
+			cx*sy*cz + sx*cy*sz,
+			cx*cy*sz - sx*sy*cz,
+		},
+	}
+}
+
 func (q Quatd) X() float64 {
 	return q.V[0]
 }

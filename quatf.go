@@ -21,6 +21,26 @@ func QuatRotatef(angle float32, axis Vec3f) Quatf {
 	return Quatf{c, axis.Mul(s)}
 }
 
+func EulerToQuatf(xAngle, yAngle, zAngle float32) Quatf {
+	sinz, cosz := math.Sincos(float64(zAngle))
+	sz, cz := float32(sinz), float32(cosz)
+
+	siny, cosy := math.Sincos(float64(yAngle))
+	sy, cy := float32(siny), float32(cosy)
+
+	sinx, cosx := math.Sincos(float64(xAngle))
+	sx, cx := float32(sinx), float32(cosx)
+
+	return Quatf{
+		W: cx*cy*cz + sx*sy*sz,
+		V: Vec3f{
+			sx*cy*cz - cx*sy*sz,
+			cx*sy*cz + sx*cy*sz,
+			cx*cy*sz - sx*sy*cz,
+		},
+	}
+}
+
 func (q Quatf) X() float32 {
 	return q.V[0]
 }
