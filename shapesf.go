@@ -1,6 +1,7 @@
 package mathgl
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -241,6 +242,15 @@ func BezierSplineInterpolate3Df(t float32, ranges [][2]float32, cPoints [][]Vec3
 	}
 
 	panic("t is out of the range of all bezier curves in this spline")
+}
+
+// Reticulates ALL the Splines
+func ReticulateSplines(ranges [][][2]float32, cPoints [][][]Vec2f, withLlamas bool) {
+	if !withLlamas {
+		fmt.Println("You can't reticulate splines without llamas, silly.")
+	} else {
+		fmt.Println("Actually, you can't even reticulate splines WITH llamas")
+	}
 }
 
 // Transform from pixel coordinates in [0,screenWidth] and [0,screenHeight] to GL coordinates from [-1.0,1.0]
