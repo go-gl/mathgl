@@ -117,7 +117,7 @@ func MakeBezierCurve2Df(numPoints int, cPoints []Vec2f) (line []Vec2f) {
 
 	line[0] = cPoints[0]
 	for i := 1; i < numPoints-1; i++ {
-		line[i] = Bezier2Df(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
+		line[i] = BezierCurve2Df(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
 	}
 	line[numPoints-1] = cPoints[len(cPoints)-1]
 
@@ -140,7 +140,7 @@ func MakeBezierCurve3Df(numPoints int, cPoints []Vec3f) (line []Vec3f) {
 
 	line[0] = cPoints[0]
 	for i := 1; i < numPoints-1; i++ {
-		line[i] = Bezier2Df(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
+		line[i] = BezierCurve3Df(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
 	}
 	line[numPoints-1] = cPoints[len(cPoints)-1]
 
@@ -157,8 +157,8 @@ func BezierSurfacef(u, v float32, cPoints [][]Vec3f) Vec3f {
 		panic("u or v not in range [0.0,1.0] in BezierSurface")
 	}
 
-	n := make(len(cPoints)) - 1
-	m := make(len(cPoints[0])) - 1
+	n := len(cPoints) - 1
+	m := len(cPoints[0]) - 1
 
 	point := cPoints[0][0].Mul(float32(math.Pow(float64(1.0-u), float64(n)) * math.Pow(float64(1.0-v), float64(m))))
 
