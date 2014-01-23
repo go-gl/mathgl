@@ -207,6 +207,42 @@ func BezierSurfacef(u, v float32, cPoints [][]Vec3f) Vec3f {
 	return point
 }
 
+// Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
+// though the spline may be disjoint. The bezier curves are not required to be in any particular order.
+//
+// If t is out of the range of all given curves, this function will panic
+func BezierSplineInterpolate2Df(t float32, ranges [][2]float32, cPoints [][]Vec2f) Vec2f {
+	if len(ranges) != len(cPoints) {
+		panic("Each bezier curve needs a range")
+	}
+
+	for i, curveRange := range ranges {
+		if t >= curveRange[0] && t <= curveRange[1] {
+			return BezierCurve2Df((t-curveRange[0])/(curveRange[1]-curveRange[0]), cPoints[i])
+		}
+	}
+
+	panic("t is out of the range of all bezier curves in this spline")
+}
+
+// Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
+// though the spline may be disjoint. The bezier curves are not required to be in any particular order.
+//
+// If t is out of the range of all given curves, this function will panic
+func BezierSplineInterpolate3Df(t float32, ranges [][2]float32, cPoints [][]Vec3f) Vec3f {
+	if len(ranges) != len(cPoints) {
+		panic("Each bezier curve needs a range")
+	}
+
+	for i, curveRange := range ranges {
+		if t >= curveRange[0] && t <= curveRange[1] {
+			return BezierCurve3Df((t-curveRange[0])/(curveRange[1]-curveRange[0]), cPoints[i])
+		}
+	}
+
+	panic("t is out of the range of all bezier curves in this spline")
+}
+
 // Transform from pixel coordinates in [0,screenWidth] and [0,screenHeight] to GL coordinates from [-1.0,1.0]
 // This assumes that your pixel coordinate system considers its origin to be in the top left corner (GL's is in the bottom left)
 //
