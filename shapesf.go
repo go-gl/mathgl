@@ -245,6 +245,9 @@ func BezierSplineInterpolate3Df(t float32, ranges [][2]float32, cPoints [][]Vec3
 }
 
 // Reticulates ALL the Splines
+//
+// For the overly serious: the function is just for fun. It does nothing except prints a Maxis reference. Technically you could "reticulate splines"
+// by joining a bunch of splines together, but that ruins the joke.
 func ReticulateSplinesf(ranges [][][2]float32, cPoints [][][]Vec2f, withLlamas bool) {
 	if !withLlamas {
 		fmt.Println("You can't reticulate splines without llamas, silly.")
