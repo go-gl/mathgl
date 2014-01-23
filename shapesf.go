@@ -5,7 +5,7 @@ import (
 )
 
 // Generates a circle centered at (0,0) with a given radius.
-// The radiuses are assumed to be in GL's coordinate sizing.
+// The radii are assumed to be in GL's coordinate sizing.
 //
 // Technically this draws an ellipse with two axes that match with the X and Y axes, the reason it has a radiusX and radiusY is because GL's coordinate system
 // is proportional to screen width and screen height. So if you have a non-square viewport, a single radius will appear
@@ -183,7 +183,7 @@ func MakeBezierCurve3Df(numPoints int, cPoints []Vec3f) (line []Vec3f) {
 // Like the curve functions, if u or v are not in the range [0.0,1.0] the function will panic, use Clamp[f|d]
 // to ensure it is correct.
 //
-// The control point matrix must not be jagged, or this will end up panicing from an index out of bounds exception
+// The control point matrix must not be jagged, or this will end up panicking from an index out of bounds exception
 func BezierSurfacef(u, v float32, cPoints [][]Vec3f) Vec3f {
 	if u < 0.0 || u > 1.0 || v < 1.0 || v > 1.0 {
 		panic("u or v not in range [0.0,1.0] in BezierSurface")
