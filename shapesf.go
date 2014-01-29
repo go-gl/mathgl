@@ -201,7 +201,7 @@ func BezierSurfacef(u, v float32, cPoints [][]Vec3f) Vec3f {
 				continue
 			}
 
-			point.Add(cPoints[i][j].Mul(float32(float64(choose(n, i)) * math.Pow(float64(u), float64(i)) * math.Pow(float64(1.0-u), float64(n-i)) * float64(choose(m, j)) * math.Pow(float64(v), float64(j)) * math.Pow(float64(1.0-v), float64(m-j)))))
+			point = point.Add(cPoints[i][j].Mul(float32(float64(choose(n, i)) * math.Pow(float64(u), float64(i)) * math.Pow(float64(1.0-u), float64(n-i)) * float64(choose(m, j)) * math.Pow(float64(v), float64(j)) * math.Pow(float64(1.0-v), float64(m-j)))))
 		}
 	}
 
@@ -256,8 +256,13 @@ func ReticulateSplinesf(ranges [][][2]float32, cPoints [][][]Vec2f, withLlamas b
 	}
 }
 
-// Transform from pixel coordinates in [0,screenWidth] and [0,screenHeight] to GL coordinates from [-1.0,1.0]
-// This assumes that your pixel coordinate system considers its origin to be in the top left corner (GL's is in the bottom left)
+// Transform from pixel coordinates to GL coordinates.
+//
+// This assumes that your pixel coordinate system considers its origin to be in the top left corner (GL's is in the bottom left).
+// The coordinates x and y may be out of the range [0,screenWidth] and [0,screeneHeight].
+//
+// GL's coordinate system maps [0,screenWidth] to [-1.0,1.0] and [0,screenHeight] to [1.0,-1.0]. If x and y are out of the range, they'll still
+// be mapped correctly, just off the screen. (e.g. if y = 2*screenHeight you'll get -2.0 for yOut)
 //
 // This is similar to Unproject, except for 2D cases and much simpler (especially since an inverse may always be found)
 func ScreenToGLCoordsf(x, y int, screenWidth, screenHeight int) (xOut, yOut float32) {
@@ -267,8 +272,11 @@ func ScreenToGLCoordsf(x, y int, screenWidth, screenHeight int) (xOut, yOut floa
 	return
 }
 
-// Transform from GL's proportional system in the range [-1.0,1.0] to pixel coordinates in [0,screenWidth] and [0,screenHeight]
+// Transform from GL's proportional system to pixel coordinates
 // Assumes the pixel coordinate system has its origin in the top left corner. (GL's is in the bottom left)
+//
+// GL's coordinate system maps [0,screenWidth] to [-1.0,1.0] and [0,screenHeight] to [1.0,-1.0]. If x and y are out of the range, they'll still
+// be mapped correctly, just off the screen. (e.g. if y=-2.0, you'll get 2*screenHeight for yOut)
 //
 // This is similar to Project, except for 2D cases and much simpler
 func GLToScreenCoordsf(x, y float32, screenWidth, screenHeight int) (xOut, yOut int) {
