@@ -45,7 +45,7 @@ func LookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ float32) 
 
 	Upp := Up.Normalize()
 
-	s := f.Cross(Upp)
+	s := f.Cross(Upp).Normalize()
 	u := s.Cross(f)
 
 	M := Mat4f{s[0], u[0], -f[0], 0, s[1], u[1], -f[1], 0, s[2], u[2], -f[2], 0, 0, 0, 0, 1}
