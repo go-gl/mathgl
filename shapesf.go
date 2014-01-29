@@ -60,7 +60,7 @@ func Rectf(width, height float32) []Vec2f {
 
 func QuadraticBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3 Vec2f) Vec2f {
 	if t < 0.0 || t > 1.0 {
-		panic("Can't make bezier curve with t out of range [0.0,1.0]")
+		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
 
 	return cPoint1.Mul((1.0 - t) * (1.0 - t)).Add(cPoint2.Mul(2 * (1 - t) * t)).Add(cPoint3.Mul(t * t))
@@ -68,7 +68,7 @@ func QuadraticBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3 Vec2f) Vec2f {
 
 func QuadraticBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3 Vec3f) Vec3f {
 	if t < 0.0 || t > 1.0 {
-		panic("Can't make bezier curve with t out of range [0.0,1.0]")
+		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
 
 	return cPoint1.Mul((1.0 - t) * (1.0 - t)).Add(cPoint2.Mul(2 * (1 - t) * t)).Add(cPoint3.Mul(t * t))
@@ -76,7 +76,7 @@ func QuadraticBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3 Vec3f) Vec3f {
 
 func CubicBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec2f) Vec2f {
 	if t < 0.0 || t > 1.0 {
-		panic("Can't make bezier curve with t out of range [0.0,1.0]")
+		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
 
 	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
@@ -84,7 +84,7 @@ func CubicBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec2f) Ve
 
 func CubicBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec3f) Vec3f {
 	if t < 0.0 || t > 1.0 {
-		panic("Can't make bezier curve with t out of range [0.0,1.0]")
+		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
 
 	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
