@@ -106,7 +106,7 @@ func BezierCurve2Df(t float32, cPoints []Vec2f) Vec2f {
 	point := cPoints[0].Mul(float32(math.Pow(float64(1.0-t), float64(n))))
 
 	for i := 1; i <= n; i++ {
-		point.Add(cPoints[i].Mul(float32(float64(choose(n, i)) * math.Pow(float64(1-t), float64(n-i)) * math.Pow(float64(t), float64(i))))) // P += P_i * nCi * (1-t)^(n-i) * t^i
+		point = point.Add(cPoints[i].Mul(float32(float64(choose(n, i)) * math.Pow(float64(1-t), float64(n-i)) * math.Pow(float64(t), float64(i))))) // P += P_i * nCi * (1-t)^(n-i) * t^i
 	}
 
 	return point
@@ -122,7 +122,7 @@ func BezierCurve3Df(t float32, cPoints []Vec3f) Vec3f {
 	point := cPoints[0].Mul(float32(math.Pow(float64(1.0-t), float64(n))))
 
 	for i := 1; i <= n; i++ {
-		point.Add(cPoints[i].Mul(float32(float64(choose(n, i)) * math.Pow(float64(1-t), float64(n-i)) * math.Pow(float64(t), float64(i))))) // P += P_i * nCi * (1-t)^(n-i) * t^i
+		point = point.Add(cPoints[i].Mul(float32(float64(choose(n, i)) * math.Pow(float64(1-t), float64(n-i)) * math.Pow(float64(t), float64(i))))) // P += P_i * nCi * (1-t)^(n-i) * t^i
 	}
 
 	return point
