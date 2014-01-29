@@ -99,7 +99,7 @@ func CubicBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec3f) Ve
 // gl coords, or something else entirely
 func BezierCurve2Df(t float32, cPoints []Vec2f) Vec2f {
 	if t < 0.0 || t > 1.0 {
-		panic("Input to bezier has t not in range [0,1]. If you think this is a precision error, use math.Clamp[f|d] before calling this function")
+		panic("Input to bezier has t not in range [0,1]. If you think this is a precision error, use mathgl.Clamp[f|d] before calling this function")
 	}
 
 	n := len(cPoints) - 1
@@ -115,7 +115,7 @@ func BezierCurve2Df(t float32, cPoints []Vec2f) Vec2f {
 // Same as the 2D version, except the line is in 3D space
 func BezierCurve3Df(t float32, cPoints []Vec3f) Vec3f {
 	if t < 0.0 || t > 1.0 {
-		panic("Input to bezier has t not in range [0,1]. If you think this is a precision error, use math.Clamp[f|d] before calling this function")
+		panic("Input to bezier has t not in range [0,1]. If you think this is a precision error, use mathgl.Clamp[f|d] before calling this function")
 	}
 
 	n := len(cPoints) - 1
