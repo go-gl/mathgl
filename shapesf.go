@@ -44,8 +44,8 @@ func Circlef(radiusX, radiusY float32, numSlices int) []Vec2f {
 // assumes you want the origin of the rectangle with the top-left corner at (0.0,0.0).
 //
 // Keep in mind that GL's coordinate system is proportional, so width=height will not result in a square unless your viewport is square.
-// If you want to maintain proportionality regardless of screen size, use the results of ScreenToGLCoordsf(absoluteWidth, absoluteHeight, screenWidth, screenHeight)
-// in the call to this function
+// If you want to maintain proportionality regardless of screen size, use the results of w,h := ScreenToGLCoordsf(absoluteWidth, absoluteHeight, screenWidth, screenHeight);
+// w=w+1;h-1 in the call to this function. (The w+1,h-1 step maps the coordinates to start at 0.0 rather than -1.0)
 func Rectf(width, height float32) []Vec2f {
 	return []Vec2f{
 		Vec2f{0.0, 0.0},
