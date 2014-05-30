@@ -45,7 +45,7 @@ func Circle(radiusX, radiusY float64, numSlices int) []Vec2 {
 //
 // Keep in mind that GL's coordinate system is proportional, so width=height will not result in a square unless your viewport is square.
 // If you want to maintain proportionality regardless of screen size, use the results of w,h := ScreenToGLCoordsf(absoluteWidth, absoluteHeight, screenWidth, screenHeight);
-// w=w+1;h-1 in the call to this function. (The w+1,h-1 step maps the coordinates to start at 0.0 rather than -1.0)
+// w,h=w+1,h-1 in the call to this function. (The w+1,h-1 step maps the coordinates to start at 0.0 rather than -1.0)
 func Rect(width, height float64) []Vec2 {
 	return []Vec2{
 		Vec2{0.0, 0.0},
@@ -95,7 +95,7 @@ func CubicBezierCurve3D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec3
 // t must be in the range 0.0 and 1.0 or this function will panic. Consider [0.0,1.0] to be similar to a percentage,
 // 0.0 is first control point, and the point at 1.0 is the last control point. Any point in between is how far along the path you are between 0 and 1.
 //
-// This function is not sensative to the coordinate system of the control points. It will correctly interpolate regardless of whether they're in screen coords,
+// This function is not sensitive to the coordinate system of the control points. It will correctly interpolate regardless of whether they're in screen coords,
 // gl coords, or something else entirely
 func BezierCurve2D(t float64, cPoints []Vec2) Vec2 {
 	if t < 0.0 || t > 1.0 {
