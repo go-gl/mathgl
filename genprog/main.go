@@ -9,7 +9,7 @@ func main() {
 	//fmt.Println("Making vectorf.go")
 	vecs := GenVec()
 	fmt.Println(vecs)
-	vecf, err := os.Create("..vectorf.go")
+	vecf, err := os.Create("../mgl32/vector.go")
 	if err != nil {
 		panic(err)
 	}
@@ -23,7 +23,7 @@ func main() {
 	//fmt.Println("Making matrixf.go")
 	mats := GenMat()
 	//fmt.Println(mats)
-	matf, err := os.Create("..matrixf.go")
+	matf, err := os.Create("../mgl32/matrix.go")
 	if err != nil {
 		panic(err)
 	}
@@ -93,11 +93,11 @@ func GenVec() (s string) {
 }
 
 func GenVecCross() string {
-	return "func (v1 Vec3f) Cross(v2 Vec3f) Vec3f {\n\treturn Vec3f{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}\n}\n\n"
+	return "func (v1 Vec3) Cross(v2 Vec3) Vec3 {\n\treturn Vec3f{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}\n}\n\n"
 }
 
 func GenVecDef(m int) (s string) {
-	return fmt.Sprintf("type Vec%df [%d]float32\n", m, m)
+	return fmt.Sprintf("type Vec%d [%d]float32\n", m, m)
 }
 
 /*func GenVecMatMul(m, n, o int) (s string) {
@@ -315,7 +315,7 @@ func GenMat() string {
 }
 
 func GenMatIden(m int) (s string) {
-	s = fmt.Sprintf("func Ident%df() %sf {\n\treturn %sf{", m, GenMatName(m, m), GenMatName(m, m))
+	s = fmt.Sprintf("func Ident%d() %sf {\n\treturn %s{", m, GenMatName(m, m), GenMatName(m, m))
 
 	for i := 0; i < m; i++ {
 		for j := 0; j < m; j++ {
@@ -337,11 +337,11 @@ func GenMatIden(m int) (s string) {
 }
 
 func GenMatDef(m, n int) (s string) {
-	return fmt.Sprintf("type %sf [%d]float32\n", GenMatName(m, n), m*n)
+	return fmt.Sprintf("type %s [%d]float32\n", GenMatName(m, n), m*n)
 }
 
 func GenMatAdd(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) Add(m2 %sf) %sf {\n\treturn %sf {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) Add(m2 %s) %sf {\n\treturn %s {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] + m2[%d]", i, i)
 		if i != (m*n)-1 {
@@ -353,7 +353,7 @@ func GenMatAdd(m, n int) (s string) {
 }
 
 func GenMatSub(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) Sub(m2 %sf) %sf {\n\treturn %sf {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) Sub(m2 %s) %sf {\n\treturn %s {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] - m2[%d]", i, i)
 		if i != (m*n)-1 {
@@ -365,7 +365,7 @@ func GenMatSub(m, n int) (s string) {
 }
 
 func GenScalarMul(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) Mul(c float32) %sf {\n\treturn %sf{", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) Mul(c float32) %sf {\n\treturn %s{", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] *c", i)
 		if i != (m*n)-1 {
@@ -377,13 +377,13 @@ func GenScalarMul(m, n int) (s string) {
 }
 
 func GenMatMul(m, n, o int) (s string) {
-	s = "func " + "(m1 " + GenMatName(m, n) + "f) Mul" + fmt.Sprintf("%d", n)
+	s = "func " + "(m1 " + GenMatName(m, n) + ") Mul" + fmt.Sprintf("%d", n)
 
 	if n != o {
 		s += fmt.Sprintf("x%d", o)
 	}
 
-	s += "(m2 " + GenMatName(n, o) + "f) " + GenMatName(m, o) + "f {\n\treturn " + GenMatName(m, o) + "f{"
+	s += "(m2 " + GenMatName(n, o) + ") " + GenMatName(m, o) + "f {\n\treturn " + GenMatName(m, o) + "{"
 	for j := 0; j < o; j++ { // For each element of the output array
 		for i := 0; i < m; i++ {
 			for k := 0; k < n; k++ { // For each element of the vector we're multiplying
@@ -400,7 +400,7 @@ func GenMatMul(m, n, o int) (s string) {
 }
 
 func GenTranspose(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) Transpose() %sf {\n\treturn %sf{", GenMatName(m, n), GenMatName(n, m), GenMatName(n, m))
+	s = fmt.Sprintf("func (m1 %s) Transpose() %s {\n\treturn %s{", GenMatName(m, n), GenMatName(n, m), GenMatName(n, m))
 
 	for i := 0; i < n; i++ {
 		for j := 0; j < m; j++ {
@@ -438,7 +438,7 @@ func GenMatName(m, n int) string {
 }
 
 func GenDet(m int) string {
-	s := fmt.Sprintf("func (m %sf) Det() float32 {\n\treturn ", GenMatName(m, m))
+	s := fmt.Sprintf("func (m %s) Det() float32 {\n\treturn ", GenMatName(m, m))
 
 	switch m {
 	case 2:
@@ -457,8 +457,8 @@ func GenDet(m int) string {
 }
 
 func GenInv(m int) string {
-	s := fmt.Sprintf("func (m %sf) Inv() %sf {\n\t", GenMatName(m, m), GenMatName(m, m))
-	s += "det := m.Det()\n\t if FloatEqual32(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "f{}\n\t}\n\t"
+	s := fmt.Sprintf("func (m %s) Inv() %s {\n\t", GenMatName(m, m), GenMatName(m, m))
+	s += "det := m.Det()\n\t if FloatEqual32(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "{}\n\t}\n\t"
 	s += "retMat := " + GenMatName(m, m) + "f{"
 
 	switch m {
@@ -491,7 +491,7 @@ func GenInv(m int) string {
 }
 
 func GenMatEq(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) ApproxEqual(m2 %sf) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) ApproxEqual(m2 %s) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
 
 	s += "for i := range m1 {\n\t\t"
 	s += "if !FloatEqual32(m1[i],m2[i]) {\n\t\t\t"
@@ -503,7 +503,7 @@ func GenMatEq(m, n int) (s string) {
 }
 
 func GenMatThresholdEq(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) ApproxEqualThreshold(m2 %sf, threshold float32) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) ApproxEqualThreshold(m2 %s, threshold float32) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
 
 	s += "for i := range m1 {\n\t\t"
 	s += "if !FloatEqualThreshold32(m1[i],m2[i], threshold) {\n\t\t\t"
@@ -515,7 +515,7 @@ func GenMatThresholdEq(m, n int) (s string) {
 }
 
 func GenMatFuncEq(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %sf) ApproxFuncEqual(m2 %sf, eq func(float32,float32) bool) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) ApproxFuncEqual(m2 %s, eq func(float32,float32) bool) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
 
 	s += "for i := range m1 {\n\t\t"
 	s += "if !eq(m1[i],m2[i]) {\n\t\t\t"
