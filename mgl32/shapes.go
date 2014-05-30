@@ -261,7 +261,7 @@ func ReticulateSplines(ranges [][][2]float32, cPoints [][][]Vec2, withLlamas boo
 // This assumes that your pixel coordinate system considers its origin to be in the top left corner (GL's is in the bottom left).
 // The coordinates x and y may be out of the range [0,screenWidth] and [0,screeneHeight].
 //
-// GL's coordinate system maps [screenWidth,0] to [-1.0,1.0] and [0,screenHeight] to [1.0,-1.0]. If x and y are out of the range, they'll still
+// GL's coordinate system maps [screenWidth,0] to [1.0,1.0] and [0,screenHeight] to [-1.0,-1.0]. If x and y are out of the range, they'll still
 // be mapped correctly, just off the screen. (e.g. if y = 2*screenHeight you'll get -2.0 for yOut)
 //
 // This is similar to Unproject, except for 2D cases and much simpler (especially since an inverse may always be found)
@@ -275,7 +275,7 @@ func ScreenToGLCoords(x, y int, screenWidth, screenHeight int) (xOut, yOut float
 // Transform from GL's proportional system to pixel coordinates
 // Assumes the pixel coordinate system has its origin in the top left corner. (GL's is in the bottom left)
 //
-// GL's coordinate system maps [screenWidth,0] to [-1.0,1.0] and [0,screenHeight] to [1.0,-1.0]. If x and y are out of the range, they'll still
+// GL's coordinate system maps [screenWidth,0] to [1.0,1.0] and [0,screenHeight] to [-1.0,-1.0]. If x and y are out of the range, they'll still
 // be mapped correctly, just off the screen. (e.g. if y=-2.0, you'll get 2*screenHeight for yOut)
 //
 // This is similar to Project, except for 2D cases and much simpler
