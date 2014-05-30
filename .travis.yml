@@ -1,11 +1,11 @@
 language: go
 
 go:
- - 1.1
+ - 1.2
 
 script:
- - go get -d -v . && go build -v .
- - go test -v .
+ - go test -v ./mgl32
+ - go test -v ./mgl64
  - diff <(gofmt -d .) <("") 
 
 after_failure: failure
