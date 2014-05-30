@@ -8,7 +8,7 @@ import (
 func main() {
 	//fmt.Println("Making vectorf.go")
 	vecs := GenVec()
-	fmt.Println(vecs)
+	//fmt.Println(vecs)
 	vecf, err := os.Create("../mgl32/vector.go")
 	if err != nil {
 		panic(err)
@@ -93,7 +93,7 @@ func GenVec() (s string) {
 }
 
 func GenVecCross() string {
-	return "func (v1 Vec3) Cross(v2 Vec3) Vec3 {\n\treturn Vec3f{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}\n}\n\n"
+	return "func (v1 Vec3) Cross(v2 Vec3) Vec3 {\n\treturn Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}\n}\n\n"
 }
 
 func GenVecDef(m int) (s string) {
@@ -235,7 +235,7 @@ func GenVecFuncEq(m int) (s string) {
 }
 
 func VecName(m int) (s string) {
-	return fmt.Sprintf("Vec%df", m)
+	return fmt.Sprintf("Vec%d", m)
 }
 
 func GenMat() string {
@@ -315,7 +315,7 @@ func GenMat() string {
 }
 
 func GenMatIden(m int) (s string) {
-	s = fmt.Sprintf("func Ident%d() %sf {\n\treturn %s{", m, GenMatName(m, m), GenMatName(m, m))
+	s = fmt.Sprintf("func Ident%d() %s {\n\treturn %s{", m, GenMatName(m, m), GenMatName(m, m))
 
 	for i := 0; i < m; i++ {
 		for j := 0; j < m; j++ {
@@ -341,7 +341,7 @@ func GenMatDef(m, n int) (s string) {
 }
 
 func GenMatAdd(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %s) Add(m2 %s) %sf {\n\treturn %s {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) Add(m2 %s) %s {\n\treturn %s {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] + m2[%d]", i, i)
 		if i != (m*n)-1 {
@@ -353,7 +353,7 @@ func GenMatAdd(m, n int) (s string) {
 }
 
 func GenMatSub(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %s) Sub(m2 %s) %sf {\n\treturn %s {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) Sub(m2 %s) %s {\n\treturn %s {", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] - m2[%d]", i, i)
 		if i != (m*n)-1 {
@@ -365,7 +365,7 @@ func GenMatSub(m, n int) (s string) {
 }
 
 func GenScalarMul(m, n int) (s string) {
-	s = fmt.Sprintf("func (m1 %s) Mul(c float32) %sf {\n\treturn %s{", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
+	s = fmt.Sprintf("func (m1 %s) Mul(c float32) %s {\n\treturn %s{", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
 	for i := 0; i < m*n; i++ {
 		s += fmt.Sprintf("m1[%d] *c", i)
 		if i != (m*n)-1 {
@@ -383,7 +383,7 @@ func GenMatMul(m, n, o int) (s string) {
 		s += fmt.Sprintf("x%d", o)
 	}
 
-	s += "(m2 " + GenMatName(n, o) + ") " + GenMatName(m, o) + "f {\n\treturn " + GenMatName(m, o) + "{"
+	s += "(m2 " + GenMatName(n, o) + ") " + GenMatName(m, o) + " {\n\treturn " + GenMatName(m, o) + "{"
 	for j := 0; j < o; j++ { // For each element of the output array
 		for i := 0; i < m; i++ {
 			for k := 0; k < n; k++ { // For each element of the vector we're multiplying
@@ -459,7 +459,7 @@ func GenDet(m int) string {
 func GenInv(m int) string {
 	s := fmt.Sprintf("func (m %s) Inv() %s {\n\t", GenMatName(m, m), GenMatName(m, m))
 	s += "det := m.Det()\n\t if FloatEqual32(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "{}\n\t}\n\t"
-	s += "retMat := " + GenMatName(m, m) + "f{"
+	s += "retMat := " + GenMatName(m, m) + "{"
 
 	switch m {
 	case 2:

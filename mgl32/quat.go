@@ -6,14 +6,14 @@ import (
 
 type Quatf struct {
 	W float32
-	V Vec3f
+	V Vec3
 }
 
 func QuatIdentf() Quatf {
-	return Quatf{1., Vec3f{0, 0, 0}}
+	return Quatf{1., Vec3{0, 0, 0}}
 }
 
-func QuatRotatef(angle float32, axis Vec3f) Quatf {
+func QuatRotatef(angle float32, axis Vec3) Quatf {
 	angle = (float32(math.Pi) * angle) / 180.0
 
 	c, s := float32(math.Cos(float64(angle/2))), float32(math.Sin(float64(angle/2)))
@@ -33,7 +33,7 @@ func EulerToQuatf(xAngle, yAngle, zAngle float32) Quatf {
 
 	return Quatf{
 		W: cx*cy*cz + sx*sy*sz,
-		V: Vec3f{
+		V: Vec3{
 			sx*cy*cz - cx*sy*sz,
 			cx*sy*cz + sx*cy*sz,
 			cx*cy*sz - sx*sy*cz,
@@ -66,7 +66,7 @@ func (q1 Quatf) Mul(q2 Quatf) Quatf {
 }
 
 func (q1 Quatf) Scale(c float32) Quatf {
-	return Quatf{q1.W * c, Vec3f{q1.V[0] * c, q1.V[1] * c, q1.V[2] * c}}
+	return Quatf{q1.W * c, Vec3{q1.V[0] * c, q1.V[1] * c, q1.V[2] * c}}
 }
 
 func (q1 Quatf) Conjugate() Quatf {
@@ -92,13 +92,13 @@ func (q1 Quatf) Inverse() Quatf {
 	return Quatf{q1.W, q1.V.Mul(-1)}.Scale(1 / (leng * leng))
 }
 
-func (q1 Quatf) Rotate(v Vec3f) Vec3f {
+func (q1 Quatf) Rotate(v Vec3) Vec3 {
 	return q1.Mul(Quatf{0, v}).Mul(q1.Conjugate()).V
 }
 
-func (q1 Quatf) Mat4() Mat4f {
+func (q1 Quatf) Mat4() Mat4 {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
-	return Mat4f{1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0, 2*x*y - 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z + 2*w*x, 0, 2*x*z + 2*w*y, 2*y*z - 2*w*x, 1 - 2*x*x - 2*y*y, 0, 0, 0, 0, 1}
+	return Mat4{1 - 2*y*y - 2*z*z, 2*x*y + 2*w*z, 2*x*z - 2*w*y, 0, 2*x*y - 2*w*z, 1 - 2*x*x - 2*z*z, 2*y*z + 2*w*x, 0, 2*x*z + 2*w*y, 2*y*z - 2*w*x, 1 - 2*x*x - 2*y*y, 0, 0, 0, 0, 1}
 }
 
 func (q1 Quatf) Dot(q2 Quatf) float32 {

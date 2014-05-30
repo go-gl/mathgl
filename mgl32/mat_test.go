@@ -26,8 +26,8 @@ func BenchmarkMatAdd(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		m1 := Mat4f{}
-		m2 := Mat4f{}
+		m1 := Mat4{}
+		m2 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
 			m1[j], m2[j] = rand.Float32(), rand.Float32()
@@ -44,7 +44,7 @@ func BenchmarkMatScale(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		m1 := Mat4f{}
+		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
 			m1[j] = rand.Float32()
@@ -62,8 +62,8 @@ func BenchmarkMatMul(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		m1 := Mat4f{}
-		m2 := Mat4f{}
+		m1 := Mat4{}
+		m2 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
 			m1[j], m2[j] = rand.Float32(), rand.Float32()
@@ -80,7 +80,7 @@ func BenchmarkMatTranspose(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		m1 := Mat4f{}
+		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
 			m1[j] = rand.Float32()
@@ -97,7 +97,7 @@ func BenchmarkMatDet(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		m1 := Mat4f{}
+		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
 			m1[j] = rand.Float32()
@@ -114,7 +114,7 @@ func BenchmarkMatInv(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		m1 := Mat4f{}
+		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
 			m1[j] = rand.Float32()

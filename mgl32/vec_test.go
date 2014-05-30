@@ -9,8 +9,8 @@ import (
 /* Only floats are tested because the double versions are simply a find->replace on floats */
 
 func Test2DVecAdd(t *testing.T) {
-	v1 := Vec2f{1.0, 2.5}
-	v2 := Vec2f{0.0, 1.0}
+	v1 := Vec2{1.0, 2.5}
+	v2 := Vec2{0.0, 1.0}
 
 	v3 := v1.Add(v2)
 
@@ -27,8 +27,8 @@ func Test2DVecAdd(t *testing.T) {
 }
 
 func Test3DVecAdd(t *testing.T) {
-	v1 := Vec3f{1.0, 2.5, 1.1}
-	v2 := Vec3f{0.0, 1.0, 9.9}
+	v1 := Vec2{1.0, 2.5, 1.1}
+	v2 := Vec2{0.0, 1.0, 9.9}
 
 	v3 := v1.Add(v2)
 
@@ -45,8 +45,8 @@ func Test3DVecAdd(t *testing.T) {
 }
 
 func Test4DVecAdd(t *testing.T) {
-	v1 := Vec4f{1.0, 2.5, 1.1, 2.0}
-	v2 := Vec4f{0.0, 1.0, 9.9, 100.0}
+	v1 := Vec2{1.0, 2.5, 1.1, 2.0}
+	v2 := Vec2{0.0, 1.0, 9.9, 100.0}
 
 	v3 := v1.Add(v2)
 
@@ -63,8 +63,8 @@ func Test4DVecAdd(t *testing.T) {
 }
 
 func Test2DVecSub(t *testing.T) {
-	v1 := Vec2f{1.0, 2.5}
-	v2 := Vec2f{0.0, 1.0}
+	v1 := Vec2{1.0, 2.5}
+	v2 := Vec2{0.0, 1.0}
 
 	v3 := v1.Sub(v2)
 
@@ -75,8 +75,8 @@ func Test2DVecSub(t *testing.T) {
 }
 
 func Test3DVecSub(t *testing.T) {
-	v1 := Vec3f{1.0, 2.5, 1.1}
-	v2 := Vec3f{0.0, 1.0, 9.9}
+	v1 := Vec2{1.0, 2.5, 1.1}
+	v2 := Vec2{0.0, 1.0, 9.9}
 
 	v3 := v1.Sub(v2)
 
@@ -88,8 +88,8 @@ func Test3DVecSub(t *testing.T) {
 }
 
 func Test4DVecSub(t *testing.T) {
-	v1 := Vec4f{1.0, 2.5, 1.1, 2.0}
-	v2 := Vec4f{0.0, 1.0, 9.9, 100.0}
+	v1 := Vec2{1.0, 2.5, 1.1, 2.0}
+	v2 := Vec2{0.0, 1.0, 9.9, 100.0}
 
 	v3 := v1.Sub(v2)
 
@@ -101,21 +101,21 @@ func Test4DVecSub(t *testing.T) {
 }
 
 func TestVecScale(t *testing.T) {
-	v := Vec2f{1.0, 0.0}
+	v := Vec2{1.0, 0.0}
 	v = v.Mul(15.0)
 
 	if !FloatEqual32(v[0], 15.0) || !FloatEqual32(v[1], 0.0) {
 		t.Errorf("Vec mul does something weird [%f, %f]", v[0], v[1])
 	}
 
-	v2 := Vec3f{1.0, 0.0, 100.1}
+	v2 := Vec2{1.0, 0.0, 100.1}
 	v2 = v2.Mul(15.0)
 
 	if !FloatEqual32(v2[0], 15.0) || !FloatEqual32(v2[1], 0.0) || !FloatEqual32(v2[2], 1501.5) {
 		t.Errorf("Vec mul does something weird [%f, %f, %f]", v2[0], v2[1], v2[2])
 	}
 
-	v3 := Vec4f{1.0, 0.0, 100.1, -1.0}
+	v3 := Vec2{1.0, 0.0, 100.1, -1.0}
 	v3 = v3.Mul(15.0)
 
 	if !FloatEqual32(v3[0], 15.0) || !FloatEqual32(v3[1], 0.0) || !FloatEqual32(v3[2], 1501.5) || !FloatEqual32(v3[3], -15.0) {
@@ -129,8 +129,8 @@ func BenchmarkVec4Add(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v2 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
 		b.StartTimer()
 
 		v1.Add(v2)
@@ -143,8 +143,8 @@ func BenchmarkVec4Sub(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v2 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
 		b.StartTimer()
 
 		v1.Sub(v2)
@@ -157,7 +157,7 @@ func BenchmarkVec4Scale(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
 		c := r.Float32()
 		b.StartTimer()
 
@@ -171,8 +171,8 @@ func BenchmarkVec4Dot(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v2 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
 		b.StartTimer()
 
 		v1.Dot(v2)
@@ -185,7 +185,7 @@ func BenchmarkVec4Len(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
 		b.StartTimer()
 
 		v1.Len()
@@ -198,7 +198,7 @@ func BenchmarkVec4Normalize(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4f{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec2{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
 		b.StartTimer()
 
 		v1.Normalize()
@@ -211,8 +211,8 @@ func BenchmarkVecCross(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec3f{r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec3f{r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec2{r.Float32(), r.Float32(), r.Float32()}
+		v2 := Vec2{r.Float32(), r.Float32(), r.Float32()}
 		b.StartTimer()
 
 		v1.Cross(v2)
