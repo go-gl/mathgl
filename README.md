@@ -1,4 +1,4 @@
-MathGL
+MathGL [![Build Status](https://travis-ci.org/go-gl/mathgl.png?branch=master)](https://travis-ci.org/go-gl/mathgl)
 ======
 
 This is a Go matrix and vector math library specialized for Open GL graphics capabilities.
