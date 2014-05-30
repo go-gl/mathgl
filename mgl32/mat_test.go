@@ -1,4 +1,4 @@
-package mathgl
+package mgl32
 
 import (
 	"math/rand"
@@ -8,8 +8,8 @@ import (
 
 func TestMulIdent(t *testing.T) {
 	i1 := [...]float32{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
-	i2 := Ident4f()
-	i3 := Ident4f()
+	i2 := Ident4()
+	i3 := Ident4()
 
 	mul := i2.Mul4(i3)
 

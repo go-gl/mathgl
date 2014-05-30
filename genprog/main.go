@@ -38,7 +38,7 @@ func main() {
 }
 
 func GenVec() (s string) {
-	vecs := "package mathgl\n\nimport(\n\t \"math\"\n)\n\n"
+	vecs := "package mgl32\n\nimport(\n\t \"math\"\n)\n\n"
 
 	for m := 2; m <= 4; m++ {
 		vecs += GenVecDef(m)
@@ -202,7 +202,7 @@ func GenVecEq(m int) (s string) {
 	s = fmt.Sprintf("func (v1 %s) ApproxEqual(v2 %s) bool {\n\t", VecName(m), VecName(m))
 
 	s += "for i := range v1 {\n\t\t"
-	s += "if !FloatEqual32(v1[i],v2[i]) {\n\t\t\t"
+	s += "if !FloatEqual(v1[i],v2[i]) {\n\t\t\t"
 	s += "return false\n\t\t"
 	s += "}\n\t}\n\t"
 	s += "return true\n}\n\n"
@@ -211,10 +211,10 @@ func GenVecEq(m int) (s string) {
 }
 
 func GenVecThresholdEq(m int) (s string) {
-	s = fmt.Sprintf("func (v1 %s) ApproxEqualTheshold(v2 %s, threshold float32) bool {\n\t", VecName(m), VecName(m))
+	s = fmt.Sprintf("func (v1 %s) ApproxEqualThreshold(v2 %s, threshold float32) bool {\n\t", VecName(m), VecName(m))
 
 	s += "for i := range v1 {\n\t\t"
-	s += "if !FloatEqualThreshold32(v1[i],v2[i], threshold) {\n\t\t\t"
+	s += "if !FloatEqualThreshold(v1[i],v2[i], threshold) {\n\t\t\t"
 	s += "return false\n\t\t"
 	s += "}\n\t}\n\t"
 	s += "return true\n}\n\n"
@@ -239,7 +239,7 @@ func VecName(m int) (s string) {
 }
 
 func GenMat() string {
-	mats := "package mathgl\n\nimport(\n\t //\"math\"\n)\n\n"
+	mats := "package mgl32\n\nimport(\n\t //\"math\"\n)\n\n"
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
@@ -458,7 +458,7 @@ func GenDet(m int) string {
 
 func GenInv(m int) string {
 	s := fmt.Sprintf("func (m %s) Inv() %s {\n\t", GenMatName(m, m), GenMatName(m, m))
-	s += "det := m.Det()\n\t if FloatEqual32(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "{}\n\t}\n\t"
+	s += "det := m.Det()\n\t if FloatEqual(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "{}\n\t}\n\t"
 	s += "retMat := " + GenMatName(m, m) + "{"
 
 	switch m {
@@ -494,7 +494,7 @@ func GenMatEq(m, n int) (s string) {
 	s = fmt.Sprintf("func (m1 %s) ApproxEqual(m2 %s) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
 
 	s += "for i := range m1 {\n\t\t"
-	s += "if !FloatEqual32(m1[i],m2[i]) {\n\t\t\t"
+	s += "if !FloatEqual(m1[i],m2[i]) {\n\t\t\t"
 	s += "return false\n\t\t"
 	s += "}\n\t}\n\t"
 	s += "return true\n}\n\n"
@@ -506,7 +506,7 @@ func GenMatThresholdEq(m, n int) (s string) {
 	s = fmt.Sprintf("func (m1 %s) ApproxEqualThreshold(m2 %s, threshold float32) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
 
 	s += "for i := range m1 {\n\t\t"
-	s += "if !FloatEqualThreshold32(m1[i],m2[i], threshold) {\n\t\t\t"
+	s += "if !FloatEqualThreshold(m1[i],m2[i], threshold) {\n\t\t\t"
 	s += "return false\n\t\t"
 	s += "}\n\t}\n\t"
 	s += "return true\n}\n\n"

@@ -1,4 +1,4 @@
-package mathgl
+package mgl32
 
 import (
 	"errors"
@@ -72,7 +72,7 @@ func LookAtV(eye, center, up Vec3) Mat4 {
 //
 // Window coordinates are continuous, not discrete (well, as continuous as an IEEE Floating Point can be), so you won't get exact pixel locations
 // without rounding or similar
-func Projectf(obj Vec3, modelview, projection Mat4, initialX, initialY, width, height int) (win Vec3) {
+func Project(obj Vec3, modelview, projection Mat4, initialX, initialY, width, height int) (win Vec3) {
 	obj4 := Vec4{obj[0], obj[1], obj[2], 1.0}
 
 	vpp := projection.Mul4(modelview).Mul4x1(obj4)
@@ -87,7 +87,7 @@ func Projectf(obj Vec3, modelview, projection Mat4, initialX, initialY, width, h
 //
 // Note that the projection may not be perfect if you use strict pixel locations rather than the exact values given by Projectf.
 // (It's still unlikely to be perfect due to precision errors, but it will be closer)
-func UnProjectf(win Vec3, modelview, projection Mat4, initialX, initialY, width, height int) (obj Vec3, err error) {
+func UnProject(win Vec3, modelview, projection Mat4, initialX, initialY, width, height int) (obj Vec3, err error) {
 	inv := projection.Mul4(modelview).Inv()
 	blank := Mat4{}
 	if inv == blank {

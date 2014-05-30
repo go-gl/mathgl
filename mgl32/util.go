@@ -1,4 +1,4 @@
-package mathgl
+package mgl32
 
 import "math"
 
@@ -10,7 +10,9 @@ const epsilon float64 = 1e-15
 //
 // It is slightly altered to not call Abs when not needed.
 // Keep in mind that it expects float32s to be converted to float64s before being passed in, because they have to be converted for Abs anyway
-func FloatEqual(a, b float64) bool {
+func FloatEqual(a_, b_ float32) bool {
+	a, b := float64(a_), float64(b_)
+
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
 		return true
 	} else if a*b == 0 { // If a or b are 0
@@ -21,7 +23,7 @@ func FloatEqual(a, b float64) bool {
 	return math.Abs(a-b)/(math.Abs(a)+math.Abs(b)) < epsilon
 }
 
-func FloatEqual32(a, b float32) bool {
+/*func FloatEqual32(a, b float32) bool {
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
 		return true
 	} else if a*b == 0 { // If a or b is 0
@@ -30,19 +32,19 @@ func FloatEqual32(a, b float32) bool {
 
 	// Else compare difference
 	return math.Abs(float64(a-b))/(math.Abs(float64(a))+math.Abs(float64(b))) < epsilon
-}
+}*/
 
-func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
-	return func(a, b float64) bool {
+func FloatEqualFunc(epsilon float32) func(float32, float32) bool {
+	return func(a, b float32) bool {
 		return FloatEqualThreshold(a, b, epsilon)
 	}
 }
 
-func FloatEqual32Func(epsilon float32) func(float32, float32) bool {
+/*func FloatEqual32Func(epsilon float32) func(float32, float32) bool {
 	return func(a, b float32) bool {
 		return FloatEqualThreshold32(a, b, epsilon)
 	}
-}
+}*/
 
 // FloatEqualThreshold is a utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
@@ -51,7 +53,9 @@ func FloatEqual32Func(epsilon float32) func(float32, float32) bool {
 // Keep in mind that it expects float32s to be converted to float64s before being passed in, because they have to be converted for Abs anyway
 //
 // This differs from FloatEqual in that it lets you pass in your comparison threshold, so that you can adjust the comparison value to your specific needs
-func FloatEqualThreshold(a, b, epsilon float64) bool {
+func FloatEqualThreshold(a_, b_, epsilon_ float32) bool {
+	a, b, epsilon := float64(a_), float64(b_), float64(epsilon_)
+
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
 		return true
 	} else if a*b == 0 { // If a or b is 0
@@ -62,7 +66,7 @@ func FloatEqualThreshold(a, b, epsilon float64) bool {
 	return math.Abs(a-b)/(math.Abs(a)+math.Abs(b)) < epsilon
 }
 
-func FloatEqualThreshold32(a, b, epsilon float32) bool {
+/*func FloatEqualThreshold32(a, b, epsilon float32) bool {
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
 		return true
 	} else if a*b == 0 { // If a or b is 0
@@ -71,7 +75,7 @@ func FloatEqualThreshold32(a, b, epsilon float32) bool {
 
 	// Else compare difference
 	return math.Abs(float64(a-b))/(math.Abs(float64(a))+math.Abs(float64(b))) < float64(epsilon)
-}
+}*/
 
 func Clampf(a, t1, t2 float32) float32 {
 	if a < t1 {

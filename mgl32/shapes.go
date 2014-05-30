@@ -1,4 +1,4 @@
-package mathgl
+package mgl32
 
 import (
 	"fmt"
@@ -19,14 +19,14 @@ import (
 // without much gain in resolution).
 //
 // This uses discrete triangles, not a triangle fan
-func Circlef(radiusX, radiusY float32, numSlices int) []Vec2 {
+func Circle(radiusX, radiusY float32, numSlices int) []Vec2 {
 	twoPi := float32(2.0 * math.Pi)
 
 	circlePoints := make([]Vec2, 0, numSlices*3)
 	center := Vec2{0.0, 0.0}
 	previous := Vec2{radiusX, 0.0}
 
-	for theta := twoPi / float32(numSlices); !FloatEqual32(theta, twoPi); theta = Clampf(theta+twoPi/float32(numSlices), 0.0, twoPi) {
+	for theta := twoPi / float32(numSlices); !FloatEqual(theta, twoPi); theta = Clampf(theta+twoPi/float32(numSlices), 0.0, twoPi) {
 		sin, cos := math.Sincos(float64(theta))
 		curr := Vec2{float32(cos) * radiusX, float32(sin) * radiusY}
 
@@ -46,7 +46,7 @@ func Circlef(radiusX, radiusY float32, numSlices int) []Vec2 {
 // Keep in mind that GL's coordinate system is proportional, so width=height will not result in a square unless your viewport is square.
 // If you want to maintain proportionality regardless of screen size, use the results of w,h := ScreenToGLCoordsf(absoluteWidth, absoluteHeight, screenWidth, screenHeight);
 // w=w+1;h-1 in the call to this function. (The w+1,h-1 step maps the coordinates to start at 0.0 rather than -1.0)
-func Rectf(width, height float32) []Vec2 {
+func Rect(width, height float32) []Vec2 {
 	return []Vec2{
 		Vec2{0.0, 0.0},
 		Vec2{0.0, -height},
@@ -58,7 +58,7 @@ func Rectf(width, height float32) []Vec2 {
 	}
 }
 
-func QuadraticBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3 Vec2) Vec2 {
+func QuadraticBezierCurve2D(t float32, cPoint1, cPoint2, cPoint3 Vec2) Vec2 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
@@ -66,7 +66,7 @@ func QuadraticBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3 Vec2) Vec2 {
 	return cPoint1.Mul((1.0 - t) * (1.0 - t)).Add(cPoint2.Mul(2 * (1 - t) * t)).Add(cPoint3.Mul(t * t))
 }
 
-func QuadraticBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3 Vec3) Vec3 {
+func QuadraticBezierCurve3D(t float32, cPoint1, cPoint2, cPoint3 Vec3) Vec3 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
@@ -74,7 +74,7 @@ func QuadraticBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3 Vec3) Vec3 {
 	return cPoint1.Mul((1.0 - t) * (1.0 - t)).Add(cPoint2.Mul(2 * (1 - t) * t)).Add(cPoint3.Mul(t * t))
 }
 
-func CubicBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec2) Vec2 {
+func CubicBezierCurve2D(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec2) Vec2 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
@@ -82,7 +82,7 @@ func CubicBezierCurve2Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec2) Vec
 	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
 }
 
-func CubicBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec3 {
+func CubicBezierCurve3D(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec3 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
@@ -97,7 +97,7 @@ func CubicBezierCurve3Df(t float32, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec
 //
 // This function is not sensative to the coordinate system of the control points. It will correctly interpolate regardless of whether they're in screen coords,
 // gl coords, or something else entirely
-func BezierCurve2Df(t float32, cPoints []Vec2) Vec2 {
+func BezierCurve2D(t float32, cPoints []Vec2) Vec2 {
 	if t < 0.0 || t > 1.0 {
 		panic("Input to bezier has t not in range [0,1]. If you think this is a precision error, use mathgl.Clamp[f|d] before calling this function")
 	}
@@ -113,7 +113,7 @@ func BezierCurve2Df(t float32, cPoints []Vec2) Vec2 {
 }
 
 // Same as the 2D version, except the line is in 3D space
-func BezierCurve3Df(t float32, cPoints []Vec3) Vec3 {
+func BezierCurve3D(t float32, cPoints []Vec3) Vec3 {
 	if t < 0.0 || t > 1.0 {
 		panic("Input to bezier has t not in range [0,1]. If you think this is a precision error, use mathgl.Clamp[f|d] before calling this function")
 	}
@@ -135,7 +135,7 @@ func BezierCurve3Df(t float32, cPoints []Vec3) Vec3 {
 // So for 3 points it will divide it in half, 4 points into thirds, and so on.
 //
 // This is likely to get rather expensive for anything over perhaps a cubic curve.
-func MakeBezierCurve2Df(numPoints int, cPoints []Vec2) (line []Vec2) {
+func MakeBezierCurve2D(numPoints int, cPoints []Vec2) (line []Vec2) {
 	line = make([]Vec2, numPoints)
 	if numPoints == 0 {
 		return
@@ -150,7 +150,7 @@ func MakeBezierCurve2Df(numPoints int, cPoints []Vec2) (line []Vec2) {
 
 	line[0] = cPoints[0]
 	for i := 1; i < numPoints-1; i++ {
-		line[i] = BezierCurve2Df(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
+		line[i] = BezierCurve2D(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
 	}
 	line[numPoints-1] = cPoints[len(cPoints)-1]
 
@@ -158,7 +158,7 @@ func MakeBezierCurve2Df(numPoints int, cPoints []Vec2) (line []Vec2) {
 }
 
 // Same as the 2D version, except with the line in 3D space
-func MakeBezierCurve3Df(numPoints int, cPoints []Vec3) (line []Vec3) {
+func MakeBezierCurve3D(numPoints int, cPoints []Vec3) (line []Vec3) {
 	line = make([]Vec3, numPoints)
 	if numPoints == 0 {
 		return
@@ -173,7 +173,7 @@ func MakeBezierCurve3Df(numPoints int, cPoints []Vec3) (line []Vec3) {
 
 	line[0] = cPoints[0]
 	for i := 1; i < numPoints-1; i++ {
-		line[i] = BezierCurve3Df(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
+		line[i] = BezierCurve3D(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
 	}
 	line[numPoints-1] = cPoints[len(cPoints)-1]
 
@@ -185,7 +185,7 @@ func MakeBezierCurve3Df(numPoints int, cPoints []Vec3) (line []Vec3) {
 // to ensure it is correct.
 //
 // The control point matrix must not be jagged, or this will end up panicking from an index out of bounds exception
-func BezierSurfacef(u, v float32, cPoints [][]Vec3) Vec3 {
+func BezierSurface(u, v float32, cPoints [][]Vec3) Vec3 {
 	if u < 0.0 || u > 1.0 || v < 1.0 || v > 1.0 {
 		panic("u or v not in range [0.0,1.0] in BezierSurface")
 	}
@@ -212,14 +212,14 @@ func BezierSurfacef(u, v float32, cPoints [][]Vec3) Vec3 {
 // though the spline may be disjoint. The bezier curves are not required to be in any particular order.
 //
 // If t is out of the range of all given curves, this function will panic
-func BezierSplineInterpolate2Df(t float32, ranges [][2]float32, cPoints [][]Vec2) Vec2 {
+func BezierSplineInterpolate2D(t float32, ranges [][2]float32, cPoints [][]Vec2) Vec2 {
 	if len(ranges) != len(cPoints) {
 		panic("Each bezier curve needs a range")
 	}
 
 	for i, curveRange := range ranges {
 		if t >= curveRange[0] && t <= curveRange[1] {
-			return BezierCurve2Df((t-curveRange[0])/(curveRange[1]-curveRange[0]), cPoints[i])
+			return BezierCurve2D((t-curveRange[0])/(curveRange[1]-curveRange[0]), cPoints[i])
 		}
 	}
 
@@ -230,14 +230,14 @@ func BezierSplineInterpolate2Df(t float32, ranges [][2]float32, cPoints [][]Vec2
 // though the spline may be disjoint. The bezier curves are not required to be in any particular order.
 //
 // If t is out of the range of all given curves, this function will panic
-func BezierSplineInterpolate3Df(t float32, ranges [][2]float32, cPoints [][]Vec3) Vec3 {
+func BezierSplineInterpolate3D(t float32, ranges [][2]float32, cPoints [][]Vec3) Vec3 {
 	if len(ranges) != len(cPoints) {
 		panic("Each bezier curve needs a range")
 	}
 
 	for i, curveRange := range ranges {
 		if t >= curveRange[0] && t <= curveRange[1] {
-			return BezierCurve3Df((t-curveRange[0])/(curveRange[1]-curveRange[0]), cPoints[i])
+			return BezierCurve3D((t-curveRange[0])/(curveRange[1]-curveRange[0]), cPoints[i])
 		}
 	}
 
@@ -248,7 +248,7 @@ func BezierSplineInterpolate3Df(t float32, ranges [][2]float32, cPoints [][]Vec3
 //
 // For the overly serious: the function is just for fun. It does nothing except prints a Maxis reference. Technically you could "reticulate splines"
 // by joining a bunch of splines together, but that ruins the joke.
-func ReticulateSplinesf(ranges [][][2]float32, cPoints [][][]Vec2, withLlamas bool) {
+func ReticulateSplines(ranges [][][2]float32, cPoints [][][]Vec2, withLlamas bool) {
 	if !withLlamas {
 		fmt.Println("You can't reticulate splines without llamas, silly.")
 	} else {
@@ -265,7 +265,7 @@ func ReticulateSplinesf(ranges [][][2]float32, cPoints [][][]Vec2, withLlamas bo
 // be mapped correctly, just off the screen. (e.g. if y = 2*screenHeight you'll get -2.0 for yOut)
 //
 // This is similar to Unproject, except for 2D cases and much simpler (especially since an inverse may always be found)
-func ScreenToGLCoordsf(x, y int, screenWidth, screenHeight int) (xOut, yOut float32) {
+func ScreenToGLCoords(x, y int, screenWidth, screenHeight int) (xOut, yOut float32) {
 	xOut = 2.0*float32(x)/float32(screenWidth) - 1.0
 	yOut = 2.0*float32(y)/float32(screenHeight) + 1.0
 
@@ -279,7 +279,7 @@ func ScreenToGLCoordsf(x, y int, screenWidth, screenHeight int) (xOut, yOut floa
 // be mapped correctly, just off the screen. (e.g. if y=-2.0, you'll get 2*screenHeight for yOut)
 //
 // This is similar to Project, except for 2D cases and much simpler
-func GLToScreenCoordsf(x, y float32, screenWidth, screenHeight int) (xOut, yOut int) {
+func GLToScreenCoords(x, y float32, screenWidth, screenHeight int) (xOut, yOut int) {
 	xOut = int((x + 1.0) * float32(screenWidth) / 2.0)
 	yOut = int((y - 1.0) * float32(screenHeight) / 2.0)
 

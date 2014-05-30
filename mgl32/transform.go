@@ -1,4 +1,4 @@
-package mathgl
+package mgl32
 
 import "math"
 

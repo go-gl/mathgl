@@ -1,4 +1,4 @@
-package mathgl
+package mgl32
 
 import (
 	"math/rand"
@@ -7,8 +7,8 @@ import (
 )
 
 func TestEqual(t *testing.T) {
-	a := 1.5
-	b := 1.0 + .5
+	var a float32 = 1.5
+	var b float32 = 1.0 + .5
 
 	if !FloatEqual(a, a) {
 		t.Errorf("Float Equal fails on comparing a number with itself")
@@ -53,61 +53,61 @@ func TestEqual32(t *testing.T) {
 	a := float32(1.5)
 	b := float32(1.0 + .5)
 
-	if !FloatEqual32(a, a) {
+	if !FloatEqual(a, a) {
 		t.Errorf("Float Equal fails on comparing a number with itself")
 	}
 
-	if !FloatEqual32(a, b) {
+	if !FloatEqual(a, b) {
 		t.Errorf("Float Equal fails to compare two equivalent numbers with minimal drift")
-	} else if !FloatEqual32(b, a) {
+	} else if !FloatEqual(b, a) {
 		t.Errorf("Float Equal is not symmetric for some reason")
 	}
 
-	if !FloatEqual32(0.0, 0.0) {
+	if !FloatEqual(0.0, 0.0) {
 		t.Errorf("Float Equal fails to compare zero values correctly")
 	}
 
-	if FloatEqual32(1.5, 1.51) {
+	if FloatEqual(1.5, 1.51) {
 		t.Errorf("Float Equal gives false positive on large difference")
 	}
 
-	if FloatEqual32(1.5, 0.0) {
+	if FloatEqual(1.5, 0.0) {
 		t.Errorf("Float Equal gives false positive comparing with zero")
 	}
 }
 
 func TestClampf(t *testing.T) {
-	if !FloatEqual32(Clampf(-1.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clampf(-1.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp returns incorrect value for below threshold")
 	}
 
-	if !FloatEqual32(Clampf(0.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clampf(0.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp does something weird when value is at threshold")
 	}
 
-	if !FloatEqual32(Clampf(.14, 0.0, 1.0), .14) {
+	if !FloatEqual(Clampf(.14, 0.0, 1.0), .14) {
 		t.Errorf("Clamp fails to return correct value when value is within threshold")
 	}
 
-	if !FloatEqual32(Clampf(1.1, 0.0, 1.0), 1.0) {
+	if !FloatEqual(Clampf(1.1, 0.0, 1.0), 1.0) {
 		t.Errorf("Clamp fails to return max threshold when appropriate")
 	}
 }
 
 func TestClampd(t *testing.T) {
-	if !FloatEqual(Clampd(-1.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clampf(-1.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp returns incorrect value for below threshold")
 	}
 
-	if !FloatEqual(Clampd(0.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clampf(0.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp does something weird when value is at threshold")
 	}
 
-	if !FloatEqual(Clampd(.14, 0.0, 1.0), .14) {
+	if !FloatEqual(Clampf(.14, 0.0, 1.0), .14) {
 		t.Errorf("Clamp fails to return correct value when value is within threshold")
 	}
 
-	if !FloatEqual(Clampd(1.1, 0.0, 1.0), 1.0) {
+	if !FloatEqual(Clampf(1.1, 0.0, 1.0), 1.0) {
 		t.Errorf("Clamp fails to return max threshold when appropriate")
 	}
 }
@@ -137,7 +137,7 @@ func BenchmarkEqual(b *testing.B) {
 		f2 := r.Float32()
 		b.StartTimer()
 
-		FloatEqual32(f1, f2)
+		FloatEqual(f1, f2)
 	}
 }
 
