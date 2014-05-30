@@ -1,4 +1,4 @@
-package mgl32
+package mgl64
 
 import (
 //"math"
