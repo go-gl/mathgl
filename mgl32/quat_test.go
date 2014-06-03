@@ -98,3 +98,90 @@ func TestAnglesToQuatZYX(t *testing.T) {
 		t.Errorf("Quaternion V incorrect. Got: %v, Expected: %v", q.V, Vec3{-0.0191, 0.0462, 0.3822})
 	}
 }
+
+func TestQuaternionFromRotationMatrix(t *testing.T) {
+	tests := []struct {
+		Rotation Mat4
+		Expected Quat
+	}{
+		{
+			Mat4{
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1,
+			},
+			Quat{1, Vec3{0, 0, 0}},
+		},
+		{
+			Mat4{
+				0, 0, -1, 0,
+				0, 1, 0, 0,
+				1, 0, 0, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0.7071, Vec3{0, 0.7071, 0}},
+		},
+		{
+			Mat4{
+				0, 1, 0, 0,
+				-1, 0, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0.7071, Vec3{0, 0, 0.7071}},
+		},
+		{
+			Mat4{
+				0, 1, 0, 0,
+				0, 0, -1, 0,
+				-1, 0, 0, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0.5, Vec3{-0.5, -0.5, 0.5}},
+		},
+		{
+			Mat4{
+				0, 1, 0, 0,
+				1, 0, 0, 0,
+				0, 0, -1, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0, Vec3{0.7071067811865475, 0.7071067811865475, 0}},
+		},
+		{
+			Mat4{
+				-1, 0, 0, 0,
+				0, 0, 1, 0,
+				0, 1, 0, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0, Vec3{0, 0.7071067811865475, 0.7071067811865475}},
+		},
+		{
+			Mat4{
+				-1, 0, 0, 0,
+				0, -1, 0, 0,
+				0, 0, -1, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0, Vec3{0, 0, 0.7071067811865475}},
+		},
+		{
+			Mat4{
+				1, 1, 0, 0,
+				1, -1, 0, 0,
+				0, 0, -1, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0, Vec3{1, 0.5, 0}},
+		},
+	}
+
+	threshold := float32(math.Pow(10, -2))
+	for _, c := range tests {
+		if r := Mat4ToQuat(c.Rotation); !r.ApproxEqualThreshold(c.Expected, threshold) {
+			t.Errorf("Mat4ToQuat(\n%v) != %v (got %v)", c.Rotation, c.Expected, r)
+		}
+	}
+}

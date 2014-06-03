@@ -245,3 +245,66 @@ func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
 	}
 	return ret
 }
+
+// ApproxEqual takes in a quaternion and does an element-wise
+// approximate float comparison as if FloatEqual had been used
+func (q1 Quat) ApproxEqual(q2 Quat) bool {
+	return q1.V.ApproxEqual(q2.V) && FloatEqual(q1.W, q2.W)
+}
+
+// ApproxThresholdEq takes in a threshold for comparing two floats, and uses it to do an
+// element-wise comparison of the quaternion to another.
+func (q1 Quat) ApproxEqualThreshold(q2 Quat, threshold float32) bool {
+	return q1.V.ApproxEqualThreshold(q2.V, threshold) && FloatEqualThreshold(q1.W, q2.W, threshold)
+}
+
+func Mat4ToQuat(m Mat4) Quat {
+	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+
+	if tr := float64(m[0] + m[5] + m[10]); tr > 0 {
+		s := float32(0.5 / math.Sqrt(tr+1.0))
+		return Quat{
+			0.25 / s,
+			Vec3{
+				(m[6] - m[9]) * s,
+				(m[8] - m[2]) * s,
+				(m[1] - m[4]) * s,
+			},
+		}
+	}
+
+	if (m[0] > m[5]) && (m[0] > m[10]) {
+		s := float32(2.0 * math.Sqrt(float64(1.0+m[0]-m[5]-m[10])))
+		return Quat{
+			(m[6] - m[9]) / s,
+			Vec3{
+				0.25 * s,
+				(m[4] + m[1]) / s,
+				(m[8] + m[2]) / s,
+			},
+		}
+	}
+
+	if m[5] > m[10] {
+		s := float32(2.0 * math.Sqrt(float64(1.0+m[5]-m[0]-m[10])))
+		return Quat{
+			(m[8] - m[2]) / s,
+			Vec3{
+				(m[4] + m[1]) / s,
+				0.25 * s,
+				(m[9] + m[6]) / s,
+			},
+		}
+
+	}
+
+	s := float32(2.0 * math.Sqrt(float64(1.0+m[10]-m[0]-m[5])))
+	return Quat{
+		(m[1] - m[4]) / s,
+		Vec3{
+			(m[8] + m[2]) / s,
+			(m[9] + m[6]) / s,
+			0.25 * s,
+		},
+	}
+}
