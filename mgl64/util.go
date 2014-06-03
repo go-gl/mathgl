@@ -29,7 +29,6 @@ func Abs(a float64) float64 {
 // It's Taken from http://floating-point-gui.de/errors/comparison/
 //
 // It is slightly altered to not call Abs when not needed.
-// Keep in mind that it expects float32s to be converted to float64s before being passed in, because they have to be converted for Abs anyway
 func FloatEqual(a, b float64) bool {
 
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
@@ -55,7 +54,6 @@ func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
 // It's Taken from http://floating-point-gui.de/errors/comparison/
 //
 // It is slightly altered to not call Abs when not needed.
-// Keep in mind that it expects float32s to be converted to float64s before being passed in, because they have to be converted for Abs anyway
 //
 // This differs from FloatEqual in that it lets you pass in your comparison threshold, so that you can adjust the comparison value to your specific needs
 func FloatEqualThreshold(a, b, epsilon float64) bool {
@@ -70,35 +68,50 @@ func FloatEqualThreshold(a, b, epsilon float64) bool {
 	return Abs(a-b)/(Abs(a)+Abs(b)) < epsilon
 }
 
-func Clamp(a, t1, t2 float64) float64 {
-	if a < t1 {
-		return t1
-	} else if a > t2 {
-		return t2
+// Clamp takes in a value and two thresholds. If the value is smaller than the low
+// threshold, it returns the low threshold. If it's bigger than the high threshold
+// it returns the high threshold. Otherwise it returns the value.
+//
+// Useful to prevent some functions from freaking out because a value was
+// teeeeechnically out of range.
+func Clamp(a, low, high float64) float64 {
+	if a < low {
+		return low
+	} else if a > high {
+		return high
 	}
 
 	return a
 }
 
-func ClampFunc(t1, t2 float64) func(float64) {
+// CampFunc generates a closure that always checks if the value
+// passed in is between two constant values.
+func ClampFunc(low, high float64) func(float64) {
 	return func(a float64) {
-		Clamp(a, t1, t2)
+		Clamp(a, low, high)
 	}
 }
 
 /* The IsClamped functions use strict equality (meaning: not the FloatEqual function)
 there shouldn't be any major issues with this since clamp is often used to fix minor errors*/
 
-func IsClamped(a, t1, t2 float64) bool {
-	return a >= t1 && a <= t2
+// Checks if a is clamped between low and high as if
+// Clamp(a, low, high) had been called.
+//
+// In most cases it's probably better to just call Clamp
+// without checking this since it's relatively cheap.
+func IsClamped(a, low, high float64) bool {
+	return a >= low && a <= high
 }
 
+// If a > b, then a will be set to the value of b.
 func SetMin(a, b *float64) {
 	if *b < *a {
 		*a = *b
 	}
 }
 
+// If a < b, then a will be set to the value of b.
 func SetMax(a, b *float64) {
 	if *a < *b {
 		*a = *b
