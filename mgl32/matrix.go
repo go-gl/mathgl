@@ -4,9 +4,7 @@
 
 package mgl32
 
-import (
-// "math"
-)
+import "math"
 
 type Mat2 [4]float32
 type Mat2x3 [6]float32
@@ -985,4 +983,25 @@ func (m1 Mat4) ApproxFuncEqual(m2 Mat4, eq func(float32, float32) bool) bool {
 		}
 	}
 	return true
+}
+
+func (m Mat4) ScaleV() Vec3 {
+	return Vec3{
+		float32(math.Sqrt(float64(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]))),
+		float32(math.Sqrt(float64(m[4]*m[4] + m[5]*m[5] + m[6]*m[6]))),
+		float32(math.Sqrt(float64(m[8]*m[8] + m[9]*m[9] + m[10]*m[10]))),
+	}
+}
+
+func (m Mat4) MaxScale() float32 {
+	scaleX := float64(m[0]*m[0] + m[1]*m[1] + m[2]*m[2])
+	scaleY := float64(m[4]*m[4] + m[5]*m[5] + m[6]*m[6])
+	scaleZ := float64(m[8]*m[8] + m[9]*m[9] + m[10]*m[10])
+
+	return float32(math.Sqrt(math.Max(scaleX, math.Max(scaleY, scaleZ))))
+}
+
+func (m Mat4) Normal() Mat3 {
+	n := m.Inv().Transpose()
+	return Mat3{n[0], n[1], n[2], n[4], n[5], n[6], n[8], n[9], n[10]}
 }
