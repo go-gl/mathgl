@@ -9,7 +9,7 @@ import (
 )
 
 // A rotation order is the order in which
-// rotations may be transformed for the purposes of AnglesToQuat
+// rotations will be transformed for the purposes of AnglesToQuat
 type RotationOrder int
 
 const (
@@ -153,7 +153,7 @@ func QuatNlerp(q1, q2 Quat, amount float32) Quat {
 	return QuatLerp(q1, q2, amount).Normalize()
 }
 
-// Performs a canonical rotation in the specified order. If the order is not
+// Performs a rotation in the specified order. If the order is not
 // a valid RotationOrder, this function will panic
 //
 // Based off the code for the Matlab function "angle2quat", though this implementation
