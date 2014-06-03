@@ -4,6 +4,10 @@ import (
 	"math"
 )
 
+// Converts 3-dimensional cartesian coordinates (x,y,z) to spherical
+// coordinates with radius r, inclination theta, and azimuth phi.
+//
+// All angles are in radians.
 func CartesianToSpherical(coord Vec3) (r, theta, phi float32) {
 	r = coord.Len()
 	theta = float32(math.Acos(float64(coord[2] / r)))
@@ -12,6 +16,10 @@ func CartesianToSpherical(coord Vec3) (r, theta, phi float32) {
 	return
 }
 
+// Converts 3-dimensional cartesian coordinates (x,y,z) to cylindrical
+// coordinates with radial distance r, azimuth phi, and height z.
+//
+// All angles are in radians.
 func CartesianToCylindical(coord Vec3) (rho, phi, z float32) {
 	rho = float32(math.Hypot(float64(coord[0]), float64(coord[1])))
 
@@ -22,6 +30,10 @@ func CartesianToCylindical(coord Vec3) (rho, phi, z float32) {
 	return
 }
 
+// Converts spherical coordinates with radius r, inclination theta,
+// and azimuth phi to cartesian coordinates (x,y,z).
+//
+// Angles are in radians.
 func SphericalToCartesian(r, theta, phi float32) Vec3 {
 	st, ct := math.Sincos(float64(theta))
 	sp, cp := math.Sincos(float64(phi))
@@ -29,6 +41,11 @@ func SphericalToCartesian(r, theta, phi float32) Vec3 {
 	return Vec3{r * float32(st*cp), r * float32(st*sp), r * float32(ct)}
 }
 
+// Converts spherical coordinates with radius r, inclination theta,
+// and azimuth phi to cylindrical coordinates with radial distance r,
+// azimuth phi, and height z.
+//
+// Angles are in radians
 func SphericalToCylindrical(r, theta, phi float32) (rho, phi2, z float32) {
 	s, c := math.Sincos(float64(theta))
 
@@ -39,6 +56,11 @@ func SphericalToCylindrical(r, theta, phi float32) (rho, phi2, z float32) {
 	return
 }
 
+// Converts cylindrical coordinates with radial distance r,
+// azimuth phi, and height z to spherical coordinates with radius r,
+// inclination theta, and azimuth phi.
+//
+// Angles are in radians
 func CylindircalToSpherical(rho, phi, z float32) (r, theta, phi2 float32) {
 	r = float32(math.Hypot(float64(rho), float64(z)))
 	phi2 = phi
@@ -47,6 +69,10 @@ func CylindircalToSpherical(rho, phi, z float32) (r, theta, phi2 float32) {
 	return
 }
 
+// Converts cylindrical coordinates with radial distance r,
+// azimuth phi, and height z to cartesian coordinates (x,y,z)
+//
+// Angles are in radians.
 func CylindricalToCartesian(rho, phi, z float32) Vec3 {
 	s, c := math.Sincos(float64(phi))
 
