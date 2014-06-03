@@ -4,6 +4,25 @@ import (
 	"math"
 )
 
+// A rotation order is the order in which
+// rotations may be transformed for the purposes of AnglesToQuat
+type RotationOrder int
+
+const (
+	XYX RotationOrder = iota
+	XYZ
+	XZX
+	XZY
+	YXY
+	YXZ
+	YZY
+	YZX
+	ZYZ
+	ZYX
+	ZXZ
+	ZXY
+)
+
 type Quat struct {
 	W float32
 	V Vec3
@@ -21,6 +40,9 @@ func QuatRotate(angle float32, axis Vec3) Quat {
 	return Quat{c, axis.Mul(s)}
 }
 
+// This function is deprecated. Instead, use AnglesToQuat
+//
+// The behavior of this function should be equivalent to AnglesToQuat(zAngle, yAngle, xAngle, ZYX)
 func EulerToQuat(xAngle, yAngle, zAngle float32) Quat {
 	sinz, cosz := math.Sincos(float64(zAngle))
 	sz, cz := float32(sinz), float32(cosz)
@@ -125,4 +147,97 @@ func QuatLerp(q1, q2 Quat, amount float32) Quat {
 
 func QuatNlerp(q1, q2 Quat, amount float32) Quat {
 	return QuatLerp(q1, q2, amount).Normalize()
+}
+
+// Performs a canonical rotation in the specified order. If the order is not
+// a valid RotationOrder, this function will panic
+//
+// Based off the code for the Matlab function "angle2quat", though this implementation
+// only supports 3 single angles as opposed to multiple angles.
+func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
+	s := [3]float64{}
+	c := [3]float64{}
+
+	s[0], c[0] = math.Sincos(float64(angle1 / 2))
+	s[1], c[1] = math.Sincos(float64(angle2 / 2))
+	s[2], c[2] = math.Sincos(float64(angle3 / 2))
+
+	ret := Quat{}
+	switch order {
+	case ZYX:
+		ret.W = float32(c[0]*c[1]*c[2] + s[0]*s[1]*s[2])
+		ret.V = Vec3{float32(c[0]*c[1]*s[2] - s[0]*s[1]*c[2]),
+			float32(c[0]*s[1]*c[2] + s[0]*c[1]*s[2]),
+			float32(s[0]*c[1]*c[2] - c[0]*s[1]*s[2]),
+		}
+	case ZYZ:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
+		ret.V = Vec3{float32(c[0]*s[1]*s[2] - s[0]*s[1]*c[2]),
+			float32(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+			float32(s[0]*c[1]*c[2] + c[0]*c[1]*s[2]),
+		}
+	case ZXY:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*s[1]*s[2])
+		ret.V = Vec3{float32(c[0]*s[1]*c[2] - s[0]*c[1]*s[2]),
+			float32(c[0]*c[1]*s[2] + s[0]*s[1]*c[2]),
+			float32(c[0]*s[1]*s[2] + s[0]*c[1]*c[2]),
+		}
+	case ZXZ:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
+		ret.V = Vec3{float32(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+			float32(s[0]*s[1]*c[2] - c[0]*s[1]*s[2]),
+			float32(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
+		}
+	case YXZ:
+		ret.W = float32(c[0]*c[1]*c[2] + s[0]*s[1]*s[2])
+		ret.V = Vec3{float32(c[0]*s[1]*c[2] + s[0]*c[1]*s[2]),
+			float32(s[0]*c[1]*c[2] - c[0]*s[1]*s[2]),
+			float32(c[0]*c[1]*s[2] - s[0]*s[1]*c[2]),
+		}
+	case YXY:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
+		ret.V = Vec3{float32(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+			float32(s[0]*c[1]*c[2] + c[0]*c[1]*s[2]),
+			float32(c[0]*s[1]*s[2] - s[0]*s[1]*c[2]),
+		}
+	case YZX:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*s[1]*s[2])
+		ret.V = Vec3{float32(c[0]*c[1]*s[2] + s[0]*s[1]*c[2]),
+			float32(c[0]*s[1]*s[2] + s[0]*c[1]*c[2]),
+			float32(c[0]*s[1]*c[2] - s[0]*c[1]*s[2]),
+		}
+	case YZY:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
+		ret.V = Vec3{float32(s[0]*s[1]*c[2] - c[0]*s[1]*s[2]),
+			float32(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
+			float32(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+		}
+	case XYZ:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*s[1]*s[2])
+		ret.V = Vec3{float32(c[0]*s[1]*s[2] + s[0]*c[1]*c[2]),
+			float32(c[0]*s[1]*c[2] - s[0]*c[1]*s[2]),
+			float32(c[0]*c[1]*s[2] + s[0]*s[1]*c[2]),
+		}
+	case XYX:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
+		ret.V = Vec3{float32(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
+			float32(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+			float32(s[0]*s[1]*c[2] - c[0]*s[1]*s[2]),
+		}
+	case XZY:
+		ret.W = float32(c[0]*c[1]*c[2] + s[0]*s[1]*s[2])
+		ret.V = Vec3{float32(s[0]*c[1]*c[2] - c[0]*s[1]*s[2]),
+			float32(c[0]*c[1]*s[2] - s[0]*s[1]*c[2]),
+			float32(c[0]*s[1]*c[2] + s[0]*c[1]*s[2]),
+		}
+	case XZX:
+		ret.W = float32(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
+		ret.V = Vec3{float32(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
+			float32(c[0]*s[1]*s[2] - s[0]*s[1]*c[2]),
+			float32(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+		}
+	default:
+		panic("Unsupported rotation order")
+	}
+	return ret
 }
