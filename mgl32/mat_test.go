@@ -38,7 +38,7 @@ func BenchmarkMatAdd(b *testing.B) {
 		}
 		b.StartTimer()
 
-		m1.Add(m2)
+		m1 = m1.Add(m2)
 	}
 }
 
@@ -56,7 +56,7 @@ func BenchmarkMatScale(b *testing.B) {
 		c := rand.Float32()
 		b.StartTimer()
 
-		m1.Mul(c)
+		m1 = m1.Mul(c)
 	}
 }
 
@@ -74,7 +74,7 @@ func BenchmarkMatMul(b *testing.B) {
 		}
 		b.StartTimer()
 
-		m1.Mul4(m2)
+		m1 = m1.Mul4(m2)
 	}
 }
 
@@ -91,7 +91,7 @@ func BenchmarkMatTranspose(b *testing.B) {
 		}
 		b.StartTimer()
 
-		m1.Transpose()
+		_ = m1.Transpose()
 	}
 }
 
@@ -108,7 +108,7 @@ func BenchmarkMatDet(b *testing.B) {
 		}
 		b.StartTimer()
 
-		m1.Det()
+		_ = m1.Det()
 	}
 }
 
@@ -125,6 +125,6 @@ func BenchmarkMatInv(b *testing.B) {
 		}
 		b.StartTimer()
 
-		m1.Inv()
+		m1 = m1.Inv()
 	}
 }
