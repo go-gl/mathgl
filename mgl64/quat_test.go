@@ -98,3 +98,28 @@ func TestAnglesToQuatZYX(t *testing.T) {
 		t.Errorf("Quaternion V incorrect. Got: %v, Expected: %v", q.V, Vec3{-0.0191, 0.0462, 0.3822})
 	}
 }
+
+func TestQuatRotateVec(t *testing.T) {
+	q := QuatRotate(RadToDeg(float64(math.Pi)), Vec3{0, 1, 0})
+	q = q.Normalize()
+	v := Vec3{1, 0, 0}
+
+	result := q.Rotate(v)
+
+	expected := Rotate3DY(RadToDeg(float64(math.Pi))).Mul3x1(v)
+	t.Logf("Computed from rotation matrix: %v", expected)
+	if !result.ApproxEqualThreshold(expected, 1e-4) {
+		t.Errorf("Quaternion rotating vector doesn't match 3D matrix method. Got: %v, Expected: %v", result, expected)
+	}
+
+	expected = q.Mul(Quat{0, v}).Mul(q.Conjugate()).V
+	t.Logf("Computed from conjugate method: %v", expected)
+	if !result.ApproxEqualThreshold(expected, 1e-4) {
+		t.Errorf("Quaternion rotating vector doesn't match slower conjugate method. Got: %v, Expected: %v", result, expected)
+	}
+
+	expected = Vec3{-1, 0, 0}
+	if !result.ApproxEqualThreshold(expected, 4e-4) { // The result we get for z is like 8e-8, but a 1e-4 threshold juuuuuust causes it to freak out when compared to 0.0
+		t.Errorf("Quaternion rotating vector doesn't match hand-computed result. Got: %v, Expected: %v", result, expected)
+	}
+}

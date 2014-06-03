@@ -4,6 +4,8 @@
 
 package mgl32
 
+import "math"
+
 // Epsilon is some tiny value that determines how precisely equal we want our floats to be
 // This is exported and left as a variable in case you want to change the default threshold for the
 // purposes of certain methods (e.g. Unproject uses the default epsilon when determining
@@ -116,4 +118,14 @@ func SetMax(a, b *float32) {
 	if *a < *b {
 		*a = *b
 	}
+}
+
+// Converts degrees to radians
+func DegToRad(angle float32) float32 {
+	return angle * float32(math.Pi) / 180
+}
+
+// Converts radians to degrees
+func RadToDeg(angle float32) float32 {
+	return angle * 180 / float32(math.Pi)
 }
