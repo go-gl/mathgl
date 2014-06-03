@@ -236,7 +236,7 @@ func GenVecLen(m int) (s string) {
 		}
 		s += ")))\n}\n\n"
 	} else {
-		s += fmt.Sprintf("func (v1 %s) Len() float32 {\n\treturn float32(math.Hypot(float64(v1[0]), float64(v1[1])))\n}\n\n")
+		s += fmt.Sprintf("func (v1 %s) Len() float32 {\n\treturn float32(math.Hypot(float64(v1[0]), float64(v1[1])))\n}\n\n", VecName())
 	}
 	return s
 }
@@ -252,13 +252,7 @@ func GenVecNormalize(m int) (s string) {
 //
 // (Can be seen here: http://play.golang.org/p/Aaj7SnbqIp )
 `
-	s += fmt.Sprintf("func (v1 %s) Normalize() %s {\n\tl := 1.0/math.Sqrt(float64(", VecName(m), VecName(m))
-	for i := 0; i < m; i++ {
-		s += fmt.Sprintf("v1[%d] * v1[%d]", i, i)
-		if i != m-1 {
-			s += "+"
-		}
-	}
+	s += fmt.Sprintf("func (v1 %s) Normalize() %s {\n\tl := 1.0/v1.Len()", VecName(m), VecName(m))
 	s += fmt.Sprintf("))\n\treturn %s{", VecName(m))
 	for i := 0; i < m; i++ {
 		s += fmt.Sprintf("float32(float64(v1[%d]) * l)", i)

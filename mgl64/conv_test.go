@@ -1,4 +1,4 @@
-package mgl64
+package mgl32
 
 import (
 	"testing"

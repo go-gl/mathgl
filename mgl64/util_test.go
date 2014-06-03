@@ -1,4 +1,4 @@
-package mgl64
+package mgl32
 
 import (
 	"math/rand"
@@ -133,8 +133,8 @@ func BenchmarkEqual(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		f1 := r.Float64()
-		f2 := r.Float64()
+		f1 := r.Float32()
+		f2 := r.Float32()
 		b.StartTimer()
 
 		FloatEqual(f1, f2)
@@ -147,8 +147,8 @@ func BenchmarkBuiltinEqual(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		f1 := r.Float64()
-		f2 := r.Float64()
+		f1 := r.Float32()
+		f2 := r.Float32()
 		b.StartTimer()
 
 		_ = f1 == f2
@@ -160,9 +160,9 @@ func BenchmarkClampf(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		a := r.Float64()
-		t1 := r.Float64()
-		t2 := r.Float64()
+		a := r.Float32()
+		t1 := r.Float32()
+		t2 := r.Float32()
 		b.StartTimer()
 
 		Clampf(a, t1, t2)
