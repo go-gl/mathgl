@@ -467,7 +467,7 @@ func GenMatSub(m, n int) (s string) {
 }
 
 func GenScalarMul(m, n int) (s string) {
-	`// Mul performs a scalar multiplcation of the matrix. This is equivalent to iterating
+	s = `// Mul performs a scalar multiplcation of the matrix. This is equivalent to iterating
 // over every element of the matrix and multiply it by c.
 `
 	s += fmt.Sprintf("func (m1 %s) Mul(c float32) %s {\n\treturn %s{", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
