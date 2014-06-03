@@ -79,3 +79,18 @@ func TestQuatRotationToMatrix(t *testing.T) {
 		t.Errorf("Rotation quaternion does not yield correct rotation matrix; got: %v expected: %v", matrix, answer)
 	}
 }
+
+// Taken from the Matlab AnglesToQuat documentation example
+func TestAnglesToQuatZYX(t *testing.T) {
+	q := AnglesToQuat(.7854, 0.1, 0, ZYX)
+
+	t.Log("Calculated quaternion: ", q, "\n")
+
+	if !FloatEqualThreshold(q.W, .9227, 1e-3) {
+		t.Errorf("Quaternion W incorrect. Got: %f Expected: %f", q.W, .9227)
+	}
+
+	if !q.V.ApproxEqualThreshold(Vec3{-0.0191, 0.0462, 0.3822}, 1e-3) {
+		t.Errorf("Quaternion V incorrect. Got: %v, Expected: %v", q.V, Vec3{-0.0191, 0.0462, 0.3822})
+	}
+}
