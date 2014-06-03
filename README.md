@@ -12,3 +12,8 @@ This package is split into two sub-packages. The package `mgl32` deals with 32-b
 The old repository, before the split between the 32-bit and 64-bit subpackages, is kept at github.com/Jragonmiris/mathgl (the old repository path), but is no longer maintained.
 
 Note that currently the examples do not work and need to be updated for the new library.
+
+Contributing
+============
+
+Feel free to submit pull requests for features and bug fixes. Do note that, aside from documentation bugs, meta (travis.yml etc) fixes, and example code, pull requests will not be accepted without tests corresponding to the new code. If it's a bug fix, the test should test the bug.

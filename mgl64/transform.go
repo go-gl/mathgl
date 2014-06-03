@@ -1,3 +1,7 @@
+// Copyright 2014 The go-gl Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package mgl64
 
 import "math"
@@ -148,9 +152,9 @@ func ShearZ3D(shearX, shearY float64) Mat4 {
 //
 // Where c is cos(angle) and s is sin(angle), and x, y, and z are the first, second, and third elements of the axis vector (respectively):
 //
-//    [[ x^2(c-1)+c, xy(c-1)-zs, xz(c-1)+ys, 0 ]]
-//    [[ xy(c-1)+zs, y^2(c-1)+c, yz(c-1)-xs, 0 ]]
-//    [[ xz(c-1)-ys, yz(c-1)+xs, z^2(c-1)+c, 0 ]]
+//    [[ x^2(1-c)+c, xy(1-c)-zs, xz(1-c)+ys, 0 ]]
+//    [[ xy(1-c)+zs, y^2(1-c)+c, yz(1-c)-xs, 0 ]]
+//    [[ xz(1-c)-ys, yz(1-c)+xs, z^2(1-c)+c, 0 ]]
 //    [[ 0         , 0         , 0         , 1 ]]
 func HomogRotate3D(angle float64, axis Vec3) Mat4 {
 	x, y, z := axis[0], axis[1], axis[2]
