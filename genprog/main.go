@@ -662,7 +662,7 @@ func GenMatFuncEq(m, n int) (s string) {
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 `
-	s = fmt.Sprintf("func (m1 %s) ApproxFuncEqual(m2 %s, eq func(float32,float32) bool) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
+	s += fmt.Sprintf("func (m1 %s) ApproxFuncEqual(m2 %s, eq func(float32,float32) bool) bool {\n\t", GenMatName(m, n), GenMatName(m, n))
 
 	s += "for i := range m1 {\n\t\t"
 	s += "if !eq(m1[i],m2[i]) {\n\t\t\t"
