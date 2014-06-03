@@ -15,13 +15,7 @@ func CartesianToSpherical(coord Vec3) (r, theta, phi float32) {
 func CartesianToCylindical(coord Vec3) (rho, phi, z float32) {
 	rho = float32(math.Hypot(float64(coord[0]), float64(coord[1])))
 
-	if xeq, yeq := FloatEqual(coord[0], 0), FloatEqual(coord[1], 0); xeq || yeq {
-		phi = 0
-	} else if coord[0] > 0 || xeq {
-		phi = float32(math.Atan2(float64(coord[1]), float64(coord[0])))
-	} else {
-		phi = float32(-math.Asin(float64(coord[1]/rho)) + math.Pi)
-	}
+	phi = float32(math.Atan2(float64(coord[1]), float64(coord[0])))
 
 	z = coord[2]
 
@@ -35,7 +29,7 @@ func SphericalToCartesian(r, theta, phi float32) Vec3 {
 	return Vec3{r * float32(st*cp), r * float32(st*sp), r * float32(ct)}
 }
 
-func SpericalToCylindrical(r, theta, phi float32) (rho, phi2, z float32) {
+func SphericalToCylindrical(r, theta, phi float32) (rho, phi2, z float32) {
 	s, c := math.Sincos(float64(theta))
 
 	rho = r * float32(s)
