@@ -252,10 +252,9 @@ func GenVecNormalize(m int) (s string) {
 //
 // (Can be seen here: http://play.golang.org/p/Aaj7SnbqIp )
 `
-	s += fmt.Sprintf("func (v1 %s) Normalize() %s {\n\tl := 1.0/v1.Len()", VecName(m), VecName(m))
-	s += fmt.Sprintf("))\n\treturn %s{", VecName(m))
+	s += fmt.Sprintf("func (v1 %s) Normalize() %s {\n\tl := 1.0/v1.Len()\n\t return %s{", VecName(m), VecName(m), VecName(m))
 	for i := 0; i < m; i++ {
-		s += fmt.Sprintf("float32(float64(v1[%d]) * l)", i)
+		s += fmt.Sprintf("v1[%d] * l", i)
 		if i != m-1 {
 			s += ","
 		}
@@ -321,7 +320,7 @@ func GenMat() string {
 package mgl32
 
 import(
-	"math"
+	// "math"
 )
 
 `

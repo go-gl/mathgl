@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package mgl32
+package mgl64
 
 import (
-	"math"
+// "math"
 )
 
 type Mat2 [4]float64

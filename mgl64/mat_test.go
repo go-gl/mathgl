@@ -1,4 +1,4 @@
-package mgl32
+package mgl64
 
 import (
 	"math/rand"
@@ -30,7 +30,7 @@ func BenchmarkMatAdd(b *testing.B) {
 		m2 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
-			m1[j], m2[j] = rand.Float32(), rand.Float32()
+			m1[j], m2[j] = rand.Float64(), rand.Float64()
 		}
 		b.StartTimer()
 
@@ -47,9 +47,9 @@ func BenchmarkMatScale(b *testing.B) {
 		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
-			m1[j] = rand.Float32()
+			m1[j] = rand.Float64()
 		}
-		c := rand.Float32()
+		c := rand.Float64()
 		b.StartTimer()
 
 		m1.Mul(c)
@@ -66,7 +66,7 @@ func BenchmarkMatMul(b *testing.B) {
 		m2 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
-			m1[j], m2[j] = rand.Float32(), rand.Float32()
+			m1[j], m2[j] = rand.Float64(), rand.Float64()
 		}
 		b.StartTimer()
 
@@ -83,7 +83,7 @@ func BenchmarkMatTranspose(b *testing.B) {
 		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
-			m1[j] = rand.Float32()
+			m1[j] = rand.Float64()
 		}
 		b.StartTimer()
 
@@ -100,7 +100,7 @@ func BenchmarkMatDet(b *testing.B) {
 		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
-			m1[j] = rand.Float32()
+			m1[j] = rand.Float64()
 		}
 		b.StartTimer()
 
@@ -117,7 +117,7 @@ func BenchmarkMatInv(b *testing.B) {
 		m1 := Mat4{}
 
 		for j := 0; j < len(m1); j++ {
-			m1[j] = rand.Float32()
+			m1[j] = rand.Float64()
 		}
 		b.StartTimer()
 

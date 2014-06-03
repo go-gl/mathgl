@@ -1,4 +1,4 @@
-package mgl32
+package mgl64
 
 import (
 	"math/rand"
@@ -129,8 +129,8 @@ func BenchmarkVec4Add(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
+		v2 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
 		b.StartTimer()
 
 		v1.Add(v2)
@@ -143,8 +143,8 @@ func BenchmarkVec4Sub(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
+		v2 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
 		b.StartTimer()
 
 		v1.Sub(v2)
@@ -157,8 +157,8 @@ func BenchmarkVec4Scale(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		c := r.Float32()
+		v1 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
+		c := r.Float64()
 		b.StartTimer()
 
 		v1.Mul(c)
@@ -171,8 +171,8 @@ func BenchmarkVec4Dot(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
+		v2 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
 		b.StartTimer()
 
 		v1.Dot(v2)
@@ -185,7 +185,7 @@ func BenchmarkVec4Len(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
 		b.StartTimer()
 
 		v1.Len()
@@ -198,7 +198,7 @@ func BenchmarkVec4Normalize(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec4{r.Float64(), r.Float64(), r.Float64(), r.Float64()}
 		b.StartTimer()
 
 		v1.Normalize()
@@ -211,8 +211,8 @@ func BenchmarkVecCross(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
-		v1 := Vec3{r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec3{r.Float32(), r.Float32(), r.Float32()}
+		v1 := Vec3{r.Float64(), r.Float64(), r.Float64()}
+		v2 := Vec3{r.Float64(), r.Float64(), r.Float64()}
 		b.StartTimer()
 
 		v1.Cross(v2)
