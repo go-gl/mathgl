@@ -99,7 +99,7 @@ func TestAnglesToQuatZYX(t *testing.T) {
 	}
 }
 
-func TestQuatRotateVec(t *testing.T) {
+func TestQuatMatRotateY(t *testing.T) {
 	q := QuatRotate(RadToDeg(float64(math.Pi)), Vec3{0, 1, 0})
 	q = q.Normalize()
 	v := Vec3{1, 0, 0}
