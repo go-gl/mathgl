@@ -81,51 +81,51 @@ func TestEqual32(t *testing.T) {
 }
 
 func TestClampf(t *testing.T) {
-	if !FloatEqual(Clampf(-1.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clamp(-1.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp returns incorrect value for below threshold")
 	}
 
-	if !FloatEqual(Clampf(0.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clamp(0.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp does something weird when value is at threshold")
 	}
 
-	if !FloatEqual(Clampf(.14, 0.0, 1.0), .14) {
+	if !FloatEqual(Clamp(.14, 0.0, 1.0), .14) {
 		t.Errorf("Clamp fails to return correct value when value is within threshold")
 	}
 
-	if !FloatEqual(Clampf(1.1, 0.0, 1.0), 1.0) {
+	if !FloatEqual(Clamp(1.1, 0.0, 1.0), 1.0) {
 		t.Errorf("Clamp fails to return max threshold when appropriate")
 	}
 }
 
 func TestClampd(t *testing.T) {
-	if !FloatEqual(Clampf(-1.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clamp(-1.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp returns incorrect value for below threshold")
 	}
 
-	if !FloatEqual(Clampf(0.0, 0.0, 1.0), 0.0) {
+	if !FloatEqual(Clamp(0.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp does something weird when value is at threshold")
 	}
 
-	if !FloatEqual(Clampf(.14, 0.0, 1.0), .14) {
+	if !FloatEqual(Clamp(.14, 0.0, 1.0), .14) {
 		t.Errorf("Clamp fails to return correct value when value is within threshold")
 	}
 
-	if !FloatEqual(Clampf(1.1, 0.0, 1.0), 1.0) {
+	if !FloatEqual(Clamp(1.1, 0.0, 1.0), 1.0) {
 		t.Errorf("Clamp fails to return max threshold when appropriate")
 	}
 }
 
 func TestIsClamped(t *testing.T) {
-	if IsClampedf(-1.0, 0.0, 1.0) {
+	if IsClamped(-1.0, 0.0, 1.0) {
 		t.Errorf("Test below min is considered clamped")
 	}
 
-	if !IsClampedf(.15, 0.0, 1.0) {
+	if !IsClamped(.15, 0.0, 1.0) {
 		t.Errorf("Test in threshold returns false")
 	}
 
-	if IsClampedf(1.5, 0.0, 1.0) {
+	if IsClamped(1.5, 0.0, 1.0) {
 		t.Errorf("Test above max threshold returns false positive")
 	}
 }
@@ -169,6 +169,6 @@ func BenchmarkClampf(b *testing.B) {
 		t2 := r.Float32()
 		b.StartTimer()
 
-		Clampf(a, t1, t2)
+		Clamp(a, t1, t2)
 	}
 }

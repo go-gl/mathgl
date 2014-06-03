@@ -136,7 +136,7 @@ func QuatSlerp(q1, q2 Quat, amount float32) Quat {
 	dot := q1.Dot(q2)
 
 	// This is here for precision errors, I'm perfectly aware the *technically* the dot is bound [-1,1], but since Acos will freak out if it's not (even if it's just a liiiiitle bit over due to normal error) we need to clamp it
-	dot = Clampf(dot, -1, 1)
+	dot = Clamp(dot, -1, 1)
 
 	theta := float32(math.Acos(float64(dot))) * amount
 	c, s := float32(math.Cos(float64(theta))), float32(math.Sin(float64(theta)))
