@@ -4,9 +4,9 @@ go:
  - 1.2
 
 install:
-   - wget -q https://raw.github.com/go-gl/testutils/master/travis-helper-functions.sh
-   - source travis-helper-functions.sh
-   - initialize
+   # - wget -q https://raw.github.com/go-gl/testutils/master/travis-helper-functions.sh
+   # - source travis-helper-functions.sh
+   #- initialize
 
 script:
   - go test -v ./mgl32
