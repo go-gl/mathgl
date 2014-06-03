@@ -158,7 +158,7 @@ func (q1 Quat) Normalize() Quat {
 // of the squares of all terms instead of actually squaring q1.Len(),
 // both for performance and percision.
 func (q1 Quat) Inverse() Quat {
-	return q1.Conjugate().Scale(1 / q1.Dot(q2))
+	return q1.Conjugate().Scale(1 / q1.Dot(q1))
 }
 
 // Rotates a vector by the rotation this quaternion represents.

@@ -6,7 +6,9 @@ package mgl32
 
 import (
 	"math"
+	"math/rand"
 	"testing"
+	"time"
 )
 
 func TestQuatMulIdentity(t *testing.T) {
@@ -121,5 +123,33 @@ func TestQuatMatRotateY(t *testing.T) {
 	expected = Vec3{-1, 0, 0}
 	if !result.ApproxEqualThreshold(expected, 4e-4) { // The result we get for z is like 8e-8, but a 1e-4 threshold juuuuuust causes it to freak out when compared to 0.0
 		t.Errorf("Quaternion rotating vector doesn't match hand-computed result. Got: %v, Expected: %v", result, expected)
+	}
+}
+
+func BenchmarkQuatRotateOptimized(b *testing.B) {
+	b.StopTimer()
+	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
+
+	for i := 0; i < b.N; i++ {
+		q := QuatRotate(rand.Float32(), Vec3{rand.Float32(), rand.Float32(), rand.Float32()})
+		v := Vec3{rand.Float32(), rand.Float32(), rand.Float32()}
+		q = q.Normalize()
+		b.StartTimer()
+
+		v = q.Rotate(v)
+	}
+}
+
+func BenchmarkQuatRotateConjugate(b *testing.B) {
+	b.StopTimer()
+	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
+
+	for i := 0; i < b.N; i++ {
+		q := QuatRotate(rand.Float32(), Vec3{rand.Float32(), rand.Float32(), rand.Float32()})
+		v := Vec3{rand.Float32(), rand.Float32(), rand.Float32()}
+		q = q.Normalize()
+		b.StartTimer()
+
+		v = q.Mul(Quat{0, v}).Mul(q.Conjugate()).V
 	}
 }
