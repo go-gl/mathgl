@@ -42,7 +42,7 @@ func TestCartesianToCylinder(t *testing.T) {
 	rho, phi, z := CartesianToCylindical(v)
 
 	if !FloatEqualThreshold(rho, 13, 1e-4) {
-		t.Errorf("Got incorrect value for radius. Got: %f, expected: %f", rho, 13)
+		t.Errorf("Got incorrect value for radius. Got: %f, expected: %f", rho, 13.)
 	}
 
 	if !FloatEqualThreshold(phi, 1.17601, 1e-4) {
@@ -50,7 +50,7 @@ func TestCartesianToCylinder(t *testing.T) {
 	}
 
 	if !FloatEqualThreshold(z, 9, 1e-4) {
-		t.Errorf("Got incorrect value for phi. Got: %f, expected: %f", z, 9)
+		t.Errorf("Got incorrect value for phi. Got: %f, expected: %f", z, 9.)
 	}
 }
 
@@ -84,7 +84,7 @@ func TestSphereToCylinder(t *testing.T) {
 	rho, phi, z := SphericalToCylindrical(15.8114, 0.965250852, 1.1760046)
 
 	if !FloatEqualThreshold(rho, 13, 1e-4) {
-		t.Errorf("Got incorrect value for radius. Got: %f, expected: %f", rho, 13)
+		t.Errorf("Got incorrect value for radius. Got: %f, expected: %f", rho, 13.)
 	}
 
 	if !FloatEqualThreshold(phi, 1.17601, 1e-4) {
@@ -92,6 +92,6 @@ func TestSphereToCylinder(t *testing.T) {
 	}
 
 	if !FloatEqualThreshold(z, 9, 1e-4) {
-		t.Errorf("Got incorrect value for phi. Got: %f, expected: %f", z, 9)
+		t.Errorf("Got incorrect value for phi. Got: %f, expected: %f", z, 9.)
 	}
 }
