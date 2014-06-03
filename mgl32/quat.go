@@ -308,3 +308,23 @@ func Mat4ToQuat(m Mat4) Quat {
 		},
 	}
 }
+
+func QuatLookAtV(eye, center, up Vec3) Quat {
+	forward := eye.Sub(center).Normalize()
+	f := Vec3{0, 0, 1}
+	dot := float64(f.Dot(forward))
+
+	if math.Abs(dot-(-1.0)) < 0.0001 {
+		// vectors point in opposite direction
+		return QuatRotate(math.Pi, up)
+	}
+
+	if math.Abs(dot-(1.0)) < 0.0001 {
+		// vectors point in same direction
+		return Quat{1, Vec3{0, 0, 0}}
+	}
+
+	angle := float32(math.Acos(dot))
+	axis := f.Cross(forward).Normalize()
+	return QuatRotate(angle, axis)
+}
