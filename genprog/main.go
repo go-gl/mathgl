@@ -1,4 +1,4 @@
-// Copyright 2012 The go-gl/mathgl Authors. All rights reserved.
+// Copyright 2014 The go-gl Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -42,7 +42,7 @@ func main() {
 }
 
 func GenVec() (s string) {
-	vecs := `// Copyright 2012 The go-gl/mathgl Authors. All rights reserved.
+	vecs := `// Copyright 2014 The go-gl/mathgl Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -313,7 +313,7 @@ func VecName(m int) (s string) {
 }
 
 func GenMat() string {
-	mats := `// Copyright 2012 The go-gl/mathgl Authors. All rights reserved.
+	mats := `// Copyright 2014 The go-gl/mathgl Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
