@@ -121,7 +121,7 @@ func (v1 Vec4) Dot(v2 Vec4) float32 {
 // the vector (len(v)), but the mathematical length. This is equivalent to the square
 // root of the sum of the squares of all elements. E.G. for a Vec2 it's 
 // math.Hypot(v[0], v[1]).
-func (v1 %!s(MISSING)) Len() float32 {
+func (v1 Vec2) Len() float32 {
 	return float32(math.Hypot(float64(v1[0]), float64(v1[1])))
 }
 
@@ -151,7 +151,7 @@ func (v1 Vec4) Len() float32 {
 //
 // (Can be seen here: http://play.golang.org/p/Aaj7SnbqIp )
 func (v1 Vec2) Normalize() Vec2 {
-	l := 1.0/math.Sqrt(float64(v1[0] * v1[0]+v1[1] * v1[1]))
+	l := 1.0/v1.Len()))
 	return Vec2{float32(float64(v1[0]) * l),float32(float64(v1[1]) * l)}
 }
 
@@ -165,7 +165,7 @@ func (v1 Vec2) Normalize() Vec2 {
 //
 // (Can be seen here: http://play.golang.org/p/Aaj7SnbqIp )
 func (v1 Vec3) Normalize() Vec3 {
-	l := 1.0/math.Sqrt(float64(v1[0] * v1[0]+v1[1] * v1[1]+v1[2] * v1[2]))
+	l := 1.0/v1.Len()))
 	return Vec3{float32(float64(v1[0]) * l),float32(float64(v1[1]) * l),float32(float64(v1[2]) * l)}
 }
 
@@ -179,7 +179,7 @@ func (v1 Vec3) Normalize() Vec3 {
 //
 // (Can be seen here: http://play.golang.org/p/Aaj7SnbqIp )
 func (v1 Vec4) Normalize() Vec4 {
-	l := 1.0/math.Sqrt(float64(v1[0] * v1[0]+v1[1] * v1[1]+v1[2] * v1[2]+v1[3] * v1[3]))
+	l := 1.0/v1.Len()))
 	return Vec4{float32(float64(v1[0]) * l),float32(float64(v1[1]) * l),float32(float64(v1[2]) * l),float32(float64(v1[3]) * l)}
 }
 
