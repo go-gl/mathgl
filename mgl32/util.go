@@ -148,3 +148,14 @@ func SetMaxd(a, b *float64) {
 		*a = *b
 	}
 }
+
+// Round shortens a float32 value to a specified precision (number of digits after the decimal point)
+// with "round half up" tie-braking rule. Half-way values (23.5) are always rounded up (24).
+func Round(v float32, precision int) float32 {
+	p := float64(precision)
+	t := float64(v) * math.Pow(10, p)
+	if t > 0 {
+		return float32(math.Floor(t+0.5) / math.Pow(10, p))
+	}
+	return float32(math.Ceil(t-0.5) / math.Pow(10, p))
+}

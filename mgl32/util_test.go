@@ -172,3 +172,36 @@ func BenchmarkClampf(b *testing.B) {
 		Clampf(a, t1, t2)
 	}
 }
+
+func TestRound(t *testing.T) {
+	tests := []struct {
+		Value     float32
+		Precision int
+		Expected  float32
+	}{
+		{0.5, 0, 1},
+		{0.123, 2, 0.12},
+		{9.99999999, 6, 10},
+		{-9.99999999, 6, -10},
+		{-0.000099, 4, -0.0001},
+	}
+
+	for _, c := range tests {
+		if r := Round(c.Value, c.Precision); r != c.Expected {
+			t.Errorf("Round(%v, %v) != %v (got %v)", c.Value, c.Precision, c.Expected, r)
+		}
+	}
+}
+
+func BenchmarkRound(b *testing.B) {
+	b.StopTimer()
+	r := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		v := r.Float32()
+		p := r.Intn(10)
+		b.StartTimer()
+
+		Round(v, p)
+	}
+}
