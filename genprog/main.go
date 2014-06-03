@@ -236,7 +236,7 @@ func GenVecLen(m int) (s string) {
 		}
 		s += ")))\n}\n\n"
 	} else {
-		s += fmt.Sprintf("func (v1 %s) Len() float32 {\n\treturn float32(math.Hypot(float64(v1[0]), float64(v1[1])))\n}\n\n", VecName())
+		s += fmt.Sprintf("func (v1 %s) Len() float32 {\n\treturn float32(math.Hypot(float64(v1[0]), float64(v1[1])))\n}\n\n", VecName(m))
 	}
 	return s
 }
