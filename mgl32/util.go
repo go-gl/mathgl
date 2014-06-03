@@ -11,8 +11,6 @@ package mgl32
 //
 // This is, obviously, not mutex protected so be **absolutely sure** that no functions using Epsilon
 // are being executed when you change this.
-//
-// This is left as a float64 for more precise comparisons
 var Epsilon float32 = 1e-10
 
 // A direct copy of the math package's Abs. This is here for the mgl32
