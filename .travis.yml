@@ -3,7 +3,7 @@ language: go
 go:
  - 1.2
 
- install:
+install:
    - wget -q https://raw.github.com/go-gl/testutils/master/travis-helper-functions.sh
    - source travis-helper-functions.sh
    - initialize
@@ -11,7 +11,7 @@ go:
 script:
   - go test -v ./mgl32
   - go test -v ./mgl64
-  - diff <(gofmt -d .) <("") 
+ 
 
 after_failure: failure
 after_error: failure
