@@ -879,6 +879,9 @@ func (m1 Mat4) ApproxEqualThreshold(m2 Mat4, threshold float32) bool {
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat2) ApproxFuncEqual(m2 Mat2, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -888,6 +891,9 @@ func (m1 Mat2) ApproxFuncEqual(m2 Mat2, eq func(float32,float32) bool) bool {
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat2x3) ApproxFuncEqual(m2 Mat2x3, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -897,6 +903,9 @@ func (m1 Mat2x3) ApproxFuncEqual(m2 Mat2x3, eq func(float32,float32) bool) bool 
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat2x4) ApproxFuncEqual(m2 Mat2x4, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -906,6 +915,9 @@ func (m1 Mat2x4) ApproxFuncEqual(m2 Mat2x4, eq func(float32,float32) bool) bool 
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat3x2) ApproxFuncEqual(m2 Mat3x2, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -915,6 +927,9 @@ func (m1 Mat3x2) ApproxFuncEqual(m2 Mat3x2, eq func(float32,float32) bool) bool 
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat3) ApproxFuncEqual(m2 Mat3, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -924,6 +939,9 @@ func (m1 Mat3) ApproxFuncEqual(m2 Mat3, eq func(float32,float32) bool) bool {
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat3x4) ApproxFuncEqual(m2 Mat3x4, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -933,6 +951,9 @@ func (m1 Mat3x4) ApproxFuncEqual(m2 Mat3x4, eq func(float32,float32) bool) bool 
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat4x2) ApproxFuncEqual(m2 Mat4x2, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -942,6 +963,9 @@ func (m1 Mat4x2) ApproxFuncEqual(m2 Mat4x2, eq func(float32,float32) bool) bool 
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat4x3) ApproxFuncEqual(m2 Mat4x3, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
@@ -951,6 +975,9 @@ func (m1 Mat4x3) ApproxFuncEqual(m2 Mat4x3, eq func(float32,float32) bool) bool 
 	return true
 }
 
+// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
+// function may be used in practice.
 func (m1 Mat4) ApproxFuncEqual(m2 Mat4, eq func(float32,float32) bool) bool {
 	for i := range m1 {
 		if !eq(m1[i],m2[i]) {
