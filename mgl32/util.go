@@ -4,8 +4,6 @@
 
 package mgl32
 
-import "math"
-
 // Epsilon is some tiny value that determines how precisely equal we want our floats to be
 // This is exported and left as a variable in case you want to change the default threshold for the
 // purposes of certain methods (e.g. Unproject uses the default epsilon when determining
