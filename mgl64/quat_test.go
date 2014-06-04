@@ -131,6 +131,7 @@ func BenchmarkQuatRotateOptimized(b *testing.B) {
 	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
 
 	for i := 0; i < b.N; i++ {
+		b.StopTimer()
 		q := QuatRotate(rand.Float64(), Vec3{rand.Float64(), rand.Float64(), rand.Float64()})
 		v := Vec3{rand.Float64(), rand.Float64(), rand.Float64()}
 		q = q.Normalize()
@@ -145,11 +146,38 @@ func BenchmarkQuatRotateConjugate(b *testing.B) {
 	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
 
 	for i := 0; i < b.N; i++ {
+		b.StopTimer()
 		q := QuatRotate(rand.Float64(), Vec3{rand.Float64(), rand.Float64(), rand.Float64()})
 		v := Vec3{rand.Float64(), rand.Float64(), rand.Float64()}
 		q = q.Normalize()
 		b.StartTimer()
 
 		v = q.Mul(Quat{0, v}).Mul(q.Conjugate()).V
+	}
+}
+
+func BenchmarkQuatArrayAccess(b *testing.B) {
+	b.StopTimer()
+	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
+
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		q := QuatRotate(rand.Float64(), Vec3{rand.Float64(), rand.Float64(), rand.Float64()})
+		b.StartTimer()
+
+		_ = q.V[0]
+	}
+}
+
+func BenchmarkQuatFuncElementAccess(b *testing.B) {
+	b.StopTimer()
+	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
+
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		q := QuatRotate(rand.Float64(), Vec3{rand.Float64(), rand.Float64(), rand.Float64()})
+		b.StartTimer()
+
+		_ = q.X()
 	}
 }
