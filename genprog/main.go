@@ -371,6 +371,18 @@ import(
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
+			mats += GenMatFromRows(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatFromCols(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
 			mats += GenMatAdd(m, n)
 		}
 	}
@@ -424,6 +436,48 @@ import(
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
 			mats += GenMatFuncEq(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatAt(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatSet(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatIndex(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatRow(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatRows(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatCol(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatCols(m, n)
 		}
 	}
 
@@ -697,4 +751,166 @@ func GenMatFuncEq(m, n int) (s string) {
 	s += "return true\n}\n\n"
 
 	return s
+}
+
+func GenMatAt(m, n int) (s string) {
+	s = `// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+`
+
+	s += fmt.Sprintf("func (m %s) At(row,col int) float32 {\n\treturn m[col * %d + row]\n}\n\n", GenMatName(m, n), m)
+
+	return
+}
+
+func GenMatSet(m, n int) (s string) {
+	s = `// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+`
+
+	s += fmt.Sprintf("func (m *%s) Set(row,col int, value float32) {\n\tm[col * %d + row] = value\n}\n\n", GenMatName(m, n), m)
+
+	return
+}
+
+func GenMatIndex(m, n int) (s string) {
+	s = `// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+`
+	s += fmt.Sprintf("func (m %s) Index(row,col int) int {\n\treturn col * %d + row\n}\n\n", GenMatName(m, n), m)
+
+	return
+}
+
+func GenMatRow(m, n int) (s string) {
+	s = `// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+`
+
+	s += fmt.Sprintf("func (m %s) Row(row int) %s {\n\treturn %s{", GenMatName(m, n), VecName(n), VecName(n))
+
+	for i := 0; i < n; i++ {
+		if i != 0 {
+			s += ","
+		}
+		s += fmt.Sprintf("m[row + %d]", n*i)
+	}
+
+	s += "}\n}\n\n"
+
+	return
+}
+
+func GenMatRows(m, n int) (s string) {
+	s = `// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+`
+
+	s += fmt.Sprintf("func (m %s) Rows() [%d]%s {\n\treturn [%d]%s{", GenMatName(m, n), m, VecName(n), m, VecName(n))
+
+	for i := 0; i < m; i++ {
+		if i != 0 {
+			s += ","
+		}
+		s += fmt.Sprintf("m.Row(%d)", i)
+	}
+
+	s += "}\n}\n\n"
+
+	return
+}
+
+func GenMatFromRows(m, n int) (s string) {
+	s = ` // Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+`
+
+	s += fmt.Sprintf("func %sFromRows(rows [%d]%s) %s {\n\treturn %s{", GenMatName(m, n), m, VecName(n), GenMatName(m, n), GenMatName(m, n))
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < m; j++ {
+			if j+i != 0 {
+				s += ","
+			}
+
+			s += fmt.Sprintf("rows[%d][%d]", j, i)
+		}
+	}
+
+	s += "}\n}\n\n"
+
+	return
+}
+
+func GenMatCol(m, n int) (s string) {
+	s = `// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+`
+
+	s += fmt.Sprintf("func (m %s) Col(col int) %s {\n\treturn %s{", GenMatName(m, n), VecName(m), VecName(m))
+
+	for i := 0; i < m; i++ {
+		if i != 0 {
+			s += ","
+		}
+		s += fmt.Sprintf("m[col * %d + %d]", n, i)
+	}
+
+	s += "}\n}\n\n"
+
+	return
+}
+
+func GenMatCols(m, n int) (s string) {
+	s = `// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+`
+
+	s += fmt.Sprintf("func (m %s) Cols() [%d]%s {\n\treturn [%d]%s{", GenMatName(m, n), n, VecName(m), n, VecName(m))
+
+	for i := 0; i < n; i++ {
+		if i != 0 {
+			s += ","
+		}
+		s += fmt.Sprintf("m.Col(%d)", i)
+	}
+
+	s += "}\n}\n\n"
+
+	return
+}
+
+func GenMatFromCols(m, n int) (s string) {
+	s = ` // Mat<Size>FromCols builds a new matrix from column vectors.
+`
+
+	s += fmt.Sprintf("func %sFromCols(cols [%d]%s) %s {\n\treturn %s{", GenMatName(m, n), n, VecName(m), GenMatName(m, n), GenMatName(m, n))
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < m; j++ {
+			if j+i != 0 {
+				s += ","
+			}
+
+			s += fmt.Sprintf("cols[%d][%d]", i, j)
+		}
+	}
+
+	s += "}\n}\n\n"
+
+	return
 }
