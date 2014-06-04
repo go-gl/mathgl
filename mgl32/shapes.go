@@ -30,7 +30,7 @@ func Circle(radiusX, radiusY float32, numSlices int) []Vec2 {
 	center := Vec2{0.0, 0.0}
 	previous := Vec2{radiusX, 0.0}
 
-	for theta := twoPi / float32(numSlices); !FloatEqual(theta, twoPi); theta = Clampf(theta+twoPi/float32(numSlices), 0.0, twoPi) {
+	for theta := twoPi / float32(numSlices); !FloatEqual(theta, twoPi); theta = Clamp(theta+twoPi/float32(numSlices), 0.0, twoPi) {
 		sin, cos := math.Sincos(float64(theta))
 		curr := Vec2{float32(cos) * radiusX, float32(sin) * radiusY}
 
@@ -154,7 +154,7 @@ func MakeBezierCurve2D(numPoints int, cPoints []Vec2) (line []Vec2) {
 
 	line[0] = cPoints[0]
 	for i := 1; i < numPoints-1; i++ {
-		line[i] = BezierCurve2D(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
+		line[i] = BezierCurve2D(Clamp(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
 	}
 	line[numPoints-1] = cPoints[len(cPoints)-1]
 
@@ -177,7 +177,7 @@ func MakeBezierCurve3D(numPoints int, cPoints []Vec3) (line []Vec3) {
 
 	line[0] = cPoints[0]
 	for i := 1; i < numPoints-1; i++ {
-		line[i] = BezierCurve3D(Clampf(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
+		line[i] = BezierCurve3D(Clamp(float32(i)/float32(numPoints-1), 0.0, 1.0), cPoints)
 	}
 	line[numPoints-1] = cPoints[len(cPoints)-1]
 

@@ -21,7 +21,7 @@ func Ortho2D(left, right, top, bottom float64) Mat4 {
 }
 
 func Perspective(fovy, aspect, near, far float64) Mat4 {
-	fovy = (fovy * math.Pi) / 180.0 // convert from degrees to radians
+	// fovy = (fovy * math.Pi) / 180.0 // convert from degrees to radians
 	nmf, f := near-far, float64(1./math.Tan(float64(fovy)/2.0))
 
 	return Mat4{float64(f / aspect), 0, 0, 0, 0, float64(f), 0, 0, 0, 0, float64((near + far) / nmf), -1, 0, 0, float64((2. * far * near) / nmf), 0}

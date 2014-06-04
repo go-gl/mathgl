@@ -1,4 +1,4 @@
-// Copyright 2014 The go-gl Authors. All rights reserved.
+// Copyright 2014 The go-gl/mathgl Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -40,6 +40,114 @@ func Ident3() Mat3 {
 // any matrix multiplied by it is itself. (MI = M; IN = N)
 func Ident4() Mat4 {
 	return Mat4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat2FromRows(rows [2]Vec2) Mat2 {
+	return Mat2{rows[0][0], rows[1][0], rows[0][1], rows[1][1]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat2x3FromRows(rows [2]Vec3) Mat2x3 {
+	return Mat2x3{rows[0][0], rows[1][0], rows[0][1], rows[1][1], rows[0][2], rows[1][2]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat2x4FromRows(rows [2]Vec4) Mat2x4 {
+	return Mat2x4{rows[0][0], rows[1][0], rows[0][1], rows[1][1], rows[0][2], rows[1][2], rows[0][3], rows[1][3]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat3x2FromRows(rows [3]Vec2) Mat3x2 {
+	return Mat3x2{rows[0][0], rows[1][0], rows[2][0], rows[0][1], rows[1][1], rows[2][1]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat3FromRows(rows [3]Vec3) Mat3 {
+	return Mat3{rows[0][0], rows[1][0], rows[2][0], rows[0][1], rows[1][1], rows[2][1], rows[0][2], rows[1][2], rows[2][2]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat3x4FromRows(rows [3]Vec4) Mat3x4 {
+	return Mat3x4{rows[0][0], rows[1][0], rows[2][0], rows[0][1], rows[1][1], rows[2][1], rows[0][2], rows[1][2], rows[2][2], rows[0][3], rows[1][3], rows[2][3]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat4x2FromRows(rows [4]Vec2) Mat4x2 {
+	return Mat4x2{rows[0][0], rows[1][0], rows[2][0], rows[3][0], rows[0][1], rows[1][1], rows[2][1], rows[3][1]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat4x3FromRows(rows [4]Vec3) Mat4x3 {
+	return Mat4x3{rows[0][0], rows[1][0], rows[2][0], rows[3][0], rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[0][2], rows[1][2], rows[2][2], rows[3][2]}
+}
+
+// Mat<Size>FromRows builds a new matrix from row vectors.
+// The resulting matrix will still be in column major order, but this can be
+// good for hand-building matrices.
+func Mat4FromRows(rows [4]Vec4) Mat4 {
+	return Mat4{rows[0][0], rows[1][0], rows[2][0], rows[3][0], rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[0][2], rows[1][2], rows[2][2], rows[3][2], rows[0][3], rows[1][3], rows[2][3], rows[3][3]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat2FromCols(cols [2]Vec2) Mat2 {
+	return Mat2{cols[0][0], cols[0][1], cols[1][0], cols[1][1]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat2x3FromCols(cols [3]Vec2) Mat2x3 {
+	return Mat2x3{cols[0][0], cols[0][1], cols[1][0], cols[1][1], cols[2][0], cols[2][1]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat2x4FromCols(cols [4]Vec2) Mat2x4 {
+	return Mat2x4{cols[0][0], cols[0][1], cols[1][0], cols[1][1], cols[2][0], cols[2][1], cols[3][0], cols[3][1]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat3x2FromCols(cols [2]Vec3) Mat3x2 {
+	return Mat3x2{cols[0][0], cols[0][1], cols[0][2], cols[1][0], cols[1][1], cols[1][2]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat3FromCols(cols [3]Vec3) Mat3 {
+	return Mat3{cols[0][0], cols[0][1], cols[0][2], cols[1][0], cols[1][1], cols[1][2], cols[2][0], cols[2][1], cols[2][2]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat3x4FromCols(cols [4]Vec3) Mat3x4 {
+	return Mat3x4{cols[0][0], cols[0][1], cols[0][2], cols[1][0], cols[1][1], cols[1][2], cols[2][0], cols[2][1], cols[2][2], cols[3][0], cols[3][1], cols[3][2]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat4x2FromCols(cols [2]Vec4) Mat4x2 {
+	return Mat4x2{cols[0][0], cols[0][1], cols[0][2], cols[0][3], cols[1][0], cols[1][1], cols[1][2], cols[1][3]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat4x3FromCols(cols [3]Vec4) Mat4x3 {
+	return Mat4x3{cols[0][0], cols[0][1], cols[0][2], cols[0][3], cols[1][0], cols[1][1], cols[1][2], cols[1][3], cols[2][0], cols[2][1], cols[2][2], cols[2][3]}
+}
+
+// Mat<Size>FromCols builds a new matrix from column vectors.
+func Mat4FromCols(cols [4]Vec4) Mat4 {
+	return Mat4{cols[0][0], cols[0][1], cols[0][2], cols[0][3], cols[1][0], cols[1][1], cols[1][2], cols[1][3], cols[2][0], cols[2][1], cols[2][2], cols[2][3], cols[3][0], cols[3][1], cols[3][2], cols[3][3]}
 }
 
 // Add performs an element-wise addition of two matrices, this is
@@ -985,4 +1093,499 @@ func (m1 Mat4) ApproxFuncEqual(m2 Mat4, eq func(float64, float64) bool) bool {
 		}
 	}
 	return true
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat2) At(row, col int) float64 {
+	return m[col*2+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat2x3) At(row, col int) float64 {
+	return m[col*2+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat2x4) At(row, col int) float64 {
+	return m[col*2+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat3x2) At(row, col int) float64 {
+	return m[col*3+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat3) At(row, col int) float64 {
+	return m[col*3+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat3x4) At(row, col int) float64 {
+	return m[col*3+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat4x2) At(row, col int) float64 {
+	return m[col*4+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat4x3) At(row, col int) float64 {
+	return m[col*4+row]
+}
+
+// At returns the matrix element at the given row and column.
+// This is equivalent to mat[col * numRow + row] where numRow is constant
+// (E.G. for a Mat3x2 it's equal to 3)
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// At(5,0) will work just like At(1,1). Or it may panic if it's out of bounds.
+func (m Mat4) At(row, col int) float64 {
+	return m[col*4+row]
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat2) Set(row, col int, value float64) {
+	m[col*2+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat2x3) Set(row, col int, value float64) {
+	m[col*2+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat2x4) Set(row, col int, value float64) {
+	m[col*2+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat3x2) Set(row, col int, value float64) {
+	m[col*3+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat3) Set(row, col int, value float64) {
+	m[col*3+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat3x4) Set(row, col int, value float64) {
+	m[col*3+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat4x2) Set(row, col int, value float64) {
+	m[col*4+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat4x3) Set(row, col int, value float64) {
+	m[col*4+row] = value
+}
+
+// Set sets the corresponding matrix element at the given row and column.
+// This has a pointer receiver because it mutates the matrix.
+//
+// This method is garbage-in garbage-out. For instance, on a Mat4 asking for
+// Set(5,0,val) will work just like Set(1,1,val). Or it may panic if it's out of bounds.
+func (m *Mat4) Set(row, col int, value float64) {
+	m[col*4+row] = value
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat2) Index(row, col int) int {
+	return col*2 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat2x3) Index(row, col int) int {
+	return col*2 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat2x4) Index(row, col int) int {
+	return col*2 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat3x2) Index(row, col int) int {
+	return col*3 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat3) Index(row, col int) int {
+	return col*3 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat3x4) Index(row, col int) int {
+	return col*3 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat4x2) Index(row, col int) int {
+	return col*4 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat4x3) Index(row, col int) int {
+	return col*4 + row
+}
+
+// Index returns the index of the given row and column, to be used with direct
+// access. E.G. Index(0,0) = 0.
+//
+// This is a garbage-in garbage-out method. For instance, on a Mat4 asking for the index of
+// (5,0) will work the same as asking for (1,1). Or it may give you a value that will cause
+// a panic if you try to access the array with it if it's truly out of bounds.
+func (m Mat4) Index(row, col int) int {
+	return col*4 + row
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat2) Row(row int) Vec2 {
+	return Vec2{m[row+0], m[row+2]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat2x3) Row(row int) Vec3 {
+	return Vec3{m[row+0], m[row+2], m[row+4]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat2x4) Row(row int) Vec4 {
+	return Vec4{m[row+0], m[row+2], m[row+4], m[row+6]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat3x2) Row(row int) Vec2 {
+	return Vec2{m[row+0], m[row+3]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat3) Row(row int) Vec3 {
+	return Vec3{m[row+0], m[row+3], m[row+6]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat3x4) Row(row int) Vec4 {
+	return Vec4{m[row+0], m[row+3], m[row+6], m[row+9]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat4x2) Row(row int) Vec2 {
+	return Vec2{m[row+0], m[row+4]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat4x3) Row(row int) Vec3 {
+	return Vec3{m[row+0], m[row+4], m[row+8]}
+}
+
+// Row returns a vector representing the corresponding row (starting at row 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecM for a MxN matrix.
+func (m Mat4) Row(row int) Vec4 {
+	return Vec4{m[row+0], m[row+4], m[row+8], m[row+12]}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat2) Rows() [2]Vec2 {
+	return [2]Vec2{m.Row(0), m.Row(1)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat2x3) Rows() [2]Vec3 {
+	return [2]Vec3{m.Row(0), m.Row(1)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat2x4) Rows() [2]Vec4 {
+	return [2]Vec4{m.Row(0), m.Row(1)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat3x2) Rows() [3]Vec2 {
+	return [3]Vec2{m.Row(0), m.Row(1), m.Row(2)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat3) Rows() [3]Vec3 {
+	return [3]Vec3{m.Row(0), m.Row(1), m.Row(2)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat3x4) Rows() [3]Vec4 {
+	return [3]Vec4{m.Row(0), m.Row(1), m.Row(2)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat4x2) Rows() [4]Vec2 {
+	return [4]Vec2{m.Row(0), m.Row(1), m.Row(2), m.Row(3)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat4x3) Rows() [4]Vec3 {
+	return [4]Vec3{m.Row(0), m.Row(1), m.Row(2), m.Row(3)}
+}
+
+// Rows decomposes a matrix into its corresponding row vectors.
+// This is equivalent to calling mat.Row for each row.
+func (m Mat4) Rows() [4]Vec4 {
+	return [4]Vec4{m.Row(0), m.Row(1), m.Row(2), m.Row(3)}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat2) Col(col int) Vec2 {
+	return Vec2{m[col*2+0], m[col*2+1]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat2x3) Col(col int) Vec2 {
+	return Vec2{m[col*2+0], m[col*2+1]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat2x4) Col(col int) Vec2 {
+	return Vec2{m[col*2+0], m[col*2+1]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat3x2) Col(col int) Vec3 {
+	return Vec3{m[col*3+0], m[col*3+1], m[col*3+2]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat3) Col(col int) Vec3 {
+	return Vec3{m[col*3+0], m[col*3+1], m[col*3+2]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat3x4) Col(col int) Vec3 {
+	return Vec3{m[col*3+0], m[col*3+1], m[col*3+2]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat4x2) Col(col int) Vec4 {
+	return Vec4{m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat4x3) Col(col int) Vec4 {
+	return Vec4{m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3]}
+}
+
+// Col returns a vector representing the corresponding column (starting at col 0).
+// This package makes no distinction between row and column vectors, so it
+// will be a normal VecN for a MxN matrix.
+func (m Mat4) Col(col int) Vec4 {
+	return Vec4{m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3]}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat2) Cols() [2]Vec2 {
+	return [2]Vec2{m.Col(0), m.Col(1)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat2x3) Cols() [3]Vec2 {
+	return [3]Vec2{m.Col(0), m.Col(1), m.Col(2)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat2x4) Cols() [4]Vec2 {
+	return [4]Vec2{m.Col(0), m.Col(1), m.Col(2), m.Col(3)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat3x2) Cols() [2]Vec3 {
+	return [2]Vec3{m.Col(0), m.Col(1)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat3) Cols() [3]Vec3 {
+	return [3]Vec3{m.Col(0), m.Col(1), m.Col(2)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat3x4) Cols() [4]Vec3 {
+	return [4]Vec3{m.Col(0), m.Col(1), m.Col(2), m.Col(3)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat4x2) Cols() [2]Vec4 {
+	return [2]Vec4{m.Col(0), m.Col(1)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat4x3) Cols() [3]Vec4 {
+	return [3]Vec4{m.Col(0), m.Col(1), m.Col(2)}
+}
+
+// Cols decomposes a matrix into its corresponding column vectors.
+// This is equivalent to calling mat.Col for each column.
+func (m Mat4) Cols() [4]Vec4 {
+	return [4]Vec4{m.Col(0), m.Col(1), m.Col(2), m.Col(3)}
 }

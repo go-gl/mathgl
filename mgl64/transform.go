@@ -10,7 +10,7 @@ import "math"
 // It is a 2x2 matrix, if you need a 3x3 for Homogeneous math (e.g. composition with a Translation matrix)
 // see HomogRotate2D
 func Rotate2D(angle float64) Mat2 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 	return Mat2{cos, sin, -sin, cos}
 }
@@ -22,7 +22,7 @@ func Rotate2D(angle float64) Mat2 {
 //    [0 c -s]
 //    [0 s c ]
 func Rotate3DX(angle float64) Mat3 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 
 	return Mat3{1, 0, 0, 0, cos, sin, 0, -sin, cos}
@@ -35,7 +35,7 @@ func Rotate3DX(angle float64) Mat3 {
 //    [0 1 0]
 //    [s 0 c ]
 func Rotate3DY(angle float64) Mat3 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 
 	return Mat3{cos, 0, -sin, 0, 1, 0, sin, 0, cos}
@@ -48,7 +48,7 @@ func Rotate3DY(angle float64) Mat3 {
 //    [s c 0]
 //    [0 0 1 ]
 func Rotate3DZ(angle float64) Mat3 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 
 	return Mat3{cos, sin, 0, -sin, cos, 0, 0, 0, 1}
@@ -76,14 +76,14 @@ func Translate3D(Tx, Ty, Tz float64) Mat4 {
 
 // Same as Rotate2D, except homogeneous (3x3 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate2D(angle float64) Mat3 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 	return Mat3{cos, sin, 0, -sin, cos, 0, 0, 0, 1}
 }
 
 // Same as Rotate3DX, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DX(angle float64) Mat4 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 
 	return Mat4{1, 0, 0, 0, 0, cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1}
@@ -91,14 +91,14 @@ func HomogRotate3DX(angle float64) Mat4 {
 
 // Same as Rotate3DY, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DY(angle float64) Mat4 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 	return Mat4{cos, 0, -sin, 0, 0, 1, 0, 0, sin, 0, cos, 0, 0, 0, 0, 1}
 }
 
 // Same as Rotate3DZ, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DZ(angle float64) Mat4 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
 	return Mat4{cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
 }
