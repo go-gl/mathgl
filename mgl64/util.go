@@ -119,13 +119,3 @@ func SetMax(a, b *float64) {
 		*a = *b
 	}
 }
-
-// Converts degrees to radians
-func DegToRad(angle float64) float64 {
-	return angle * float64(math.Pi) / 180
-}
-
-// Converts radians to degrees
-func RadToDeg(angle float64) float64 {
-	return angle * 180 / float64(math.Pi)
-}

@@ -82,3 +82,13 @@ func CylindricalToCartesian(rho, phi, z float32) Vec3 {
 
 	return Vec3{rho * float32(c), rho * float32(s), z}
 }
+
+// Converts degrees to radians
+func DegToRad(angle float32) float32 {
+	return angle * float32(math.Pi) / 180
+}
+
+// Converts radians to degrees
+func RadToDeg(angle float32) float32 {
+	return angle * 180 / float32(math.Pi)
+}
