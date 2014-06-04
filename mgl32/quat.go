@@ -245,6 +245,10 @@ func QuatNlerp(q1, q2 Quat, amount float32) Quat {
 // Performs a rotation in the specified order. If the order is not
 // a valid RotationOrder, this function will panic
 //
+// The rotation "order" is more of an axis descriptor. For instance XZX would
+// tell the function to interpret angle1 as a rotation about the X axis, angle2 about
+// the Z axis, and angle3 about the X axis again.
+//
 // Based off the code for the Matlab function "angle2quat", though this implementation
 // only supports 3 single angles as opposed to multiple angles.
 func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
