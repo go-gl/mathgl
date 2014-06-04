@@ -1,4 +1,4 @@
-// Copyright 2014 The go-gl Authors. All rights reserved.
+// Copyright 2014 The go-gl/mathgl Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -299,4 +299,76 @@ func (v1 Vec4) ApproxFuncEqual(v2 Vec4, eq func(float64, float64) bool) bool {
 		}
 	}
 	return true
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec2) X() float64 {
+	return v[0]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec2) Y() float64 {
+	return v[1]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec3) X() float64 {
+	return v[0]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec3) Y() float64 {
+	return v[1]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec3) Z() float64 {
+	return v[2]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec4) X() float64 {
+	return v[0]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec4) Y() float64 {
+	return v[1]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec4) Z() float64 {
+	return v[2]
+}
+
+// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+func (v Vec4) W() float64 {
+	return v[3]
 }

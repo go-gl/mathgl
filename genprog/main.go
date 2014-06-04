@@ -97,6 +97,10 @@ import(
 		vecs += GenVecFuncEq(m)
 	}
 
+	for m := 2; m <= 4; m++ {
+		vecs += GenVecElement(m)
+	}
+
 	/*for m := 2; m <= 4; m++ {
 		for o := 2; o <= 4; o++ {
 			vecs += GenVecMatMul(m,o)
@@ -306,6 +310,35 @@ func GenVecFuncEq(m int) (s string) {
 	s += "return true\n}\n\n"
 
 	return s
+}
+
+func GenVecElement(m int) (s string) {
+	elName := func(el int) string {
+		switch el {
+		case 0:
+			return "X"
+		case 1:
+			return "Y"
+		case 2:
+			return "Z"
+		case 3:
+			return "W"
+		default:
+			panic("Can't generate that element")
+		}
+	}
+
+	for i := 0; i < m; i++ {
+		s += `// This is an element access func, it is equivalent to v[n] where
+// n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
+// show that this is more or less as fast as direct acces, probably due to
+// inlining, so use v[0] or v.X() depending on personal preference.
+`
+
+		s += fmt.Sprintf("func (v %s) %s() float32 {\n\treturn v[%d]\n}\n\n", VecName(m), elName(i), i)
+	}
+
+	return
 }
 
 func VecName(m int) (s string) {
