@@ -108,7 +108,7 @@ func TestQuatMatRotateY(t *testing.T) {
 
 	result := q.Rotate(v)
 
-	expected := Rotate3DY(RadToDeg(float32(math.Pi))).Mul3x1(v)
+	expected := Rotate3DY(float32(math.Pi)).Mul3x1(v)
 	t.Logf("Computed from rotation matrix: %v", expected)
 	if !result.ApproxEqualThreshold(expected, 1e-4) {
 		t.Errorf("Quaternion rotating vector doesn't match 3D matrix method. Got: %v, Expected: %v", result, expected)
