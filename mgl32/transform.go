@@ -10,7 +10,7 @@ import "math"
 // It is a 2x2 matrix, if you need a 3x3 for Homogeneous math (e.g. composition with a Translation matrix)
 // see HomogRotate2D
 func Rotate2D(angle float32) Mat2 {
-	angle = (angle * math.Pi) / 180.0
+	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float32(math.Sin(float64(angle))), float32(math.Cos(float64(angle)))
 	return Mat2{cos, sin, -sin, cos}
 }

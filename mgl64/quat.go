@@ -52,7 +52,7 @@ func QuatIdent() Quat {
 //
 // This is cheaper than HomogRotate3D.
 func QuatRotate(angle float64, axis Vec3) Quat {
-	angle = (float64(math.Pi) * angle) / 180.0
+	// angle = (float32(math.Pi) * angle) / 180.0
 
 	c, s := float64(math.Cos(float64(angle/2))), float64(math.Sin(float64(angle/2)))
 

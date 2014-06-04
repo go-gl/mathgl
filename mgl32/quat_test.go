@@ -33,7 +33,7 @@ func TestQuatRotateOnAxis(t *testing.T) {
 	var angleDegrees float32 = 30.0
 	axis := Vec3{1, 0, 0}
 
-	i1 := QuatRotate(angleDegrees, axis)
+	i1 := QuatRotate(DegToRad(angleDegrees), axis)
 
 	rotatedAxis := i1.Rotate(axis)
 
@@ -45,11 +45,10 @@ func TestQuatRotateOnAxis(t *testing.T) {
 }
 
 func TestQuatRotateOffAxis(t *testing.T) {
-	var angleDegrees float32 = 30.0
-	var angleRads float32 = angleDegrees * math.Pi / 180.0
+	var angleRads float32 = DegToRad(30.0)
 	axis := Vec3{1, 0, 0}
 
-	i1 := QuatRotate(angleDegrees, axis)
+	i1 := QuatRotate(angleRads, axis)
 
 	vector := Vec3{0, 1, 0}
 	rotatedVector := i1.Rotate(vector)
@@ -75,11 +74,12 @@ func TestQuatIdentityToMatrix(t *testing.T) {
 }
 
 func TestQuatRotationToMatrix(t *testing.T) {
-	var angle float32 = 45.0
+	var angle float32 = DegToRad(45.0)
+
 	axis := Vec3{1, 2, 3}.Normalize()
 	quat := QuatRotate(angle, axis)
 	matrix := quat.Mat4()
-	answer := HomogRotate3D(angle*math.Pi/180, axis)
+	answer := HomogRotate3D(angle, axis)
 
 	if !matrix.ApproxEqualThreshold(answer, 1e-4) {
 		t.Errorf("Rotation quaternion does not yield correct rotation matrix; got: %v expected: %v", matrix, answer)
@@ -102,7 +102,7 @@ func TestAnglesToQuatZYX(t *testing.T) {
 }
 
 func TestQuatMatRotateY(t *testing.T) {
-	q := QuatRotate(RadToDeg(float32(math.Pi)), Vec3{0, 1, 0})
+	q := QuatRotate(float32(math.Pi), Vec3{0, 1, 0})
 	q = q.Normalize()
 	v := Vec3{1, 0, 0}
 
