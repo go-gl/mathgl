@@ -805,7 +805,7 @@ func GenMatRow(m, n int) (s string) {
 		if i != 0 {
 			s += ","
 		}
-		s += fmt.Sprintf("m[row + %d]", n*i)
+		s += fmt.Sprintf("m[row + %d]", m*i)
 	}
 
 	s += "}\n}\n\n"
@@ -867,7 +867,7 @@ func GenMatCol(m, n int) (s string) {
 		if i != 0 {
 			s += ","
 		}
-		s += fmt.Sprintf("m[col * %d + %d]", n, i)
+		s += fmt.Sprintf("m[col * %d + %d]", m, i)
 	}
 
 	s += "}\n}\n\n"

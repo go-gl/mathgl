@@ -1367,21 +1367,21 @@ func (m Mat2) Row(row int) Vec2 {
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecM for a MxN matrix.
 func (m Mat2x3) Row(row int) Vec3 {
-	return Vec3{m[row+0], m[row+3], m[row+6]}
+	return Vec3{m[row+0], m[row+2], m[row+4]}
 }
 
 // Row returns a vector representing the corresponding row (starting at row 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecM for a MxN matrix.
 func (m Mat2x4) Row(row int) Vec4 {
-	return Vec4{m[row+0], m[row+4], m[row+8], m[row+12]}
+	return Vec4{m[row+0], m[row+2], m[row+4], m[row+6]}
 }
 
 // Row returns a vector representing the corresponding row (starting at row 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecM for a MxN matrix.
 func (m Mat3x2) Row(row int) Vec2 {
-	return Vec2{m[row+0], m[row+2]}
+	return Vec2{m[row+0], m[row+3]}
 }
 
 // Row returns a vector representing the corresponding row (starting at row 0).
@@ -1395,21 +1395,21 @@ func (m Mat3) Row(row int) Vec3 {
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecM for a MxN matrix.
 func (m Mat3x4) Row(row int) Vec4 {
-	return Vec4{m[row+0], m[row+4], m[row+8], m[row+12]}
+	return Vec4{m[row+0], m[row+3], m[row+6], m[row+9]}
 }
 
 // Row returns a vector representing the corresponding row (starting at row 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecM for a MxN matrix.
 func (m Mat4x2) Row(row int) Vec2 {
-	return Vec2{m[row+0], m[row+2]}
+	return Vec2{m[row+0], m[row+4]}
 }
 
 // Row returns a vector representing the corresponding row (starting at row 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecM for a MxN matrix.
 func (m Mat4x3) Row(row int) Vec3 {
-	return Vec3{m[row+0], m[row+3], m[row+6]}
+	return Vec3{m[row+0], m[row+4], m[row+8]}
 }
 
 // Row returns a vector representing the corresponding row (starting at row 0).
@@ -1484,21 +1484,21 @@ func (m Mat2) Col(col int) Vec2 {
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecN for a MxN matrix.
 func (m Mat2x3) Col(col int) Vec2 {
-	return Vec2{m[col*3+0], m[col*3+1]}
+	return Vec2{m[col*2+0], m[col*2+1]}
 }
 
 // Col returns a vector representing the corresponding column (starting at col 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecN for a MxN matrix.
 func (m Mat2x4) Col(col int) Vec2 {
-	return Vec2{m[col*4+0], m[col*4+1]}
+	return Vec2{m[col*2+0], m[col*2+1]}
 }
 
 // Col returns a vector representing the corresponding column (starting at col 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecN for a MxN matrix.
 func (m Mat3x2) Col(col int) Vec3 {
-	return Vec3{m[col*2+0], m[col*2+1], m[col*2+2]}
+	return Vec3{m[col*3+0], m[col*3+1], m[col*3+2]}
 }
 
 // Col returns a vector representing the corresponding column (starting at col 0).
@@ -1512,21 +1512,21 @@ func (m Mat3) Col(col int) Vec3 {
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecN for a MxN matrix.
 func (m Mat3x4) Col(col int) Vec3 {
-	return Vec3{m[col*4+0], m[col*4+1], m[col*4+2]}
+	return Vec3{m[col*3+0], m[col*3+1], m[col*3+2]}
 }
 
 // Col returns a vector representing the corresponding column (starting at col 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecN for a MxN matrix.
 func (m Mat4x2) Col(col int) Vec4 {
-	return Vec4{m[col*2+0], m[col*2+1], m[col*2+2], m[col*2+3]}
+	return Vec4{m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3]}
 }
 
 // Col returns a vector representing the corresponding column (starting at col 0).
 // This package makes no distinction between row and column vectors, so it
 // will be a normal VecN for a MxN matrix.
 func (m Mat4x3) Col(col int) Vec4 {
-	return Vec4{m[col*3+0], m[col*3+1], m[col*3+2], m[col*3+3]}
+	return Vec4{m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3]}
 }
 
 // Col returns a vector representing the corresponding column (starting at col 0).
