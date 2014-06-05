@@ -183,15 +183,20 @@ func BenchmarkQuatFuncElementAccess(b *testing.B) {
 }
 
 func TestMat4ToQuat(t *testing.T) {
+	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/examples/index.htm
+
 	tests := []struct {
-		Rotation Mat4
-		Expected Quat
+		Description string
+		Rotation    Mat4
+		Expected    Quat
 	}{
 		{
+			"forward",
 			Ident4(),
 			QuatIdent(),
 		},
 		{
+			"heading 90 degree",
 			Mat4{
 				0, 0, -1, 0,
 				0, 1, 0, 0,
@@ -201,6 +206,17 @@ func TestMat4ToQuat(t *testing.T) {
 			Quat{0.7071, Vec3{0, 0.7071, 0}},
 		},
 		{
+			"heading 180 degree",
+			Mat4{
+				-1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, -1, 0,
+				0, 0, 0, 1,
+			},
+			Quat{0, Vec3{0, 1, 0}},
+		},
+		{
+			"attitude 90 degree",
 			Mat4{
 				0, 1, 0, 0,
 				-1, 0, 0, 0,
@@ -210,81 +226,55 @@ func TestMat4ToQuat(t *testing.T) {
 			Quat{0.7071, Vec3{0, 0, 0.7071}},
 		},
 		{
+			"bank 90 degree",
 			Mat4{
-				0, 1, 0, 0,
-				0, 0, -1, 0,
-				-1, 0, 0, 0,
-				0, 0, 0, 1,
-			},
-			Quat{0.5, Vec3{-0.5, -0.5, 0.5}},
-		},
-		{
-			Mat4{
-				0, 1, 0, 0,
 				1, 0, 0, 0,
-				0, 0, -1, 0,
-				0, 0, 0, 1,
-			},
-			Quat{0, Vec3{0.7071067811865475, 0.7071067811865475, 0}},
-		},
-		{
-			Mat4{
-				-1, 0, 0, 0,
 				0, 0, 1, 0,
-				0, 1, 0, 0,
-				0, 0, 0, 1,
-			},
-			Quat{0, Vec3{0, 0.7071067811865475, 0.7071067811865475}},
-		},
-		{
-			Mat4{
-				-1, 0, 0, 0,
 				0, -1, 0, 0,
-				0, 0, -1, 0,
 				0, 0, 0, 1,
 			},
-			Quat{0, Vec3{0, 0, 0.7071067811865475}},
-		},
-		{
-			Mat4{
-				1, 1, 0, 0,
-				1, -1, 0, 0,
-				0, 0, -1, 0,
-				0, 0, 0, 1,
-			},
-			Quat{0, Vec3{1, 0.5, 0}},
+			Quat{0.7071, Vec3{0.7071, 0, 0}},
 		},
 	}
 
 	threshold := float32(math.Pow(10, -2))
 	for _, c := range tests {
 		if r := Mat4ToQuat(c.Rotation); !r.ApproxEqualThreshold(c.Expected, threshold) {
-			t.Errorf("Mat4ToQuat(%v) != %v (got %v)", c.Rotation, c.Expected, r)
+			t.Errorf("%v failed: Mat4ToQuat(%v) != %v (got %v)", c.Description, c.Rotation, c.Expected, r)
 		}
 	}
 }
 
 func TestQuatRotate(t *testing.T) {
 	tests := []struct {
-		Angle    float32
-		Axis     Vec3
-		Expected Quat
+		Description string
+		Angle       float32
+		Axis        Vec3
+		Expected    Quat
 	}{
-		{0, Vec3{0, 0, 0}, QuatIdent()},
 		{
-			DegToRad(90), Vec3{0, 1, 0}, // heading 90 degree
+			"forward",
+			0, Vec3{0, 0, 0},
+			QuatIdent(),
+		},
+		{
+			"heading 90 degree",
+			DegToRad(90), Vec3{0, 1, 0},
 			Quat{0.7071, Vec3{0, 0.7071, 0}},
 		},
 		{
-			DegToRad(180), Vec3{0, 1, 0}, // heading 180 degree
+			"heading 180 degree",
+			DegToRad(180), Vec3{0, 1, 0},
 			Quat{0, Vec3{0, 1, 0}},
 		},
 		{
-			DegToRad(90), Vec3{0, 0, 1}, // attitude 90 degree
+			"attitude 90 degree",
+			DegToRad(90), Vec3{0, 0, 1},
 			Quat{0.7071, Vec3{0, 0, 0.7071}},
 		},
 		{
-			DegToRad(90), Vec3{1, 0, 0}, // bank 90 degree
+			"bank 90 degree",
+			DegToRad(90), Vec3{1, 0, 0},
 			Quat{0.7071, Vec3{0.7071, 0, 0}},
 		},
 	}
@@ -292,7 +282,96 @@ func TestQuatRotate(t *testing.T) {
 	threshold := float32(math.Pow(10, -2))
 	for _, c := range tests {
 		if r := QuatRotate(c.Angle, c.Axis); !r.ApproxEqualThreshold(c.Expected, threshold) {
-			t.Errorf("QuatRotate(%v, %v) != %v (got %v)", c.Angle, c.Axis, c.Expected, r)
+			t.Errorf("%v failed: QuatRotate(%v, %v) != %v (got %v)", c.Description, c.Angle, c.Axis, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatLookAtV(t *testing.T) {
+	// http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/transforms/examples/index.htm
+
+	tests := []struct {
+		Description     string
+		Eye, Center, Up Vec3
+		Expected        Quat
+	}{
+		{
+			"forward",
+			Vec3{0, 0, 0},
+			Vec3{0, 0, -1},
+			Vec3{0, 1, 0},
+			QuatIdent(),
+		},
+		{
+			"heading 90 degree",
+			Vec3{0, 0, 0},
+			Vec3{1, 0, 0},
+			Vec3{0, 1, 0},
+			Quat{0.7071, Vec3{0, 0.7071, 0}},
+		},
+		{
+			"heading 180 degree",
+			Vec3{0, 0, 0},
+			Vec3{0, 0, 1},
+			Vec3{0, 1, 0},
+			Quat{0, Vec3{0, 1, 0}},
+		},
+		{
+			"attitude 90 degree",
+			Vec3{0, 0, 0},
+			Vec3{0, 0, -1},
+			Vec3{1, 0, 0},
+			Quat{0.7071, Vec3{0, 0, 0.7071}},
+		},
+		{
+			"bank 90 degree",
+			Vec3{0, 0, 0},
+			Vec3{0, -1, 0},
+			Vec3{0, 0, -1},
+			Quat{0.7071, Vec3{0.7071, 0, 0}},
+		},
+	}
+
+	threshold := float32(math.Pow(10, -2))
+	for _, c := range tests {
+		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
+			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatMatConversion(t *testing.T) {
+	tests := []struct {
+		Angle float32
+		Axis  Vec3
+	}{}
+
+	for a := 0.0; a <= math.Pi*2; a += math.Pi / 4.0 {
+		af := float32(a)
+		tests = append(tests, []struct {
+			Angle float32
+			Axis  Vec3
+		}{
+			{af, Vec3{1, 0, 0}},
+			{af, Vec3{0, 1, 0}},
+			{af, Vec3{0, 0, 1}},
+		}...)
+	}
+
+	threshold := float32(1e-4 /*math.Pow(10, -2)*/)
+	for _, c := range tests {
+		m1 := HomogRotate3D(c.Angle, c.Axis)
+		q1 := Mat4ToQuat(m1)
+
+		q2 := QuatRotate(c.Angle, c.Axis)
+		m2 := q2.Mat4()
+
+		if !m1.ApproxEqualThreshold(m2, threshold) {
+			t.Errorf("Rotation matrices for %v %v do not match:\n%v\n%v", RadToDeg(c.Angle), c.Axis, m1, m2)
+		}
+
+		if !q1.ApproxEqualThreshold(q2, threshold) {
+			t.Errorf("Quaternions for %v %v do not match:\n%v\n%v", RadToDeg(c.Angle), c.Axis, q1, q2)
 		}
 	}
 }

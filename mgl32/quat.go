@@ -342,8 +342,8 @@ func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
 func Mat4ToQuat(m Mat4) Quat {
 	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 
-	if tr := float64(m[0] + m[5] + m[10]); tr > 0 {
-		s := float32(0.5 / math.Sqrt(tr+1.0))
+	if tr := m[0] + m[5] + m[10]; tr > 0 {
+		s := float32(0.5 / math.Sqrt(float64(tr+1.0)))
 		return Quat{
 			0.25 / s,
 			Vec3{
