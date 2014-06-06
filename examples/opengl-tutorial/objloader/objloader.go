@@ -7,17 +7,17 @@ package objloader
 import (
 	"bufio"
 	"fmt"
-	"github.com/Jragonmiris/mathgl"
+	"github.com/go-gl/mathgl/mgl32"
 	"os"
 )
 
 type MeshObject struct {
-	Vertices []mathgl.Vec3f
-	UVs      []mathgl.Vec2f
-	Normals  []mathgl.Vec3f
+	Vertices []mgl32.Vec3
+	UVs      []mgl32.Vec2
+	Normals  []mgl32.Vec3
 }
 
-func LoadObject(fname string) *MeshObject {
+func LoadObject(fname string, invertV bool) *MeshObject {
 	file, err := os.Open(fname)
 	if err != nil {
 		panic(err)
@@ -26,7 +26,7 @@ func LoadObject(fname string) *MeshObject {
 
 	reader := bufio.NewReader(file)
 
-	vertices, uvs, normals := make([]mathgl.Vec3f, 0), make([]mathgl.Vec2f, 0), make([]mathgl.Vec3f, 0)
+	vertices, uvs, normals := make([]mgl32.Vec3, 0), make([]mgl32.Vec2, 0), make([]mgl32.Vec3, 0)
 	vIndices, uvIndices, nIndices := make([]uint, 0), make([]uint, 0), make([]uint, 0)
 
 	for line, err := reader.ReadString('\n'); err == nil; line, err = reader.ReadString('\n') {
@@ -36,7 +36,7 @@ func LoadObject(fname string) *MeshObject {
 
 		switch header[:len(header)-1] {
 		case "v":
-			vert := mathgl.Vec3f{}
+			vert := mgl32.Vec3{}
 			count, _ := fmt.Sscanf(restOfLine, "%f %f %f\n", &vert[0], &vert[1], &vert[2])
 			if count != 3 {
 				panic("Wrong vert count")
@@ -44,14 +44,18 @@ func LoadObject(fname string) *MeshObject {
 			vertices = append(vertices, vert)
 
 		case "vt":
-			uv := mathgl.Vec2f{}
+			uv := mgl32.Vec2{}
 			count, _ := fmt.Sscanf(restOfLine, "%f %f\n", &uv[0], &uv[1])
 			if count != 2 {
 				panic("Wrong uv count")
 			}
+			if invertV {
+				// For DDS textures
+				uv = mgl32.Vec2{uv[0], 1 - uv[1]}
+			}
 			uvs = append(uvs, uv)
 		case "vn":
-			norm := mathgl.Vec3f{}
+			norm := mgl32.Vec3{}
 			count, _ := fmt.Sscanf(restOfLine, "%f %f %f\n", &norm[0], &norm[1], &norm[2])
 			if count != 3 {
 				panic("Wrong norm count")
@@ -74,7 +78,7 @@ func LoadObject(fname string) *MeshObject {
 
 	//fmt.Println(vertices)
 
-	obj := &MeshObject{make([]mathgl.Vec3f, 0, len(vIndices)), make([]mathgl.Vec2f, 0, len(uvIndices)), make([]mathgl.Vec3f, 0, len(nIndices))}
+	obj := &MeshObject{make([]mgl32.Vec3, 0, len(vIndices)), make([]mgl32.Vec2, 0, len(uvIndices)), make([]mgl32.Vec3, 0, len(nIndices))}
 	for i := range vIndices {
 		vIndex, uvIndex, nIndex := vIndices[i], uvIndices[i], nIndices[i]
 
