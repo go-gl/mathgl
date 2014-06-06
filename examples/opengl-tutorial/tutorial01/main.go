@@ -34,6 +34,8 @@ func main() {
 		return
 	}
 
+	window.MakeContextCurrent()
+
 	gl.Init()
 	gl.GetError() // Ignore error
 	window.SetInputMode(glfw.StickyKeys, 1)

@@ -7,7 +7,7 @@ package helper
 import (
 	"fmt"
 	"github.com/go-gl/gl"
-	"github.com/go-gl/glfw"
+	//glfw "github.com/go-gl/glfw3"
 	"io/ioutil"
 )
 
@@ -39,6 +39,7 @@ func MakeProgram(vertFname, fragFname string) gl.Program {
 	return prog
 }
 
+/*
 func MakeTextureFromTGA(fname string) gl.Texture {
 	tex := gl.GenTexture()
 
@@ -55,3 +56,4 @@ func MakeTextureFromTGA(fname string) gl.Texture {
 
 	return tex
 }
+*/

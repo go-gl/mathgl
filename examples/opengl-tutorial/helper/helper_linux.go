@@ -6,7 +6,7 @@ package helper
 
 import (
 	"github.com/go-gl/gl"
-	"github.com/go-gl/glfw"
+	// glfw "github.com/go-gl/glfw3"
 	"github.com/go-gl/glh"
 	"io/ioutil"
 )
@@ -24,7 +24,7 @@ func MakeProgram(vertFname, fragFname string) gl.Program {
 	return glh.NewProgram(glh.Shader{gl.VERTEX_SHADER, string(vertSource)}, glh.Shader{gl.FRAGMENT_SHADER, string(fragSource)})
 }
 
-func MakeTextureFromTGA(fname string) gl.Texture {
+/*func MakeTextureFromTGA(fname string) gl.Texture {
 	tex := gl.GenTexture()
 
 	tex.Bind(gl.TEXTURE_2D)
@@ -40,3 +40,4 @@ func MakeTextureFromTGA(fname string) gl.Texture {
 
 	return tex
 }
+*/
