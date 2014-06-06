@@ -7,37 +7,42 @@ package main
 import (
 	"fmt"
 	"github.com/go-gl/gl"
-	"github.com/go-gl/glfw"
+	glfw "github.com/go-gl/glfw3"
 	"os"
+
+	"runtime"
 )
 
 func main() {
-	if err := glfw.Init(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	runtime.LockOSThread()
+
+	if !glfw.Init() {
+		fmt.Fprintf(os.Stderr, "Can't open GLFW")
 		return
 	}
 	defer glfw.Terminate()
 
-	glfw.OpenWindowHint(glfw.FsaaSamples, 4)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMajor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMinor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.Samples, 4)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
+	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True) // needed for macs
 
-	if err := glfw.OpenWindow(1024, 768, 0, 0, 0, 0, 32, 0, glfw.Windowed); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 1", nil, nil)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
 
 	gl.Init()
 	gl.GetError() // Ignore error
-
-	glfw.SetWindowTitle("Tutorial 01")
-	glfw.Enable(glfw.StickyKeys)
+	window.SetInputMode(glfw.StickyKeys, 1)
 
 	gl.ClearColor(0., 0., 0.4, 0.)
 	// Equivalent to a do... while
-	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE) {
-		glfw.SwapBuffers()
+	for ok := true; ok; ok = (window.GetKey(glfw.KeyEscape) != glfw.Press && !window.ShouldClose()) {
+		window.SwapBuffers()
+		glfw.PollEvents()
 	}
 
 }
