@@ -6,44 +6,45 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/objloader"
-	"github.com/go-gl/gl"
-	"github.com/go-gl/glfw"
 	"os"
+	"runtime"
+
+	"github.com/go-gl/gl"
+	glfw "github.com/go-gl/glfw3"
+	"github.com/go-gl/mathgl/examples/opengl-tutorial/helper"
+	"github.com/go-gl/mathgl/examples/opengl-tutorial/input"
+	"github.com/go-gl/mathgl/examples/opengl-tutorial/objloader"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 func main() {
-	if err := glfw.Init(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	runtime.LockOSThread()
+
+	if !glfw.Init() {
+		fmt.Fprintf(os.Stderr, "Can't open GLFW")
 		return
 	}
-
 	defer glfw.Terminate()
 
-	glfw.OpenWindowHint(glfw.FsaaSamples, 4)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMajor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMinor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.Samples, 4)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
+	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True) // needed for macs
 
-	if err := glfw.OpenWindow(1024, 768, 0, 0, 0, 0, 32, 0, glfw.Windowed); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 8", nil, nil)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
 
-	glfw.SetSwapInterval(0)
+	window.MakeContextCurrent()
 
-	//gl.GlewExperimental(true)
-	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
-	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
-
-	glfw.SetWindowTitle("Tutorial 08")
-
-	glfw.Enable(glfw.StickyKeys)
-	glfw.Disable(glfw.MouseCursor) // Not in the original tutorial, but IMO it SHOULD be there
-	glfw.SetMousePos(1024.0/2.0, 768.0/2.0)
+	gl.Init()
+	gl.GetError() // Ignore error
+	window.SetInputMode(glfw.StickyKeys, 1)
+	window.SetCursorPosition(1024/2, 768/2)
+	window.SetInputMode(glfw.Cursor, glfw.CursorHidden)
 
 	gl.ClearColor(0., 0., 0.4, 0.)
 
@@ -52,7 +53,7 @@ func main() {
 
 	gl.Enable(gl.CULL_FACE)
 
-	camera := input.NewCamera()
+	camera := input.NewCamera(window)
 
 	vertexArray := gl.GenVertexArray()
 	defer vertexArray.Delete()
@@ -65,11 +66,14 @@ func main() {
 	viewMatrixID := prog.GetUniformLocation("V")
 	modelMatrixID := prog.GetUniformLocation("M")
 
-	texture := helper.MakeTextureFromTGA("uvmap.tga") // Had to convert to tga, go-gl is missing the texture method for DDS right now
+	texture, err := helper.TextureFromDDS("uvmap.DDS") // Had to convert to tga, go-gl is missing the texture method for DDS right now
+	if err != nil {
+		fmt.Printf("Could not load texture: %v\n", err)
+	}
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
-	meshObj := objloader.LoadObject("suzanne.obj")
+	meshObj := objloader.LoadObject("suzanne.obj", true)
 	vertices, uvs, normals := meshObj.Vertices, meshObj.UVs, meshObj.Normals
 
 	vertexBuffer := gl.GenBuffer()
@@ -91,7 +95,7 @@ func main() {
 	lightID := prog.GetUniformLocation("LightPosition_worldspace")
 
 	// Equivalent to a do... while
-	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
+	for ok := true; ok; ok = (window.GetKey(glfw.KeyEscape) != glfw.Press && !window.ShouldClose()) {
 		func() {
 			gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -99,7 +103,7 @@ func main() {
 			defer gl.ProgramUnuse()
 
 			view, proj := camera.ComputeViewPerspective()
-			model := mathgl.Ident4f()
+			model := mgl32.Ident4()
 
 			MVP := proj.Mul4(view).Mul4(model)
 			//mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
@@ -140,7 +144,8 @@ func main() {
 
 			gl.DrawArrays(gl.TRIANGLES, 0, len(vertices))
 
-			glfw.SwapBuffers()
+			window.SwapBuffers()
+			glfw.PollEvents()
 		}() // Defers unbinds and disables to here, end of the loop
 	}
 
