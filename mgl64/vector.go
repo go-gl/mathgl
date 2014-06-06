@@ -185,16 +185,20 @@ func (v1 Vec4) Normalize() Vec4 {
 
 // The vector cross product is an operation only defined on 3D vectors. It is equivalent to
 // Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}.
-// Another interpretation is |v1||v2|sin(theta) where there is the angle between v1 and v2.
+// Another interpretation is that it's the vector whose magnitude is |v1||v2|sin(theta)
+// where theta is the angle between v1 and v2.
+//
+// The cross product is most often used for finding surface normals. The cross product of vectors
+// will generate a vector that is perpendicular to the plane they form.
 //
 // Technically, a generalized cross product exists as an "(N-1)ary" operation
 // (that is, the 4D cross product requires 3 4D vectors). But the binary
 // 3D (and 7D) cross product is the most important. It can be considered
-// the area of a parallelograph with sides v1 and v2.
+// the area of a parallelogram with sides v1 and v2.
 //
 // Like the dot product, the cross product is roughly a measure of directionality.
-// Two normalized perpendicular vectors will return a value of
-// 1.0 or 0.0 and two parallel vectors will return a value of 0.
+// Two normalized perpendicular vectors will return a vector with a magnitude of
+// 1.0 or -1.0 and two parallel vectors will return a vector with magnitude 0.0.
 // The cross product is "anticommutative" meaning v1.Cross(v2) = -v2.Cross(v1),
 // this property can be useful to know when finding normals,
 // as taking the wrong cross product can lead to the opposite normal of the one you want.
