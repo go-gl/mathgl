@@ -66,7 +66,7 @@ func main() {
 	viewMatrixID := prog.GetUniformLocation("V")
 	modelMatrixID := prog.GetUniformLocation("M")
 
-	texture, err := helper.TextureFromDDS("uvmap.DDS") // Had to convert to tga, go-gl is missing the texture method for DDS right now
+	texture, err := helper.TextureFromDDS("uvmap.DDS")
 	if err != nil {
 		fmt.Printf("Could not load texture: %v\n", err)
 	}
