@@ -29,7 +29,7 @@ func main() {
 	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
 	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True) // needed for macs
 
-	window, err := glfw.CreateWindow(1024, 768, "Tutorial 1", nil, nil)
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 2", nil, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return

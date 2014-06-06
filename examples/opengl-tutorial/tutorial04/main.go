@@ -6,37 +6,42 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
-	"github.com/go-gl/gl"
-	"github.com/go-gl/glfw"
 	"os"
+	"runtime"
+
+	"github.com/go-gl/gl"
+	glfw "github.com/go-gl/glfw3"
+	"github.com/go-gl/mathgl/examples/opengl-tutorial/helper"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 func main() {
-	if err := glfw.Init(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	runtime.LockOSThread()
+
+	if !glfw.Init() {
+		fmt.Fprintf(os.Stderr, "Can't open GLFW")
 		return
 	}
-
 	defer glfw.Terminate()
 
-	glfw.OpenWindowHint(glfw.FsaaSamples, 4)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMajor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMinor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.Samples, 4)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
+	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True) // needed for macs
 
-	if err := glfw.OpenWindow(1024, 768, 0, 0, 0, 0, 32, 0, glfw.Windowed); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 4", nil, nil)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
+
+	window.MakeContextCurrent()
 
 	gl.Init()
 	gl.GetError() // Ignore error
+	window.SetInputMode(glfw.StickyKeys, 1)
 
-	glfw.SetWindowTitle("Tutorial 04")
-
-	glfw.Enable(glfw.StickyKeys)
 	gl.ClearColor(0., 0., 0.4, 0.)
 
 	gl.Enable(gl.DEPTH_TEST)
@@ -51,11 +56,11 @@ func main() {
 
 	matrixID := prog.GetUniformLocation("MVP")
 
-	Projection := mathgl.Perspective(45.0, 4.0/3.0, 0.1, 100.0)
+	Projection := mgl32.Perspective(45.0, 4.0/3.0, 0.1, 100.0)
 
-	View := mathgl.LookAt(4.0, 3.0, -3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+	View := mgl32.LookAt(4.0, 3.0, -3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
 
-	Model := mathgl.Ident4f()
+	Model := mgl32.Ident4()
 
 	MVP := Projection.Mul4(View).Mul4(Model) // Remember, transform multiplication order is "backwards"
 
@@ -148,7 +153,7 @@ func main() {
 	gl.BufferData(gl.ARRAY_BUFFER, len(colorBufferData)*4, &colorBufferData, gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
-	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE) {
+	for ok := true; ok; ok = (window.GetKey(glfw.KeyEscape) != glfw.Press && !window.ShouldClose()) {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		prog.Use()
@@ -170,7 +175,8 @@ func main() {
 		vertexAttrib.DisableArray()
 		colorAttrib.DisableArray()
 
-		glfw.SwapBuffers()
+		window.SwapBuffers()
+		glfw.PollEvents()
 	}
 
 }
