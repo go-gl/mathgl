@@ -5,6 +5,7 @@
 package mgl32
 
 import (
+	"math"
 	"math/rand"
 	"testing"
 	"time"
@@ -50,6 +51,122 @@ func TestEqualThreshold(t *testing.T) {
 	// Comes out to |1.0 - 1.01| < .0001
 	if FloatEqualThreshold(1.0, 1.01, 1e-3) {
 		t.Errorf("Thresholded equal returns false positive on tolerant threshold")
+	}
+}
+
+func TestEqualThresholdTable(t *testing.T) {
+	// http://floating-point-gui.de/errors/NearlyEqualsTest.java
+
+	MinValue := float32(math.SmallestNonzeroFloat32)
+	//MinNorm := float32(1.17549435082229e-38)
+	MaxValue := float32(math.MaxFloat32)
+	InfPos := float32(math.Inf(1))
+	InfNeg := float32(math.Inf(-1))
+	NaN := float32(math.NaN())
+
+	tests := []struct {
+		A, B, Ep float32
+		Expected bool
+	}{
+		{1.0, 1.01, 1e-1, true},
+		{1.0, 1.01, 1e-3, false},
+
+		// Regular large numbers
+		{1000000.0, 1000001.0, 0.00001, true},
+		{1000001.0, 1000000.0, 0.00001, true},
+		{10000.0, 10001.0, 0.00001, false},
+		{10001.0, 10000.0, 0.00001, false},
+
+		// Negative large numbers
+		{-1000000.0, -1000001.0, 0.00001, true},
+		{-1000001.0, -1000000.0, 0.00001, true},
+		{-10000.0, -10001.0, 0.00001, false},
+		{-10001.0, -10000.0, 0.00001, false},
+
+		// Numbers around 1
+		{1.0000001, 1.0000002, 0.00001, true},
+		{1.0000002, 1.0000001, 0.00001, true},
+		{1.0002, 1.0001, 0.00001, false},
+		{1.0001, 1.0002, 0.00001, false},
+
+		// Numbers around -1
+		{-1.000001, -1.000002, 0.00001, true},
+		{-1.000002, -1.000001, 0.00001, true},
+		{-1.0001, -1.0002, 0.00001, false},
+		{-1.0002, -1.0001, 0.00001, false},
+
+		// Numbers between 1 and 0
+		{0.000000001000001, 0.000000001000002, 0.00001, true},
+		{0.000000001000002, 0.000000001000001, 0.00001, true},
+		{0.000000000001002, 0.000000000001001, 0.00001, false},
+		{0.000000000001001, 0.000000000001002, 0.00001, false},
+
+		// Numbers between -1 and 0
+		{-0.000000001000001, -0.000000001000002, 0.00001, true},
+		{-0.000000001000002, -0.000000001000001, 0.00001, true},
+		{-0.000000000001002, -0.000000000001001, 0.00001, false},
+		{-0.000000000001001, -0.000000000001002, 0.00001, false},
+
+		// Comparisons involving zero
+		{0.0, 0.0, 0.00001, true},
+		{0.0, -0.0, 0.00001, true},
+		{-0.0, -0.0, 0.00001, true},
+		{0.00000001, 0.0, 0.00001, false},
+		{0.0, 0.00000001, 0.00001, false},
+		{-0.00000001, 0.0, 0.00001, false},
+		{0.0, -0.00000001, 0.00001, false},
+
+		// Comparisons involving infinities
+		{InfPos, InfPos, 0.00001, true},
+		{InfNeg, InfNeg, 0.00001, true},
+		{InfNeg, InfPos, 0.00001, false},
+		{InfPos, MaxValue, 0.00001, false},
+		{InfNeg, -MaxValue, 0.00001, false},
+
+		// Comparisons involving NaN values
+		{NaN, NaN, 0.00001, false},
+		{0.0, NaN, 0.00001, false},
+		{NaN, 0.0, 0.00001, false},
+		{-0.0, NaN, 0.00001, false},
+		{NaN, -0.0, 0.00001, false},
+		{NaN, InfPos, 0.00001, false},
+		{InfPos, NaN, 0.00001, false},
+		{NaN, InfNeg, 0.00001, false},
+		{InfNeg, NaN, 0.00001, false},
+		{NaN, MaxValue, 0.00001, false},
+		{MaxValue, NaN, 0.00001, false},
+		{NaN, -MaxValue, 0.00001, false},
+		{-MaxValue, NaN, 0.00001, false},
+		{NaN, MinValue, 0.00001, false},
+		{MinValue, NaN, 0.00001, false},
+		{NaN, -MinValue, 0.00001, false},
+		{-MinValue, NaN, 0.00001, false},
+
+		// Comparisons of numbers on opposite sides of 0
+		{1.000000001, -1.0, 0.00001, false},
+		{-1.0, 1.000000001, 0.00001, false},
+		{-1.000000001, 1.0, 0.00001, false},
+		{1.0, -1.000000001, 0.00001, false},
+		{10 * MinValue, 10 * -MinValue, 0.00001, true},
+		//{10000 * MinValue, 10000 * -MinValue, 0.00001, false},
+
+		// Comparisons of numbers very close to zero
+		{MinValue, -MinValue, 0.00001, true},
+		{-MinValue, MinValue, 0.00001, true},
+		{MinValue, 0, 0.00001, true},
+		{0, MinValue, 0.00001, true},
+		{-MinValue, 0, 0.00001, true},
+		{0, -MinValue, 0.00001, true},
+		{0.000000001, -MinValue, 0.00001, false},
+		{0.000000001, MinValue, 0.00001, false},
+		{MinValue, 0.000000001, 0.00001, false},
+		{-MinValue, 0.000000001, 0.00001, false},
+	}
+
+	for _, c := range tests {
+		if r := FloatEqualThreshold(c.A, c.B, c.Ep); r != c.Expected {
+			t.Errorf("FloatEqualThreshold(%v, %v, %v) != %v (got %v)", c.A, c.B, c.Ep, c.Expected, r)
+		}
 	}
 }
 

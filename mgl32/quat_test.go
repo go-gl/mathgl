@@ -334,7 +334,7 @@ func TestQuatLookAtV(t *testing.T) {
 
 	threshold := float32(math.Pow(10, -2))
 	for _, c := range tests {
-		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
+		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !FloatEqualThreshold(Abs(r.Dot(c.Expected)), 1, threshold) {
 			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
 		}
 	}
@@ -358,19 +358,12 @@ func TestQuatMatConversion(t *testing.T) {
 		}...)
 	}
 
-	threshold := float32(1e-4 /*math.Pow(10, -2)*/)
 	for _, c := range tests {
 		m1 := HomogRotate3D(c.Angle, c.Axis)
 		q1 := Mat4ToQuat(m1)
-
 		q2 := QuatRotate(c.Angle, c.Axis)
-		m2 := q2.Mat4()
 
-		if !m1.ApproxEqualThreshold(m2, threshold) {
-			t.Errorf("Rotation matrices for %v %v do not match:\n%v\n%v", RadToDeg(c.Angle), c.Axis, m1, m2)
-		}
-
-		if !q1.ApproxEqualThreshold(q2, threshold) {
+		if !FloatEqualThreshold(Abs(q1.Dot(q2)), 1, 1e-4) {
 			t.Errorf("Quaternions for %v %v do not match:\n%v\n%v", RadToDeg(c.Angle), c.Axis, q1, q2)
 		}
 	}
