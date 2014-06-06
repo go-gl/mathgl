@@ -6,44 +6,44 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jragonmiris/mathgl"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/helper"
-	"github.com/Jragonmiris/mathgl/examples/opengl-tutorial/input"
-	"github.com/go-gl/gl"
-	"github.com/go-gl/glfw"
 	"os"
+	"runtime"
+
+	"github.com/go-gl/gl"
+	glfw "github.com/go-gl/glfw3"
+	"github.com/go-gl/mathgl/examples/opengl-tutorial/helper"
+	"github.com/go-gl/mathgl/examples/opengl-tutorial/input"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 func main() {
-	if err := glfw.Init(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	runtime.LockOSThread()
+
+	if !glfw.Init() {
+		fmt.Fprintf(os.Stderr, "Can't open GLFW")
 		return
 	}
-
 	defer glfw.Terminate()
 
-	glfw.OpenWindowHint(glfw.FsaaSamples, 4)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMajor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLVersionMinor, 3)
-	glfw.OpenWindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.Samples, 4)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
+	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True) // needed for macs
 
-	if err := glfw.OpenWindow(1024, 768, 0, 0, 0, 0, 32, 0, glfw.Windowed); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+	window, err := glfw.CreateWindow(1024, 768, "Tutorial 4", nil, nil)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
 
-	glfw.SetSwapInterval(0)
+	window.MakeContextCurrent()
 
-	//gl.GlewExperimental(true)
-	gl.Init()     // Can't find gl.GLEW_OK or any variation, not sure how to check if this worked
-	gl.GetError() // ignore error, since we're telling it to use CoreProfile above, we get "invalid enumerant" (GLError 1280) which freaks the OpenGLSentinel out
-	// With go-gl we also apparently can't set glewExpe6rimental
-
-	glfw.SetWindowTitle("Tutorial 05")
-
-	glfw.Enable(glfw.StickyKeys)
-	glfw.Disable(glfw.MouseCursor) // Not in the original tutorial, but IMO it SHOULD be there
-	glfw.SetMousePos(1024.0/2.0, 768.0/2.0)
+	gl.Init()
+	gl.GetError() // Ignore error
+	window.SetInputMode(glfw.StickyKeys, 1)
+	window.SetCursorPosition(1024/2, 768/2)
+	window.SetInputMode(glfw.Cursor, glfw.CursorHidden)
 
 	gl.ClearColor(0., 0., 0.4, 0.)
 
@@ -52,7 +52,7 @@ func main() {
 
 	gl.Enable(gl.CULL_FACE)
 
-	camera := input.NewCamera()
+	camera := input.NewCamera(window)
 
 	vertexArray := gl.GenVertexArray()
 	defer vertexArray.Delete()
@@ -63,7 +63,11 @@ func main() {
 
 	matrixID := prog.GetUniformLocation("MVP")
 
-	texture := helper.MakeTextureFromTGA("uvtemplate.tga")
+	texture, err := helper.TextureFromDDS("uvtemplate.DDS")
+	if err != nil {
+		fmt.Printf("Couldn't make texture: %v\n", err)
+		return
+	}
 	defer texture.Delete()
 	texSampler := prog.GetUniformLocation("myTextureSampler")
 
@@ -103,7 +107,8 @@ func main() {
 		-1.0, 1.0, 1.0,
 		1.0, 1.0, 1.0,
 		-1.0, 1.0, 1.0,
-		1.0, -1.0, 1.0}
+		1.0, -1.0, 1.0,
+	}
 
 	uvBufferData := [...]float32{
 		0.000059, 1.0 - 0.000004,
@@ -141,7 +146,13 @@ func main() {
 		0.335973, 1.0 - 0.335903,
 		0.667969, 1.0 - 0.671889,
 		1.000004, 1.0 - 0.671847,
-		0.667979, 1.0 - 0.335851}
+		0.667979, 1.0 - 0.335851,
+	}
+
+	// Invert V because we're using a compressed texture
+	for i := 1; i < len(uvBufferData); i += 2 {
+		uvBufferData[i] = 1.0 - uvBufferData[i]
+	}
 
 	vertexBuffer := gl.GenBuffer()
 	defer vertexBuffer.Delete()
@@ -154,7 +165,7 @@ func main() {
 	gl.BufferData(gl.ARRAY_BUFFER, len(uvBufferData)*4, &uvBufferData, gl.STATIC_DRAW)
 
 	// Equivalent to a do... while
-	for ok := true; ok; ok = (glfw.Key(glfw.KeyEsc) != glfw.KeyPress && glfw.WindowParam(glfw.Opened) == gl.TRUE && glfw.Key('Q') != glfw.KeyPress) {
+	for ok := true; ok; ok = (window.GetKey(glfw.KeyEscape) != glfw.Press && !window.ShouldClose()) {
 		func() {
 			gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -162,7 +173,7 @@ func main() {
 			defer gl.ProgramUnuse()
 
 			view, proj := camera.ComputeViewPerspective()
-			model := mathgl.Ident4f()
+			model := mgl32.Ident4()
 
 			MVP := proj.Mul4(view).Mul4(model)
 			//mvpArray := mvp.AsCMOArray(mathgl.FLOAT32).([16]float32)
@@ -190,7 +201,8 @@ func main() {
 
 			gl.DrawArrays(gl.TRIANGLES, 0, 12*3)
 
-			glfw.SwapBuffers()
+			window.SwapBuffers()
+			glfw.PollEvents()
 		}() // Defers unbinds and disables to here, end of the loop
 	}
 
