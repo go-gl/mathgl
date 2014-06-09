@@ -3,7 +3,7 @@ package mgl32
 // An arbitrary mxn matrix backed by a slice of floats.
 //
 // This is emphatically not recommended to be used for hardcore n-dimensional
-// linear algebra. For that purpose in I recommend github.com/gonum/matrix or
+// linear algebra. For that purpose I recommend github.com/gonum/matrix or
 // well-tested C libraries such as BLAS or LAPACK.
 //
 // This is meant to complement future algorithms that may require matrices larger than
