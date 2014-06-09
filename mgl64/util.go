@@ -4,6 +4,10 @@
 
 package mgl64
 
+import (
+	"math"
+)
+
 // Epsilon is some tiny value that determines how precisely equal we want our floats to be
 // This is exported and left as a variable in case you want to change the default threshold for the
 // purposes of certain methods (e.g. Unproject uses the default epsilon when determining
@@ -116,4 +120,15 @@ func SetMax(a, b *float64) {
 	if *a < *b {
 		*a = *b
 	}
+}
+
+// Round shortens a float32 value to a specified precision (number of digits after the decimal point)
+// with "round half up" tie-braking rule. Half-way values (23.5) are always rounded up (24).
+func Round(v float64, precision int) float64 {
+	p := float64(precision)
+	t := v * math.Pow(10, p)
+	if t > 0 {
+		return math.Floor(t+0.5) / math.Pow(10, p)
+	}
+	return math.Ceil(t-0.5) / math.Pow(10, p)
 }

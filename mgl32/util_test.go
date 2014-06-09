@@ -148,7 +148,7 @@ func TestEqualThresholdTable(t *testing.T) {
 		{-1.000000001, 1.0, 0.00001, false},
 		{1.0, -1.000000001, 0.00001, false},
 		{10 * MinValue, 10 * -MinValue, 0.00001, true},
-		//{10000 * MinValue, 10000 * -MinValue, 0.00001, false},
+		// TODO: {10000 * MinValue, 10000 * -MinValue, 0.00001, false},
 
 		// Comparisons of numbers very close to zero
 		{MinValue, -MinValue, 0.00001, true},
