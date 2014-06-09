@@ -63,7 +63,7 @@ func (vn *VecN) append(toAdd []float32) {
 	if reallocCallback != nil && len(vn.vec)+len(toAdd) > cap(vn.vec) {
 		// Done this way so the callback doesn't do something to our slice before
 		// it's copied into the new one
-		tmp = vn.vec
+		tmp := vn.vec
 		vn.vec = append(vn.vec, toAdd...)
 		reallocCallback(tmp)
 		return
@@ -104,7 +104,7 @@ func (vn *VecN) Cap() int {
 // Sets the vector's size to n and zeroes out the vector.
 // If n is bigger than the vector's size, it will realloc.
 func (vn *VecN) Zero(n int) {
-	vn.resize(n)
+	vn.Resize(n)
 	for i := range vn.vec {
 		vn.vec[i] = 0
 	}
@@ -170,6 +170,14 @@ func intMin(a, b int) int {
 	return b
 }
 
+func intAbs(a int) int {
+	if a < 0 {
+		return -a
+	}
+
+	return a
+}
+
 // Computes the dot product of two VecNs, if
 // the two vectors are not of the same length -- this
 // will return NaN.
@@ -178,7 +186,7 @@ func (vn *VecN) Dot(other *VecN) float32 {
 		return float32(math.NaN())
 	}
 
-	result := 0.0
+	var result float32 = 0.0
 	for i, el := range vn.vec {
 		result += el * other.vec[i]
 	}
@@ -220,8 +228,8 @@ func (vn *VecN) Mul(dst *VecN, c float32) *VecN {
 	dst.Resize(len(vn.vec))
 
 	length := vn.Len()
-	for i, el := range vn.vec {
-		dst.vec[1] = vn.vec[i] / length
+	for _, el := range vn.vec {
+		dst.vec[1] = el / length
 	}
 
 	return dst
