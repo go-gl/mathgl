@@ -2,7 +2,7 @@ package mgl32
 
 // An arbitrary mxn matrix backed by a slice of floats.
 //
-// This is emphatically not recommended to be used for hardcore n-dimensional
+// This is emphatically not recommended for hardcore n-dimensional
 // linear algebra. For that purpose I recommend github.com/gonum/matrix or
 // well-tested C libraries such as BLAS or LAPACK.
 //
@@ -16,14 +16,42 @@ type MatMN struct {
 	dat  []float32
 }
 
+// Creates a matrix backed by a new slice of size m*n
+func NewMatrix(m, n int) (mat *MatMN) {
+	mat.Reshape(m, n)
+	return mat
+}
+
+// Returns a matrix backed by the slice dat,
+// this matrix will have dimensions 0x0 and should have
+// "Reshape" called on it before any work is done.
+//
+// For instance, to create a 3x3 MatMN from a Mat3
+//
+//    m1 := mgl32.Rotate3DX(math.Pi)
+//    mat := mgl32.NewBackedMatrix(m1[:])
+//    mat.Reshape(3,3)
+//
+// will create an MN matrix backed by the initial
+// mat3 that still acts as a 3D rotation matrix.
+func NewBackedMatrix(dat []float32) *MatMN {
+	mat := &MatMN{m: 0, n: 0, dat: dat[:0]}
+	return mat
+}
+
 // Grows the underlying slice by the desired amount
-func (mat *MatMN) grow(size int) {
+func (mat *MatMN) grow(size int) *MatMN {
 	if mat == nil {
-		mat = &MatMN{m: 0, n: 0, dat: make([]float32, 0, size)}
+		return &MatMN{m: 0, n: 0, dat: make([]float32, size, size)}
 	}
 
 	if len(mat.dat)+size > cap(mat.dat) {
-		tmp := make([]float32, len(mat.dat), len(mat.dat)*2)
+		newCap := len(mat.dat) * 2
+		if len(mat.dat)+size > 2*len(mat.dat) {
+			newCap = len(mat.dat) + size
+		}
+
+		tmp := make([]float32, size, newCap)
 		copy(tmp, mat.dat)
 		if reallocCallback != nil {
 			reallocCallback(mat.dat)
@@ -31,13 +59,21 @@ func (mat *MatMN) grow(size int) {
 
 		mat.dat = tmp
 
-		return
+		return mat
 	}
 
 	mat.dat = mat.dat[:len(mat.dat)+size]
+
+	return mat
 }
 
+// Returns the underlying matrix slice via the callback
+// if it exists
 func (mat *MatMN) destroy() {
+	if mat == nil {
+		return
+	}
+
 	if reallocCallback != nil {
 		reallocCallback(mat.dat)
 	}
@@ -49,20 +85,25 @@ func (mat *MatMN) destroy() {
 // If the overall size of the new matrix (m*n) is bigger
 // than the current size, the underlying slice will
 // be grown, reallocating if the needed memory exceeds its cap.
-func (mat *MatMN) Reshape(m, n int) {
+//
+// If the caller is a nil pointer, the return value will be a new
+// matrix, as if NewMatrix(m,n) had been called. Otherwise it's
+// simply the caller.
+func (mat *MatMN) Reshape(m, n int) *MatMN {
 	if mat == nil {
-		mat = &MatMN{m: m, n: n, dat: make([]float32, m*n)}
-		return
+		return &MatMN{m: m, n: n, dat: make([]float32, m*n)}
 	}
 
 	if m*n <= len(mat.dat) {
 		mat.dat = mat.dat[:m*n]
 		mat.m, mat.n = m, n
-		return
+		return mat
 	}
 
 	mat.grow(m*n - len(mat.dat))
 	mat.m, mat.n = m, n
+
+	return mat
 }
 
 // Takes the transpose of mat and puts it in dst.
@@ -76,7 +117,7 @@ func (mat *MatMN) Transpose(dst *MatMN) *MatMN {
 		return nil
 	}
 
-	dst.Reshape(mat.n, mat.m)
+	dst = dst.Reshape(mat.n, mat.m)
 
 	for r := 0; r < mat.m; r++ {
 		for c := 0; c < mat.n; c++ {
@@ -92,7 +133,7 @@ func (mat *MatMN) Add(dst *MatMN, addend *MatMN) *MatMN {
 		return nil
 	}
 
-	dst.Reshape(mat.m, mat.n)
+	dst = dst.Reshape(mat.m, mat.n)
 
 	// No need to care about rows and columns
 	// since it's element-wise anyway
@@ -108,7 +149,7 @@ func (mat *MatMN) Sub(dst *MatMN, minuend *MatMN) *MatMN {
 		return nil
 	}
 
-	dst.Reshape(mat.m, mat.n)
+	dst = dst.Reshape(mat.m, mat.n)
 
 	// No need to care about rows and columns
 	// since it's element-wise anyway
@@ -150,7 +191,7 @@ func (mat *MatMN) Mul(dst *MatMN, mul *MatMN) *MatMN {
 		defer mat.destroy()
 	}
 
-	dst.Reshape(mat.m, mul.n)
+	dst = dst.Reshape(mat.m, mul.n)
 	for r1 := 0; r1 < mat.m; r1++ {
 		for c2 := 0; c2 < mul.n; c2++ {
 
