@@ -44,7 +44,11 @@ func (vn VecN) Raw() []float32 {
 // Grows the slice by the desired amount
 func (vn *VecN) grow(size int) {
 	if len(vn.vec)+size > cap(vn.vec) {
-		tmp := make([]float32, len(vn.vec), len(vn.vec)*2)
+		newCap := len(vn.vec) * 2
+		if len(vn.vec)+size > newCap {
+			newCap = len(vn.vec) + size
+		}
+		tmp := make([]float32, len(vn.vec), newCap)
 		copy(tmp, vn.vec)
 		if reallocCallback != nil {
 			reallocCallback(vn.vec)
