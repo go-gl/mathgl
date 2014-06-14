@@ -1727,3 +1727,21 @@ func (m Mat3) Trace() float32 {
 func (m Mat4) Trace() float32 {
 	return m[0] + m[5] + m[10] + m[15]
 }
+
+// Trace is a basic operation on a square matrix that simply
+// sums up all elements on the main diagonal (meaning all elements such that row==col).
+func (m Mat2) Diag() Vec2 {
+	return Vec2{m[0], m[3]}
+}
+
+// Trace is a basic operation on a square matrix that simply
+// sums up all elements on the main diagonal (meaning all elements such that row==col).
+func (m Mat3) Diag() Vec3 {
+	return Vec3{m[0], m[4], m[8]}
+}
+
+// Trace is a basic operation on a square matrix that simply
+// sums up all elements on the main diagonal (meaning all elements such that row==col).
+func (m Mat4) Diag() Vec4 {
+	return Vec4{m[0], m[5], m[10], m[15]}
+}
