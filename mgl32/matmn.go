@@ -11,6 +11,10 @@ package mgl32
 //
 // It makes use of the same realloc callback as VecN, for use in memory pools if you
 // want to avoid garbage collection.
+//
+// MatMN will always check if the receiver is nil on any method. Meaning MathMN(nil).Add(dst,m2)
+// should always work. Except for the Reshape function, the semantics of this is to "propogate" nils
+// forward, so if an invalid operation occurs in a long chain of matrix operations, the overall result will be nil.
 type MatMN struct {
 	m, n int
 	dat  []float32
@@ -18,10 +22,7 @@ type MatMN struct {
 
 // Creates a matrix backed by a new slice of size m*n
 func NewMatrix(m, n int) (mat *MatMN) {
-
-	// Slightly abuses the fact that Reshape checks for a
-	// nil pointer
-	return mat.Reshape(m, n)
+	return &MatMN{m: m, n: n, dat: make([]float32, m*n)}
 }
 
 // Returns a matrix backed by the slice dat,
@@ -34,8 +35,10 @@ func NewMatrix(m, n int) (mat *MatMN) {
 //
 // will create an MN matrix backed by the initial
 // mat3 that still acts as a 3D rotation matrix.
+//
+// If m*n > cap(dat), this function will panic.
 func NewBackedMatrix(dat []float32, m, n int) *MatMN {
-	mat := &MatMN{m: 0, n: 0, dat: dat[:m*n]}
+	mat := &MatMN{m: m, n: n, dat: dat[:m*n]}
 	return mat
 }
 
@@ -98,7 +101,7 @@ func (mat *MatMN) destroy() {
 // simply the caller.
 func (mat *MatMN) Reshape(m, n int) *MatMN {
 	if mat == nil {
-		return &MatMN{m: m, n: n, dat: make([]float32, m*n)}
+		return NewMatrix(m, n)
 	}
 
 	if m*n <= len(mat.dat) {
