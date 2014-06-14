@@ -17,7 +17,7 @@ func TestVecNCross(t *testing.T) {
 	result := v1n.Cross(nil, v2n)
 
 	if !correctN.ApproxEqualThreshold(result, 1e-4) {
-		t.Errorf("VecN cross product is incorrect. Got: %v; Expected: %v", result, correct)
+		t.Errorf("VecN cross product is incorrect. Got: %v; Expected: %v", result, correctN)
 	}
 }
 
@@ -48,7 +48,7 @@ func TestVecNMul(t *testing.T) {
 	result := v1n.Mul(nil, 3)
 
 	if !correctN.ApproxEqualThreshold(result, 1e-4) {
-		t.Errorf("VecN scalar multiplication is incorrect. Got: %v; Expected: %v", result, correct)
+		t.Errorf("VecN scalar multiplication is incorrect. Got: %v; Expected: %v", result, correctN)
 	}
 }
 
@@ -63,7 +63,7 @@ func TestVecNNormalize(t *testing.T) {
 	result := v1n.Normalize(nil)
 
 	if !correctN.ApproxEqualThreshold(result, 1e-4) {
-		t.Errorf("VecN normalization is incorrect. Got: %v; Expected: %v", result, correct)
+		t.Errorf("VecN normalization is incorrect. Got: %v; Expected: %v", result, correctN)
 	}
 }
 
@@ -80,7 +80,7 @@ func TestVecNAdd(t *testing.T) {
 	result := v1n.Add(nil, v2n)
 
 	if !correctN.ApproxEqualThreshold(result, 1e-4) {
-		t.Errorf("VecN addition is incorrect. Got: %v; Expected: %v", result, correct)
+		t.Errorf("VecN addition is incorrect. Got: %v; Expected: %v", result, correctN)
 	}
 }
 
@@ -97,6 +97,23 @@ func TestVecNSub(t *testing.T) {
 	result := v1n.Sub(nil, v2n)
 
 	if !correctN.ApproxEqualThreshold(result, 1e-4) {
-		t.Errorf("VecN subtraction is incorrect. Got: %v; Expected: %v", result, correct)
+		t.Errorf("VecN subtraction is incorrect. Got: %v; Expected: %v", result, correctN)
+	}
+}
+
+func TestVecNOuterProd(t *testing.T) {
+	v1 := Vec3{1, 2, 3}
+	v2 := Vec2{10, 11}
+
+	v1n := NewBackedVecN(v1[:])
+	v2n := NewBackedVecN(v2[:])
+
+	correct := v1.OuterProd2(v2)
+	correctN := NewBackedMatrix(correct[:], 3, 2)
+
+	result := v1n.OuterProd(nil, v2n)
+
+	if !correctN.ApproxEqualThreshold(result, 1e-4) {
+		t.Errorf("VecN outer product is incorrect. Got: %v; Expected: %v", result, correctN)
 	}
 }
