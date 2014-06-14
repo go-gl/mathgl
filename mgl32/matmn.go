@@ -163,7 +163,7 @@ func (mat *MatMN) Transpose(dst *MatMN) (t *MatMN) {
 // checking. If the computation happens to lead to an invalid
 // element, it will be returned; or it may panic.
 func (mat *MatMN) At(row, col int) float32 {
-	return mat.dat[col*mat.m+row]
+	return mat.dat[row*mat.n+col]
 }
 
 // Sets the element at the given row and column.
@@ -171,7 +171,7 @@ func (mat *MatMN) At(row, col int) float32 {
 // checking. If the computation happens to lead to an invalid
 // element, it will be set; or it may panic.
 func (mat *MatMN) Set(row, col int, val float32) {
-	mat.dat[col*mat.m+row] = val
+	mat.dat[row*mat.n+col] = val
 }
 
 func (mat *MatMN) Add(dst *MatMN, addend *MatMN) *MatMN {
