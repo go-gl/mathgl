@@ -367,13 +367,13 @@ func GenVecOuterProd(m, n int) string {
 
 	vecs += fmt.Sprintf("func (v1 %s) OuterProd%d(v2 %s) %s {\n\treturn %s{", VecName(m), n, VecName(n), GenMatName(m, n), GenMatName(m, n))
 
-	for r := 0; r < n; r++ {
-		for c := 0; c < m; c++ {
+	for c := 0; c < n; r++ {
+		for r := 0; r < m; c++ {
 			if r != 0 || c != 0 {
 				vecs += ","
 			}
 
-			vecs += fmt.Sprintf("v1[%d]*v2[%d]", c, r)
+			vecs += fmt.Sprintf("v1[%d]*v2[%d]", r, c)
 		}
 	}
 
