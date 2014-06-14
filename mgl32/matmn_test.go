@@ -89,3 +89,25 @@ func TestMxNAtSet(t *testing.T) {
 		t.Errorf("Set matrix does not equal correct matrix. Got: %v, expected: %v", mn, correctMN)
 	}
 }
+
+func TestMxNReallocCallback(t *testing.T) {
+	var retVal []float32 = nil
+	reallocCallback = func(buf []float32) {
+		t.Log("In realloc callback")
+		retVal = buf
+	}
+
+	a := NewMatrix(3, 3)
+	a.Reshape(4, 4)
+
+	if retVal == nil {
+		t.Errorf("Realloc callback not set or called correctly")
+	}
+
+	a = nil
+	a.Reshape(4, 4)
+
+	if retVal == nil {
+		t.Errorf("Realloc callback is being called to realloc over a nil slice")
+	}
+}
