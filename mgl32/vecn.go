@@ -46,6 +46,13 @@ func (vn VecN) Raw() []float32 {
 	return vn.vec
 }
 
+// Gets the element at index i from the vector.
+// This does not bounds check, and will panic if i is
+// out of range.
+func (vn VecN) Get(i int) float32 {
+	return vn.vec[i]
+}
+
 // Sends the allocated memory through the callback if it exists
 func (vn *VecN) destroy() {
 	if vn == nil || vn.vec == nil {
