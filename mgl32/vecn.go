@@ -148,15 +148,15 @@ func (vn *VecN) Zero(n int) {
 //
 // If vn and addend are not the same size, this function will add min(vn.Size(), addend.Size())
 // elements.
-func (vn *VecN) Add(dst *VecN, addend *VecN) *VecN {
-	if vn == nil || addend == nil {
+func (vn *VecN) Add(dst *VecN, minuend *VecN) *VecN {
+	if vn == nil || minuend == nil {
 		return nil
 	}
-	size := intMin(len(vn.vec), len(addend.vec))
+	size := intMin(len(vn.vec), len(minuend.vec))
 	dst = dst.Resize(size)
 
 	for i := 0; i < size; i++ {
-		dst.vec[i] = vn.vec[i] + addend.vec[i]
+		dst.vec[i] = vn.vec[i] + minuend.vec[i]
 	}
 
 	return dst
