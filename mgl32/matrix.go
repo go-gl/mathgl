@@ -1449,6 +1449,51 @@ func (m Mat4) Row(row int) Vec4 {
 	return Vec4{m[row+0], m[row+4], m[row+8], m[row+12]}
 }
 
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat2) SetRow(row int, v Vec2) {
+	m[row+0], m[row+2] = v[0], v[1]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x3) SetRow(row int, v Vec3) {
+	m[row+0], m[row+2], m[row+4] = v[0], v[1], v[2]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x4) SetRow(row int, v Vec4) {
+	m[row+0], m[row+2], m[row+4], m[row+6] = v[0], v[1], v[2], v[3]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x2) SetRow(row int, v Vec2) {
+	m[row+0], m[row+3] = v[0], v[1]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat3) SetRow(row int, v Vec3) {
+	m[row+0], m[row+3], m[row+6] = v[0], v[1], v[2]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x4) SetRow(row int, v Vec4) {
+	m[row+0], m[row+3], m[row+6], m[row+9] = v[0], v[1], v[2], v[3]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x2) SetRow(row int, v Vec2) {
+	m[row+0], m[row+4] = v[0], v[1]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x3) SetRow(row int, v Vec3) {
+	m[row+0], m[row+4], m[row+8] = v[0], v[1], v[2]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat4) SetRow(row int, v Vec4) {
+	m[row+0], m[row+4], m[row+8], m[row+12] = v[0], v[1], v[2], v[3]
+}
+
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
 func (m Mat2) Rows() (v0, v1 Vec2) {
@@ -1564,6 +1609,51 @@ func (m Mat4x3) Col(col int) Vec4 {
 // will be a normal VecN for a MxN matrix.
 func (m Mat4) Col(col int) Vec4 {
 	return Vec4{m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3]}
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat2) SetCol(col int, v Vec2) {
+	m[col*2+0], m[col*2+1] = v[0], v[1]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x3) SetCol(col int, v Vec2) {
+	m[col*2+0], m[col*2+1] = v[0], v[1]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x4) SetCol(col int, v Vec2) {
+	m[col*2+0], m[col*2+1] = v[0], v[1]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x2) SetCol(col int, v Vec3) {
+	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat3) SetCol(col int, v Vec3) {
+	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x4) SetCol(col int, v Vec3) {
+	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x2) SetCol(col int, v Vec4) {
+	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x3) SetCol(col int, v Vec4) {
+	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat4) SetCol(col int, v Vec4) {
+	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
