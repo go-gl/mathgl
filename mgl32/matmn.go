@@ -85,7 +85,7 @@ func (mat *MatMxN) destroy() {
 		return
 	}
 
-	if reallocCallback != nil {
+	if reallocCallback != nil && mat.dat != nil {
 		reallocCallback(mat.dat)
 	}
 	mat.m, mat.n = 0, 0
@@ -106,7 +106,11 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 	}
 
 	if m*n <= len(mat.dat) {
-		mat.dat = mat.dat[:m*n]
+		if mat.dat != nil {
+			mat.dat = mat.dat[:m*n]
+		} else {
+			mat.dat = []float32{}
+		}
 		mat.m, mat.n = m, n
 		return mat
 	}
