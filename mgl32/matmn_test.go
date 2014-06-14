@@ -59,8 +59,8 @@ func TestMNAtSet(t *testing.T) {
 
 	v := mn.At(0, 2)
 
-	if !FloatEqualThreshold(v, 3, 1e-4) {
-		t.Errorf("Incorrect value gotten by At: %v, expected %v", v, 3)
+	if !FloatEqualThreshold(v, 7, 1e-4) {
+		t.Errorf("Incorrect value gotten by At: %v, expected %v", v, 7)
 	}
 
 	mn.Set(0, 2, 9001)
@@ -69,5 +69,12 @@ func TestMNAtSet(t *testing.T) {
 
 	if !FloatEqualThreshold(v, 9001, 1e-4) {
 		t.Errorf("Incorrect value set by Set: %v, expected %v", v, 9001)
+	}
+
+	correct := Mat3{1, 2, 3, 4, 5, 6, 9001, 8, 9}
+	correctMN := NewBackedMatrix(correct[:], 3, 3)
+
+	if !correctMN.ApproxEqualThreshold(mn, 1e-4) {
+		t.Errorf("Set matrix does not equal correct matrix. Got: %v, expected: %v", mn, correctMN)
 	}
 }
