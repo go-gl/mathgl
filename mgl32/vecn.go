@@ -32,13 +32,31 @@ type VecN struct {
 // Creates a new vector with backing slice initial.
 // If initial is nil, this vector will generate its own
 // slice when needed.
-func NewVecN(initial []float32) *VecN {
+func NewBackedVecN(initial []float32) *VecN {
 	return &VecN{initial}
+}
+
+// Creates a new vector with a backing slice of size n
+func NewVecN(n int) *VecN {
+	return &VecN{make([]float32, n)}
 }
 
 // Returns the raw slice backing the VecN
 func (vn VecN) Raw() []float32 {
 	return vn.vec
+}
+
+// Sends the allocated memory through the callback if it exists
+func (vn *VecN) destroy() {
+	if vn == nil || vn.vec == nil {
+		return
+	}
+
+	if reallocCallback != nil {
+		reallocCallback(vn.vec)
+	}
+
+	vn.vec = nil
 }
 
 // Grows the slice by the desired amount
@@ -78,13 +96,22 @@ func (vn *VecN) append(toAdd []float32) {
 
 // Resizes the underlying slice to the desired amount, reallocating
 // if necessary. This does not zero any values.
-func (vn *VecN) Resize(n int) {
+func (vn *VecN) Resize(n int) *VecN {
+	if vn == nil {
+		return NewVecN(n)
+	}
+
 	if n <= len(vn.vec) {
-		vn.vec = vn.vec[:n]
-		return
+		if vn.vec != nil {
+			vn.vec = vn.vec[:n]
+		} else {
+			vn.vec = []float32{}
+		}
+		return vn
 	}
 
 	vn.grow(n - len(vn.vec))
+	return vn
 }
 
 // Sets the vector's backing slice to the given
@@ -122,8 +149,11 @@ func (vn *VecN) Zero(n int) {
 // If vn and addend are not the same size, this function will add min(vn.Size(), addend.Size())
 // elements.
 func (vn *VecN) Add(dst *VecN, addend *VecN) *VecN {
+	if vn == nil || addend == nil {
+		return nil
+	}
 	size := intMin(len(vn.vec), len(addend.vec))
-	dst.Resize(size)
+	dst = dst.Resize(size)
 
 	for i := 0; i < size; i++ {
 		dst.vec[i] = vn.vec[i] + addend.vec[i]
@@ -140,8 +170,11 @@ func (vn *VecN) Add(dst *VecN, addend *VecN) *VecN {
 // If vn and addend are not the same size, this function will add min(vn.Size(), addend.Size())
 // elements.
 func (vn *VecN) Sub(dst *VecN, addend *VecN) *VecN {
+	if vn == nil || addend == nil {
+		return nil
+	}
 	size := intMin(len(vn.vec), len(addend.vec))
-	dst.Resize(size)
+	dst = dst.Resize(size)
 
 	for i := 0; i < size; i++ {
 		dst.vec[i] = vn.vec[i] - addend.vec[i]
@@ -156,11 +189,14 @@ func (vn *VecN) Sub(dst *VecN, addend *VecN) *VecN {
 // If dst is not of sufficient size, or is nil, a new slice is allocated.
 // Dst is permitted to be one of the other arguments
 func (vn *VecN) Cross(dst *VecN, other *VecN) *VecN {
+	if vn == nil || other == nil {
+		return nil
+	}
 	if len(vn.vec) != 3 || len(other.vec) != 3 {
 		panic("Cannot take binary cross product of non-3D elements (7D cross product not implemented)")
 	}
 
-	dst.Resize(3)
+	dst = dst.Resize(3)
 	dst.vec[0], dst.vec[1], dst.vec[2] = vn.vec[1]*other.vec[2]-vn.vec[2]*other.vec[1], vn.vec[2]*other.vec[0]-vn.vec[0]*other.vec[2], vn.vec[0]*other.vec[1]-vn.vec[1]*other.vec[0]
 
 	return dst
@@ -186,7 +222,7 @@ func intAbs(a int) int {
 // the two vectors are not of the same length -- this
 // will return NaN.
 func (vn *VecN) Dot(other *VecN) float32 {
-	if len(vn.vec) != len(other.vec) {
+	if vn == nil || other == nil || len(vn.vec) != len(other.vec) {
 		return float32(math.NaN())
 	}
 
@@ -201,7 +237,12 @@ func (vn *VecN) Dot(other *VecN) float32 {
 // Computes the vector length (also called the Norm) of the
 // vector. Equivalent to math.Sqrt(vn.Dot(vn)) with the appropriate
 // type conversions.
+//
+// If vn is nil, this returns NaN
 func (vn *VecN) Len() float32 {
+	if vn == nil {
+		return float32(math.NaN())
+	}
 	if len(vn.vec) == 0 {
 		return 0
 	}
@@ -215,10 +256,13 @@ func (vn *VecN) Len() float32 {
 //
 // The destination can be vn itself and nothing will go wrong.
 //
-// This is equivalent to vn.Mul(dst, vn.Len())
+// This is equivalent to vn.Mul(dst, 1/vn.Len())
 func (vn *VecN) Normalize(dst *VecN) *VecN {
+	if vn == nil {
+		return nil
+	}
 
-	return vn.Mul(dst, vn.Len())
+	return vn.Mul(dst, 1/vn.Len())
 }
 
 // Multiplied the vector by some scalar value and stores the result in dst, which
@@ -226,10 +270,11 @@ func (vn *VecN) Normalize(dst *VecN) *VecN {
 // size of vn.
 //
 // The destination can be vn itself and nothing will go wrong.
-//
-// This is equivalent to vn.Mul(dst, vn.Len())
 func (vn *VecN) Mul(dst *VecN, c float32) *VecN {
-	dst.Resize(len(vn.vec))
+	if vn == nil || dst == nil {
+		return nil
+	}
+	dst = dst.Resize(len(vn.vec))
 
 	length := vn.Len()
 	for _, el := range vn.vec {
@@ -237,4 +282,46 @@ func (vn *VecN) Mul(dst *VecN, c float32) *VecN {
 	}
 
 	return dst
+}
+
+func (vn *VecN) ApproxEqual(vn2 *VecN) bool {
+	if vn == nil || vn2 == nil || len(vn.vec) != len(vn2.vec) {
+		return false
+	}
+
+	for i, el := range vn.vec {
+		if !FloatEqual(el, vn2.vec[i]) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (vn *VecN) ApproxEqualThreshold(vn2 *VecN, epsilon float32) bool {
+	if vn == nil || vn2 == nil || len(vn.vec) != len(vn2.vec) {
+		return false
+	}
+
+	for i, el := range vn.vec {
+		if !FloatEqualThreshold(el, vn2.vec[i], epsilon) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (vn *VecN) ApproxEqualFunc(vn2 *VecN, comp func(float32, float32) bool) bool {
+	if vn == nil || vn2 == nil || len(vn.vec) != len(vn2.vec) {
+		return false
+	}
+
+	for i, el := range vn.vec {
+		if !comp(el, vn2.vec[i]) {
+			return false
+		}
+	}
+
+	return true
 }

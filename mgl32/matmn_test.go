@@ -163,3 +163,25 @@ func TestMxNMul(t *testing.T) {
 		t.Errorf("Scaling a matrix produces weird results got: %v, expected: %v", result, correct)
 	}
 }
+
+func TestMxNMulNx1(t *testing.T) {
+	m := Ident4()
+	r := HomogRotate3DX(DegToRad(45))
+	tr := Translate3D(1, 0, 0)
+	s := Scale3D(2, 2, 2)
+
+	model := tr.Mul4(r.Mul4(s.Mul4(m)))
+
+	v := Vec4{5, 5, 5, 1}
+	correct := model.Mul4x1(v)
+	correctn := NewBackedVecN(correct[:])
+
+	modelMN := NewBackedMatrix(model[:], 4, 4)
+	vn := NewBackedVecN(v[:])
+
+	result := modelMN.MulNx1(nil, vn)
+
+	if !correctn.ApproxEqualThreshold(result, 1e-4) {
+		t.Errorf("Multiplying N-dim vector and MxN matrix produces bad result. Got: %v, expected: %v", result, correct)
+	}
+}
