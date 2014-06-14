@@ -162,6 +162,31 @@ func (mat *MatMxN) Transpose(dst *MatMxN) (t *MatMxN) {
 	return dst
 }
 
+// Returns the raw slice backing this matrix
+func (mat *MatMxN) Raw() []float32 {
+	if mat == nil {
+		return nil
+	}
+
+	return mat.dat
+}
+
+// Returns the number of rows in this matrix
+func (mat *MatMxN) NumRows() int {
+	return mat.m
+}
+
+// Returns the number of columns in this matrix
+func (mat *MatMxN) NumCols() int {
+	return mat.n
+}
+
+// Returns the number of rows and columns in this matrix
+// as a single operation
+func (mat *MatMxN) NumRowCols() (rows, cols int) {
+	return mat.m, mat.n
+}
+
 // Returns the element at the given row and column.
 // This is garbage in/garbage out and does no bounds
 // checking. If the computation happens to lead to an invalid
