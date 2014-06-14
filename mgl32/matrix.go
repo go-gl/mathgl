@@ -75,109 +75,109 @@ func Diag4(v Vec4) Mat4 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat2FromRows(rows [2]Vec2) Mat2 {
-	return Mat2{rows[0][0], rows[1][0], rows[0][1], rows[1][1]}
+func Mat2FromRows(row0, row1 Vec2) Mat2 {
+	return Mat2{row0[0], row1[0], row0[1], row1[1]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat2x3FromRows(rows [2]Vec3) Mat2x3 {
-	return Mat2x3{rows[0][0], rows[1][0], rows[0][1], rows[1][1], rows[0][2], rows[1][2]}
+func Mat2x3FromRows(row0, row1 Vec3) Mat2x3 {
+	return Mat2x3{row0[0], row1[0], row0[1], row1[1], row0[2], row1[2]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat2x4FromRows(rows [2]Vec4) Mat2x4 {
-	return Mat2x4{rows[0][0], rows[1][0], rows[0][1], rows[1][1], rows[0][2], rows[1][2], rows[0][3], rows[1][3]}
+func Mat2x4FromRows(row0, row1 Vec4) Mat2x4 {
+	return Mat2x4{row0[0], row1[0], row0[1], row1[1], row0[2], row1[2], row0[3], row1[3]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat3x2FromRows(rows [3]Vec2) Mat3x2 {
-	return Mat3x2{rows[0][0], rows[1][0], rows[2][0], rows[0][1], rows[1][1], rows[2][1]}
+func Mat3x2FromRows(row0, row1, row2 Vec2) Mat3x2 {
+	return Mat3x2{row0[0], row1[0], row2[0], row0[1], row1[1], row2[1]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat3FromRows(rows [3]Vec3) Mat3 {
-	return Mat3{rows[0][0], rows[1][0], rows[2][0], rows[0][1], rows[1][1], rows[2][1], rows[0][2], rows[1][2], rows[2][2]}
+func Mat3FromRows(row0, row1, row2 Vec3) Mat3 {
+	return Mat3{row0[0], row1[0], row2[0], row0[1], row1[1], row2[1], row0[2], row1[2], row2[2]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat3x4FromRows(rows [3]Vec4) Mat3x4 {
-	return Mat3x4{rows[0][0], rows[1][0], rows[2][0], rows[0][1], rows[1][1], rows[2][1], rows[0][2], rows[1][2], rows[2][2], rows[0][3], rows[1][3], rows[2][3]}
+func Mat3x4FromRows(row0, row1, row2 Vec4) Mat3x4 {
+	return Mat3x4{row0[0], row1[0], row2[0], row0[1], row1[1], row2[1], row0[2], row1[2], row2[2], row0[3], row1[3], row2[3]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat4x2FromRows(rows [4]Vec2) Mat4x2 {
-	return Mat4x2{rows[0][0], rows[1][0], rows[2][0], rows[3][0], rows[0][1], rows[1][1], rows[2][1], rows[3][1]}
+func Mat4x2FromRows(row0, row1, row2, row3 Vec2) Mat4x2 {
+	return Mat4x2{row0[0], row1[0], row2[0], row3[0], row0[1], row1[1], row2[1], row3[1]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat4x3FromRows(rows [4]Vec3) Mat4x3 {
-	return Mat4x3{rows[0][0], rows[1][0], rows[2][0], rows[3][0], rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[0][2], rows[1][2], rows[2][2], rows[3][2]}
+func Mat4x3FromRows(row0, row1, row2, row3 Vec3) Mat4x3 {
+	return Mat4x3{row0[0], row1[0], row2[0], row3[0], row0[1], row1[1], row2[1], row3[1], row0[2], row1[2], row2[2], row3[2]}
 }
 
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
-func Mat4FromRows(rows [4]Vec4) Mat4 {
-	return Mat4{rows[0][0], rows[1][0], rows[2][0], rows[3][0], rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[0][2], rows[1][2], rows[2][2], rows[3][2], rows[0][3], rows[1][3], rows[2][3], rows[3][3]}
+func Mat4FromRows(row0, row1, row2, row3 Vec4) Mat4 {
+	return Mat4{row0[0], row1[0], row2[0], row3[0], row0[1], row1[1], row2[1], row3[1], row0[2], row1[2], row2[2], row3[2], row0[3], row1[3], row2[3], row3[3]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat2FromCols(cols [2]Vec2) Mat2 {
-	return Mat2{cols[0][0], cols[0][1], cols[1][0], cols[1][1]}
+func Mat2FromCols(col0, col1 Vec2) Mat2 {
+	return Mat2{col0[0], col0[1], col1[0], col1[1]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat2x3FromCols(cols [3]Vec2) Mat2x3 {
-	return Mat2x3{cols[0][0], cols[0][1], cols[1][0], cols[1][1], cols[2][0], cols[2][1]}
+func Mat2x3FromCols(col0, col1, col2 Vec2) Mat2x3 {
+	return Mat2x3{col0[0], col0[1], col1[0], col1[1], col2[0], col2[1]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat2x4FromCols(cols [4]Vec2) Mat2x4 {
-	return Mat2x4{cols[0][0], cols[0][1], cols[1][0], cols[1][1], cols[2][0], cols[2][1], cols[3][0], cols[3][1]}
+func Mat2x4FromCols(col0, col1, col2, col3 Vec2) Mat2x4 {
+	return Mat2x4{col0[0], col0[1], col1[0], col1[1], col2[0], col2[1], col3[0], col3[1]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat3x2FromCols(cols [2]Vec3) Mat3x2 {
-	return Mat3x2{cols[0][0], cols[0][1], cols[0][2], cols[1][0], cols[1][1], cols[1][2]}
+func Mat3x2FromCols(col0, col1 Vec3) Mat3x2 {
+	return Mat3x2{col0[0], col0[1], col0[2], col1[0], col1[1], col1[2]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat3FromCols(cols [3]Vec3) Mat3 {
-	return Mat3{cols[0][0], cols[0][1], cols[0][2], cols[1][0], cols[1][1], cols[1][2], cols[2][0], cols[2][1], cols[2][2]}
+func Mat3FromCols(col0, col1, col2 Vec3) Mat3 {
+	return Mat3{col0[0], col0[1], col0[2], col1[0], col1[1], col1[2], col2[0], col2[1], col2[2]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat3x4FromCols(cols [4]Vec3) Mat3x4 {
-	return Mat3x4{cols[0][0], cols[0][1], cols[0][2], cols[1][0], cols[1][1], cols[1][2], cols[2][0], cols[2][1], cols[2][2], cols[3][0], cols[3][1], cols[3][2]}
+func Mat3x4FromCols(col0, col1, col2, col3 Vec3) Mat3x4 {
+	return Mat3x4{col0[0], col0[1], col0[2], col1[0], col1[1], col1[2], col2[0], col2[1], col2[2], col3[0], col3[1], col3[2]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat4x2FromCols(cols [2]Vec4) Mat4x2 {
-	return Mat4x2{cols[0][0], cols[0][1], cols[0][2], cols[0][3], cols[1][0], cols[1][1], cols[1][2], cols[1][3]}
+func Mat4x2FromCols(col0, col1 Vec4) Mat4x2 {
+	return Mat4x2{col0[0], col0[1], col0[2], col0[3], col1[0], col1[1], col1[2], col1[3]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat4x3FromCols(cols [3]Vec4) Mat4x3 {
-	return Mat4x3{cols[0][0], cols[0][1], cols[0][2], cols[0][3], cols[1][0], cols[1][1], cols[1][2], cols[1][3], cols[2][0], cols[2][1], cols[2][2], cols[2][3]}
+func Mat4x3FromCols(col0, col1, col2 Vec4) Mat4x3 {
+	return Mat4x3{col0[0], col0[1], col0[2], col0[3], col1[0], col1[1], col1[2], col1[3], col2[0], col2[1], col2[2], col2[3]}
 }
 
 // Mat<Size>FromCols builds a new matrix from column vectors.
-func Mat4FromCols(cols [4]Vec4) Mat4 {
-	return Mat4{cols[0][0], cols[0][1], cols[0][2], cols[0][3], cols[1][0], cols[1][1], cols[1][2], cols[1][3], cols[2][0], cols[2][1], cols[2][2], cols[2][3], cols[3][0], cols[3][1], cols[3][2], cols[3][3]}
+func Mat4FromCols(col0, col1, col2, col3 Vec4) Mat4 {
+	return Mat4{col0[0], col0[1], col0[2], col0[3], col1[0], col1[1], col1[2], col1[3], col2[0], col2[1], col2[2], col2[3], col3[0], col3[1], col3[2], col3[3]}
 }
 
 // Add performs an element-wise addition of two matrices, this is
@@ -1451,56 +1451,56 @@ func (m Mat4) Row(row int) Vec4 {
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat2) Rows() [2]Vec2 {
-	return [2]Vec2{m.Row(0), m.Row(1)}
+func (m Mat2) Rows() (v0, v1 Vec2) {
+	return m.Row(0), m.Row(1)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat2x3) Rows() [2]Vec3 {
-	return [2]Vec3{m.Row(0), m.Row(1)}
+func (m Mat2x3) Rows() (v0, v1 Vec3) {
+	return m.Row(0), m.Row(1)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat2x4) Rows() [2]Vec4 {
-	return [2]Vec4{m.Row(0), m.Row(1)}
+func (m Mat2x4) Rows() (v0, v1 Vec4) {
+	return m.Row(0), m.Row(1)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat3x2) Rows() [3]Vec2 {
-	return [3]Vec2{m.Row(0), m.Row(1), m.Row(2)}
+func (m Mat3x2) Rows() (v0, v1, v2 Vec2) {
+	return m.Row(0), m.Row(1), m.Row(2)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat3) Rows() [3]Vec3 {
-	return [3]Vec3{m.Row(0), m.Row(1), m.Row(2)}
+func (m Mat3) Rows() (v0, v1, v2 Vec3) {
+	return m.Row(0), m.Row(1), m.Row(2)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat3x4) Rows() [3]Vec4 {
-	return [3]Vec4{m.Row(0), m.Row(1), m.Row(2)}
+func (m Mat3x4) Rows() (v0, v1, v2 Vec4) {
+	return m.Row(0), m.Row(1), m.Row(2)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat4x2) Rows() [4]Vec2 {
-	return [4]Vec2{m.Row(0), m.Row(1), m.Row(2), m.Row(3)}
+func (m Mat4x2) Rows() (v0, v1, v2, v3 Vec2) {
+	return m.Row(0), m.Row(1), m.Row(2), m.Row(3)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat4x3) Rows() [4]Vec3 {
-	return [4]Vec3{m.Row(0), m.Row(1), m.Row(2), m.Row(3)}
+func (m Mat4x3) Rows() (v0, v1, v2, v3 Vec3) {
+	return m.Row(0), m.Row(1), m.Row(2), m.Row(3)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat4) Rows() [4]Vec4 {
-	return [4]Vec4{m.Row(0), m.Row(1), m.Row(2), m.Row(3)}
+func (m Mat4) Rows() (v0, v1, v2, v3 Vec4) {
+	return m.Row(0), m.Row(1), m.Row(2), m.Row(3)
 }
 
 // Col returns a vector representing the corresponding column (starting at col 0).
@@ -1568,56 +1568,56 @@ func (m Mat4) Col(col int) Vec4 {
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat2) Cols() [2]Vec2 {
-	return [2]Vec2{m.Col(0), m.Col(1)}
+func (m Mat2) Cols() (v0, v1 Vec2) {
+	return m.Col(0), m.Col(1)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat2x3) Cols() [3]Vec2 {
-	return [3]Vec2{m.Col(0), m.Col(1), m.Col(2)}
+func (m Mat2x3) Cols() (v0, v1, v2 Vec2) {
+	return m.Col(0), m.Col(1), m.Col(2)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat2x4) Cols() [4]Vec2 {
-	return [4]Vec2{m.Col(0), m.Col(1), m.Col(2), m.Col(3)}
+func (m Mat2x4) Cols() (v0, v1, v2, v3 Vec2) {
+	return m.Col(0), m.Col(1), m.Col(2), m.Col(3)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat3x2) Cols() [2]Vec3 {
-	return [2]Vec3{m.Col(0), m.Col(1)}
+func (m Mat3x2) Cols() (v0, v1 Vec3) {
+	return m.Col(0), m.Col(1)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat3) Cols() [3]Vec3 {
-	return [3]Vec3{m.Col(0), m.Col(1), m.Col(2)}
+func (m Mat3) Cols() (v0, v1, v2 Vec3) {
+	return m.Col(0), m.Col(1), m.Col(2)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat3x4) Cols() [4]Vec3 {
-	return [4]Vec3{m.Col(0), m.Col(1), m.Col(2), m.Col(3)}
+func (m Mat3x4) Cols() (v0, v1, v2, v3 Vec3) {
+	return m.Col(0), m.Col(1), m.Col(2), m.Col(3)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat4x2) Cols() [2]Vec4 {
-	return [2]Vec4{m.Col(0), m.Col(1)}
+func (m Mat4x2) Cols() (v0, v1 Vec4) {
+	return m.Col(0), m.Col(1)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat4x3) Cols() [3]Vec4 {
-	return [3]Vec4{m.Col(0), m.Col(1), m.Col(2)}
+func (m Mat4x3) Cols() (v0, v1, v2 Vec4) {
+	return m.Col(0), m.Col(1), m.Col(2)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat4) Cols() [4]Vec4 {
-	return [4]Vec4{m.Col(0), m.Col(1), m.Col(2), m.Col(3)}
+func (m Mat4) Cols() (v0, v1, v2, v3 Vec4) {
+	return m.Col(0), m.Col(1), m.Col(2), m.Col(3)
 }
 
 // Trace is a basic operation on a square matrix that simply
