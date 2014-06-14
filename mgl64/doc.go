@@ -14,5 +14,9 @@ instead, as all basic functions are documented.
 
 This package is written in Column Major Order to make it easier with OpenGL. This means for uniform blocks you can use the default ordering, and when you call
 pass-in functions you can leave the "transpose" argument as false.
+
+The package now contains variable sized vectors and matrices. Using these is discouraged. They exist for corner cases where you need "small" matrices that are still
+bigger than 4x4. An example may be a Jacobean used for inverse kinematics. Things like computer vision or general linear algebra are best left to packages
+more directly suited for that task -- OpenCV, BLAS, LAPACK, numpy, gonum (if you want to stay in Go), and so on.
 */
 package mgl64
