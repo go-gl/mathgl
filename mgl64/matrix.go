@@ -619,7 +619,7 @@ func (m1 Mat2) Transpose() Mat2 {
 //    [[c d]] =  [[b d f]]
 //    [[e f]]
 func (m1 Mat2x3) Transpose() Mat3x2 {
-	return Mat3x2{m1[0], m1[3], m1[1], m1[4], m1[2], m1[5]}
+	return Mat3x2{m1[0], m1[2], m1[4], m1[1], m1[3], m1[5]}
 }
 
 // Transpose produces the transpose of this matrix. For any MxN matrix
@@ -630,7 +630,7 @@ func (m1 Mat2x3) Transpose() Mat3x2 {
 //    [[c d]] =  [[b d f]]
 //    [[e f]]
 func (m1 Mat2x4) Transpose() Mat4x2 {
-	return Mat4x2{m1[0], m1[4], m1[1], m1[5], m1[2], m1[6], m1[3], m1[7]}
+	return Mat4x2{m1[0], m1[2], m1[4], m1[6], m1[1], m1[3], m1[5], m1[7]}
 }
 
 // Transpose produces the transpose of this matrix. For any MxN matrix
@@ -641,7 +641,7 @@ func (m1 Mat2x4) Transpose() Mat4x2 {
 //    [[c d]] =  [[b d f]]
 //    [[e f]]
 func (m1 Mat3x2) Transpose() Mat2x3 {
-	return Mat2x3{m1[0], m1[2], m1[4], m1[1], m1[3], m1[5]}
+	return Mat2x3{m1[0], m1[3], m1[1], m1[4], m1[2], m1[5]}
 }
 
 // Transpose produces the transpose of this matrix. For any MxN matrix
@@ -663,7 +663,7 @@ func (m1 Mat3) Transpose() Mat3 {
 //    [[c d]] =  [[b d f]]
 //    [[e f]]
 func (m1 Mat3x4) Transpose() Mat4x3 {
-	return Mat4x3{m1[0], m1[4], m1[8], m1[1], m1[5], m1[9], m1[2], m1[6], m1[10], m1[3], m1[7], m1[11]}
+	return Mat4x3{m1[0], m1[3], m1[6], m1[9], m1[1], m1[4], m1[7], m1[10], m1[2], m1[5], m1[8], m1[11]}
 }
 
 // Transpose produces the transpose of this matrix. For any MxN matrix
@@ -674,7 +674,7 @@ func (m1 Mat3x4) Transpose() Mat4x3 {
 //    [[c d]] =  [[b d f]]
 //    [[e f]]
 func (m1 Mat4x2) Transpose() Mat2x4 {
-	return Mat2x4{m1[0], m1[2], m1[4], m1[6], m1[1], m1[3], m1[5], m1[7]}
+	return Mat2x4{m1[0], m1[4], m1[1], m1[5], m1[2], m1[6], m1[3], m1[7]}
 }
 
 // Transpose produces the transpose of this matrix. For any MxN matrix
@@ -685,7 +685,7 @@ func (m1 Mat4x2) Transpose() Mat2x4 {
 //    [[c d]] =  [[b d f]]
 //    [[e f]]
 func (m1 Mat4x3) Transpose() Mat3x4 {
-	return Mat3x4{m1[0], m1[3], m1[6], m1[9], m1[1], m1[4], m1[7], m1[10], m1[2], m1[5], m1[8], m1[11]}
+	return Mat3x4{m1[0], m1[4], m1[8], m1[1], m1[5], m1[9], m1[2], m1[6], m1[10], m1[3], m1[7], m1[11]}
 }
 
 // Transpose produces the transpose of this matrix. For any MxN matrix
