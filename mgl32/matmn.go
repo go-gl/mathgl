@@ -273,6 +273,36 @@ func (mat *MatMxN) Mul(dst *MatMxN, c float32) *MatMxN {
 	return dst
 }
 
+// Multiplies the matrix by a vector of size n. If mat or v is
+// nil, this returns nil. If the number of columns in mat does not match
+// the Size of v, this also returns nil.
+//
+// Dst will be resized if it's not big enough. If dst == v; a temporary
+// vector will be allocated and returned via the realloc callback when complete.
+func (mat *MatMxN) MulNx1(dst, v *VecN) *VecN {
+	if mat == nil || v == nil || mat.n != len(v.vec) {
+		return nil
+	}
+	if dst == v {
+		v = &VecN{make([]float32, len(v.vec))}
+		copy(v.vec, dst.vec)
+
+		defer v.destroy()
+	}
+
+	dst = dst.Resize(len(v.vec))
+
+	for r := range v.vec {
+		dst.vec[r] = 0
+
+		for c := 0; c < mat.n; c++ {
+			dst.vec[r] += mat.At(r, c) * v.vec[c]
+		}
+	}
+
+	return dst
+}
+
 func (mat *MatMxN) ApproxEqual(m2 *MatMxN) bool {
 	if mat == m2 {
 		return true
