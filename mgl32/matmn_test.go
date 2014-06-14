@@ -5,7 +5,11 @@ import (
 )
 
 func TestMxNTransposeWide(t *testing.T) {
-	m := Mat2x3{1, 2, 3, 4, 5, 6}
+	m := Mat2x3FromCols([3]Vec2{
+		Vec2{1, 2},
+		Vec2{3, 4},
+		Vec2{5, 6},
+	})
 
 	mn := NewBackedMatrix(m[:], 2, 3)
 
@@ -21,7 +25,10 @@ func TestMxNTransposeWide(t *testing.T) {
 }
 
 func TestMxNTransposeTall(t *testing.T) {
-	m := Mat3x2{1, 2, 3, 4, 5, 6}
+	m := Mat3x2FromCols([2]Vec3{
+		Vec3{1, 2, 3},
+		Vec3{4, 5, 6},
+	})
 
 	mn := NewBackedMatrix(m[:], 3, 2)
 
@@ -37,7 +44,11 @@ func TestMxNTransposeTall(t *testing.T) {
 }
 
 func TestMxNTransposeSquare(t *testing.T) {
-	m := Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	m := Mat3FromCols([3]Vec3{
+		Vec3{1, 2, 3},
+		Vec3{4, 5, 6},
+		Vec3{7, 8, 9},
+	})
 
 	mn := NewBackedMatrix(m[:], 3, 3)
 
