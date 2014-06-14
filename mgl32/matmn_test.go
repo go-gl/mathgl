@@ -185,3 +185,11 @@ func TestMxNMulNx1(t *testing.T) {
 		t.Errorf("Multiplying N-dim vector and MxN matrix produces bad result. Got: %v, expected: %v", result, correct)
 	}
 }
+
+func TestMxNTrace(t *testing.T) {
+	m := DiagN(nil, NewBackedVecN([]float32{1, 2, 3, 4, 5}))
+
+	if !FloatEqualThreshold(m.Trace(), 15, 1e-4) {
+		t.Errorf("MatMxN's trace of a diagonal with 1,2,3,4,5 is not 15. Got: %v", m.Trace())
+	}
+}

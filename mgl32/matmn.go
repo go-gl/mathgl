@@ -1,5 +1,9 @@
 package mgl32
 
+import (
+	"math"
+)
+
 // An arbitrary mxn matrix backed by a slice of floats.
 //
 // This is emphatically not recommended for hardcore n-dimensional
@@ -44,7 +48,12 @@ func NewBackedMatrix(dat []float32, m, n int) *MatMxN {
 
 // Copies src into dst. This Reshapes dst
 // to the same size as src.
+//
+// If dst or src is nil, this is a no-op
 func CopyMatMN(dst, src *MatMxN) {
+	if dst == nil || src == nil {
+		return
+	}
 	dst.Reshape(src.m, src.n)
 	copy(dst.dat, src.dat)
 }
@@ -72,7 +81,7 @@ func IdentN(dst *MatMxN, n int) *MatMxN {
 //
 // This reshapes dst to the correct size, reallocating as necessary
 func DiagN(dst *MatMxN, diag *VecN) *MatMxN {
-	dst.Reshape(len(diag.vec), len(diag.vec))
+	dst = dst.Reshape(len(diag.vec), len(diag.vec))
 	n := len(diag.vec)
 
 	for i := 0; i < n; i++ {
@@ -204,6 +213,21 @@ func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
 	default:
 		return nil, InferMatrixError{}
 	}
+}
+
+// Returns the trace of a square matrix (sum of all diagonal elements). If the matrix
+// is nil, or not square, the result will be NaN.
+func (mat *MatMxN) Trace() float32 {
+	if mat == nil || mat.m != mat.n {
+		return float32(math.NaN())
+	}
+
+	var out float32
+	for i := 0; i < mat.m; i++ {
+		out += mat.At(i, i)
+	}
+
+	return out
 }
 
 // Takes the transpose of mat and puts it in dst.
@@ -468,4 +492,16 @@ type InferMatrixError struct{}
 
 func (me InferMatrixError) Error() string {
 	return "could not infer matrix. Make sure you're using a constant matrix such as Mat3 from within the same package (meaning: mgl32.MatMxN can't handle a mgl64.Mat2x3)."
+}
+
+type RectangularMatrixError struct{}
+
+func (mse RectangularMatrixError) Error() string {
+	return "the matrix was the wrong shape, needed a square matrix."
+}
+
+type NilMatrixError struct{}
+
+func (me NilMatrixError) Error() string {
+	return "the matrix is nil"
 }
