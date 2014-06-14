@@ -207,11 +207,17 @@ func TestMatColsM(t *testing.T) {
 }
 
 func TestTransposeTall(t *testing.T) {
-	m := Mat3x2{1, 2, 3, 4, 5, 6}
+	m := Mat3x2FromCols([2]Vec3{
+		Vec3{1, 2, 3},
+		Vec3{4, 5, 6},
+	})
 
 	transpose := m.Transpose()
 
-	correct := Mat2x3{1, 4, 2, 5, 3, 6}
+	correct := Mat2x3FromRows([2]Vec3{
+		Vec3{1, 2, 3},
+		Vec3{4, 5, 6},
+	})
 
 	if !correct.ApproxEqualThreshold(transpose, 1e-4) {
 		t.Errorf("Transpose not correct. Got: %v, expected: %v", transpose, correct)
@@ -219,11 +225,19 @@ func TestTransposeTall(t *testing.T) {
 }
 
 func TestTransposeWide(t *testing.T) {
-	m := Mat2x3{1, 2, 3, 4, 5, 6}
+	m := Mat2x3FromCols([3]Vec2{
+		Vec2{1, 2},
+		Vec2{3, 4},
+		Vec2{5, 6},
+	})
 
 	transpose := m.Transpose()
 
-	correct := Mat3x2{1, 3, 5, 2, 4, 6}
+	correct := Mat3x2FromRows([3]Vec2{
+		Vec2{1, 2},
+		Vec2{3, 4},
+		Vec2{5, 6},
+	})
 
 	if !correct.ApproxEqualThreshold(transpose, 1e-4) {
 		t.Errorf("Transpose not correct. Got: %v, expected: %v", transpose, correct)
@@ -231,11 +245,19 @@ func TestTransposeWide(t *testing.T) {
 }
 
 func TestTransposeSquare(t *testing.T) {
-	m := Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	m := Mat3FromCols([3]Vec3{
+		Vec3{1, 2, 3},
+		Vec3{4, 5, 6},
+		Vec3{7, 8, 9},
+	})
 
 	transpose := m.Transpose()
 
-	correct := Mat3{1, 4, 7, 2, 5, 8, 3, 6, 9}
+	correct := Mat3FromRows([3]Vec3{
+		Vec3{1, 2, 3},
+		Vec3{4, 5, 6},
+		Vec3{7, 8, 9},
+	})
 
 	if !correct.ApproxEqualThreshold(transpose, 1e-4) {
 		t.Errorf("Transpose not correct. Got: %v, expected: %v", transpose, correct)
