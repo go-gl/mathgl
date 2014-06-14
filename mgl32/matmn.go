@@ -218,7 +218,7 @@ func (mat *MatMxN) Sub(dst *MatMxN, minuend *MatMxN) *MatMxN {
 //
 // This uses the naive algorithm (though on smaller matrices,
 // this can actually be faster; about len(mat)+len(mul) < ~100)
-func (mat *MatMxN) Mul(dst *MatMxN, mul *MatMxN) *MatMxN {
+func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 	if mat == nil || mul == nil || mat.n != mul.m {
 		return nil
 	}
@@ -247,10 +247,27 @@ func (mat *MatMxN) Mul(dst *MatMxN, mul *MatMxN) *MatMxN {
 
 			dst.dat[c2*mat.m+r1] = 0
 			for i := 0; i < mat.n; i++ {
-				dst.dat[c2*mat.m+r1] += mat.dat[i*mat.m+r1] * mat.dat[c2*mul.m+i]
+				dst.dat[c2*mat.m+r1] += mat.dat[i*mat.m+r1] * mul.dat[c2*mul.m+i]
 			}
 
 		}
+	}
+
+	return dst
+}
+
+// Performs a scalar multiplication between mat and some constant c,
+// storing the result in dst. Mat and dst can be equal. If dst is not the
+// correct size, a Reshape will occur.
+func (mat *MatMxN) Mul(dst *MatMxN, c float32) *MatMxN {
+	if mat == nil {
+		return nil
+	}
+
+	dst = dst.Reshape(mat.m, mat.n)
+
+	for i, el := range mat.dat {
+		dst.dat[i] = el * c
 	}
 
 	return dst

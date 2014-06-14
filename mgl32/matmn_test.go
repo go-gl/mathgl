@@ -97,6 +97,11 @@ func TestMxNReallocCallback(t *testing.T) {
 		retVal = buf
 	}
 
+	// To prevent affecting other tests
+	defer func() {
+		reallocCallback = nil
+	}()
+
 	a := NewMatrix(3, 3)
 	a.Reshape(4, 4)
 
@@ -109,5 +114,52 @@ func TestMxNReallocCallback(t *testing.T) {
 
 	if retVal == nil {
 		t.Errorf("Realloc callback is being called to realloc over a nil slice")
+	}
+
+}
+
+func TestMxNMulMxN(t *testing.T) {
+	m := Ident4()
+	r := HomogRotate3DX(DegToRad(45))
+	tr := Translate3D(1, 0, 0)
+	s := Scale3D(2, 2, 2)
+
+	correct := tr.Mul4(r.Mul4(s.Mul4(m))) // tr*r*s
+	correctMN := NewBackedMatrix(correct[:], 4, 4)
+
+	mn := NewBackedMatrix(m[:], 4, 4)
+	rmn := NewBackedMatrix(r[:], 4, 4)
+	trmn := NewBackedMatrix(tr[:], 4, 4)
+	smn := NewBackedMatrix(s[:], 4, 4)
+
+	result := trmn.MulMxN(nil, rmn.MulMxN(nil, smn.MulMxN(nil, mn)))
+
+	if !result.ApproxEqualThreshold(correctMN, 1e-4) {
+		t.Errorf("Multiplication of MxN matrix and 4x4 matrix not the same. Got: %v expected: %v", result, correctMN)
+	}
+}
+
+func TestMxNMulMxNErrorHandling(t *testing.T) {
+	mn := NewMatrix(4, 12)
+	mn2 := NewMatrix(9, 3)
+
+	result := mn2.MulMxN(nil, mn)
+
+	if result != nil {
+		t.Errorf("Nil not returned for bad matrix multiplication, got %v instead", result)
+	}
+}
+
+func TestMxNMul(t *testing.T) {
+	m := Mat3{2, 4, 6, 1, 9, 12, 7, 4, 3}
+	mn := NewBackedMatrix(m[:], 3, 3)
+
+	correct := m.Mul(15)
+	correctMN := NewBackedMatrix(correct[:], 3, 3)
+
+	result := mn.Mul(nil, 15)
+
+	if !correctMN.ApproxEqualThreshold(result, 1e-4) {
+		t.Errorf("Scaling a matrix produces weird results got: %v, expected: %v", result, correct)
 	}
 }
