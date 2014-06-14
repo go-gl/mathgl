@@ -288,6 +288,16 @@ func TestAtSet(t *testing.T) {
 	}
 }
 
+func TestDiagTrace(t *testing.T) {
+	m := Diag4(Vec4{1, 2, 3, 4})
+
+	tr := m.Trace()
+
+	if !FloatEqualThreshold(tr, 10, 1e-4) {
+		t.Errorf("Trace of matrix seeded with diagonal vector {1,2,3,4} not equal to 10. Got %v", tr)
+	}
+}
+
 func BenchmarkMatAdd(b *testing.B) {
 	b.StopTimer()
 	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))

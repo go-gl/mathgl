@@ -367,8 +367,8 @@ func GenVecOuterProd(m, n int) string {
 
 	vecs += fmt.Sprintf("func (v1 %s) OuterProd%d(v2 %s) %s {\n\treturn %s{", VecName(m), n, VecName(n), GenMatName(m, n), GenMatName(m, n))
 
-	for c := 0; c < n; r++ {
-		for r := 0; r < m; c++ {
+	for c := 0; c < n; c++ {
+		for r := 0; r < m; r++ {
 			if r != 0 || c != 0 {
 				vecs += ","
 			}
@@ -408,6 +408,10 @@ import(
 
 	for m := 2; m <= 4; m++ {
 		mats += GenMatIden(m)
+	}
+
+	for m := 2; m <= 4; m++ {
+		mats += GenMatDiag(m)
 	}
 
 	for m := 2; m <= 4; m++ {
@@ -520,6 +524,10 @@ import(
 		for n := 2; n <= 4; n++ {
 			mats += GenMatCols(m, n)
 		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		mats += GenMatTrace(m)
 	}
 
 	//fmt.Println(mats)
@@ -954,4 +962,56 @@ func GenMatFromCols(m, n int) (s string) {
 	s += "}\n}\n\n"
 
 	return
+}
+
+func GenMatTrace(m int) (s string) {
+	s = `// Trace is a basic operation on a square matrix that simply
+// sums up all elements on the main diagonal (meaning all elements such that row==col).
+`
+
+	s += fmt.Sprintf("func (m %s) Trace() float32{\n\treturn ", GenMatName(m, m))
+
+	for i := 0; i < m; i++ {
+		if i != 0 {
+			s += "+"
+		}
+
+		s += fmt.Sprintf("m[%d]", i*m+i)
+	}
+
+	s += "\n}\n\n"
+
+	return s
+}
+
+func GenMatDiag(m int) (s string) {
+	s = `// Diag creates a diagonal matrix from the entries of the input vector.
+// That is, for each pointer for row==col, vector[row] is the entry. Otherwise it's 0.
+//
+// Another way to think about it is that the identity is this function where the every vector element is 1.
+`
+
+	s += fmt.Sprintf("func Diag%d(v %s) %s {\n\tm := %s{}\n\t", m, VecName(m), GenMatName(m, m), GenMatName(m, m))
+
+	for i := 0; i < m; i++ {
+		if i != 0 {
+			s += ","
+		}
+
+		s += fmt.Sprintf("m[%d]", i*m+i)
+	}
+
+	s += "="
+
+	for i := 0; i < m; i++ {
+		if i != 0 {
+			s += ","
+		}
+
+		s += fmt.Sprintf("v[%d]", i)
+	}
+
+	s += "\n\treturn m\n}\n\n"
+
+	return s
 }

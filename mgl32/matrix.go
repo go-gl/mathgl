@@ -42,6 +42,36 @@ func Ident4() Mat4 {
 	return Mat4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
 }
 
+// Diag creates a diagonal matrix from the entries of the input vector.
+// That is, for each pointer for row==col, vector[row] is the entry. Otherwise it's 0.
+//
+// Another way to think about it is that the identity is this function where the every vector element is 1.
+func Diag2(v Vec2) Mat2 {
+	m := Mat2{}
+	m[0], m[3] = v[0], v[1]
+	return m
+}
+
+// Diag creates a diagonal matrix from the entries of the input vector.
+// That is, for each pointer for row==col, vector[row] is the entry. Otherwise it's 0.
+//
+// Another way to think about it is that the identity is this function where the every vector element is 1.
+func Diag3(v Vec3) Mat3 {
+	m := Mat3{}
+	m[0], m[4], m[8] = v[0], v[1], v[2]
+	return m
+}
+
+// Diag creates a diagonal matrix from the entries of the input vector.
+// That is, for each pointer for row==col, vector[row] is the entry. Otherwise it's 0.
+//
+// Another way to think about it is that the identity is this function where the every vector element is 1.
+func Diag4(v Vec4) Mat4 {
+	m := Mat4{}
+	m[0], m[5], m[10], m[15] = v[0], v[1], v[2], v[3]
+	return m
+}
+
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
@@ -1588,4 +1618,22 @@ func (m Mat4x3) Cols() [3]Vec4 {
 // This is equivalent to calling mat.Col for each column.
 func (m Mat4) Cols() [4]Vec4 {
 	return [4]Vec4{m.Col(0), m.Col(1), m.Col(2), m.Col(3)}
+}
+
+// Trace is a basic operation on a square matrix that simply
+// sums up all elements on the main diagonal (meaning all elements such that row==col).
+func (m Mat2) Trace() float32 {
+	return m[0] + m[3]
+}
+
+// Trace is a basic operation on a square matrix that simply
+// sums up all elements on the main diagonal (meaning all elements such that row==col).
+func (m Mat3) Trace() float32 {
+	return m[0] + m[4] + m[8]
+}
+
+// Trace is a basic operation on a square matrix that simply
+// sums up all elements on the main diagonal (meaning all elements such that row==col).
+func (m Mat4) Trace() float32 {
+	return m[0] + m[5] + m[10] + m[15]
 }
