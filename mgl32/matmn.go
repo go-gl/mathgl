@@ -15,14 +15,14 @@ package mgl32
 // MatMN will always check if the receiver is nil on any method. Meaning MathMN(nil).Add(dst,m2)
 // should always work. Except for the Reshape function, the semantics of this is to "propogate" nils
 // forward, so if an invalid operation occurs in a long chain of matrix operations, the overall result will be nil.
-type MatMN struct {
+type MatMxN struct {
 	m, n int
 	dat  []float32
 }
 
 // Creates a matrix backed by a new slice of size m*n
-func NewMatrix(m, n int) (mat *MatMN) {
-	return &MatMN{m: m, n: n, dat: make([]float32, m*n)}
+func NewMatrix(m, n int) (mat *MatMxN) {
+	return &MatMxN{m: m, n: n, dat: make([]float32, m*n)}
 }
 
 // Returns a matrix backed by the slice dat,
@@ -37,22 +37,22 @@ func NewMatrix(m, n int) (mat *MatMN) {
 // mat3 that still acts as a 3D rotation matrix.
 //
 // If m*n > cap(dat), this function will panic.
-func NewBackedMatrix(dat []float32, m, n int) *MatMN {
-	mat := &MatMN{m: m, n: n, dat: dat[:m*n]}
+func NewBackedMatrix(dat []float32, m, n int) *MatMxN {
+	mat := &MatMxN{m: m, n: n, dat: dat[:m*n]}
 	return mat
 }
 
 // Copies src into dst. This Reshapes dst
 // to the same size as src.
-func CopyMatMN(dst, src *MatMN) {
+func CopyMatMN(dst, src *MatMxN) {
 	dst.Reshape(src.m, src.n)
 	copy(dst.dat, src.dat)
 }
 
 // Grows the underlying slice by the desired amount
-func (mat *MatMN) grow(size int) *MatMN {
+func (mat *MatMxN) grow(size int) *MatMxN {
 	if mat == nil {
-		return &MatMN{m: 0, n: 0, dat: make([]float32, size, size)}
+		return &MatMxN{m: 0, n: 0, dat: make([]float32, size, size)}
 	}
 
 	// This matches Go's reallocation semantics when append is used.
@@ -80,7 +80,7 @@ func (mat *MatMN) grow(size int) *MatMN {
 
 // Returns the underlying matrix slice via the callback
 // if it exists
-func (mat *MatMN) destroy() {
+func (mat *MatMxN) destroy() {
 	if mat == nil {
 		return
 	}
@@ -100,7 +100,7 @@ func (mat *MatMN) destroy() {
 // If the caller is a nil pointer, the return value will be a new
 // matrix, as if NewMatrix(m,n) had been called. Otherwise it's
 // simply the caller.
-func (mat *MatMN) Reshape(m, n int) *MatMN {
+func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 	if mat == nil {
 		return NewMatrix(m, n)
 	}
@@ -123,7 +123,7 @@ func (mat *MatMN) Reshape(m, n int) *MatMN {
 // if dst and mat are the same, a temporary matrix of the correct size will
 // be allocated; these resources will be released via the ReallocCallback if
 // it is registered. This should be improved in the future.
-func (mat *MatMN) Transpose(dst *MatMN) (t *MatMN) {
+func (mat *MatMxN) Transpose(dst *MatMxN) (t *MatMxN) {
 	if mat == nil {
 		return nil
 	}
@@ -162,7 +162,7 @@ func (mat *MatMN) Transpose(dst *MatMN) (t *MatMN) {
 // This is garbage in/garbage out and does no bounds
 // checking. If the computation happens to lead to an invalid
 // element, it will be returned; or it may panic.
-func (mat *MatMN) At(row, col int) float32 {
+func (mat *MatMxN) At(row, col int) float32 {
 	return mat.dat[col*mat.m+row]
 }
 
@@ -170,11 +170,11 @@ func (mat *MatMN) At(row, col int) float32 {
 // This is garbage in/garbage out and does no bounds
 // checking. If the computation happens to lead to an invalid
 // element, it will be set; or it may panic.
-func (mat *MatMN) Set(row, col int, val float32) {
+func (mat *MatMxN) Set(row, col int, val float32) {
 	mat.dat[col*mat.m+row] = val
 }
 
-func (mat *MatMN) Add(dst *MatMN, addend *MatMN) *MatMN {
+func (mat *MatMxN) Add(dst *MatMxN, addend *MatMxN) *MatMxN {
 	if mat == nil || addend == nil || mat.m != addend.m || mat.n != addend.n {
 		return nil
 	}
@@ -190,7 +190,7 @@ func (mat *MatMN) Add(dst *MatMN, addend *MatMN) *MatMN {
 	return dst
 }
 
-func (mat *MatMN) Sub(dst *MatMN, minuend *MatMN) *MatMN {
+func (mat *MatMxN) Sub(dst *MatMxN, minuend *MatMxN) *MatMxN {
 	if mat == nil || minuend == nil || mat.m != minuend.m || mat.n != minuend.n {
 		return nil
 	}
@@ -214,13 +214,13 @@ func (mat *MatMN) Sub(dst *MatMN, minuend *MatMN) *MatMN {
 //
 // This uses the naive algorithm (though on smaller matrices,
 // this can actually be faster; about len(mat)+len(mul) < ~100)
-func (mat *MatMN) Mul(dst *MatMN, mul *MatMN) *MatMN {
+func (mat *MatMxN) Mul(dst *MatMxN, mul *MatMxN) *MatMxN {
 	if mat == nil || mul == nil || mat.n != mul.m {
 		return nil
 	}
 
 	if dst == mul {
-		mul = &MatMN{m: mul.m, n: mul.n, dat: make([]float32, mul.m*mul.n)}
+		mul = &MatMxN{m: mul.m, n: mul.n, dat: make([]float32, mul.m*mul.n)}
 		copy(mul.dat, dst.dat)
 
 		// If mul==dst==mul, we need to change
@@ -231,7 +231,7 @@ func (mat *MatMN) Mul(dst *MatMN, mul *MatMN) *MatMN {
 
 		defer mul.destroy()
 	} else if dst == mat {
-		mat = &MatMN{m: mat.m, n: mat.n, dat: make([]float32, mat.m*mat.n)}
+		mat = &MatMxN{m: mat.m, n: mat.n, dat: make([]float32, mat.m*mat.n)}
 		copy(mat.dat, dst.dat)
 
 		defer mat.destroy()
@@ -252,7 +252,7 @@ func (mat *MatMN) Mul(dst *MatMN, mul *MatMN) *MatMN {
 	return dst
 }
 
-func (mat *MatMN) ApproxEqual(m2 *MatMN) bool {
+func (mat *MatMxN) ApproxEqual(m2 *MatMxN) bool {
 	if mat == m2 {
 		return true
 	}
@@ -269,7 +269,7 @@ func (mat *MatMN) ApproxEqual(m2 *MatMN) bool {
 	return true
 }
 
-func (mat *MatMN) ApproxEqualThreshold(m2 *MatMN, epsilon float32) bool {
+func (mat *MatMxN) ApproxEqualThreshold(m2 *MatMxN, epsilon float32) bool {
 	if mat == m2 {
 		return true
 	}
@@ -286,7 +286,7 @@ func (mat *MatMN) ApproxEqualThreshold(m2 *MatMN, epsilon float32) bool {
 	return true
 }
 
-func (mat *MatMN) ApproxEqualFunc(m2 *MatMN, comp func(float32, float32) bool) bool {
+func (mat *MatMxN) ApproxEqualFunc(m2 *MatMxN, comp func(float32, float32) bool) bool {
 	if mat == m2 {
 		return true
 	}
