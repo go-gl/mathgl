@@ -242,7 +242,7 @@ func TestTransposeSquare(t *testing.T) {
 	}
 }
 
-func TestMNAtSet(t *testing.T) {
+func TestAtSet(t *testing.T) {
 	m := Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	v := m.At(0, 2)
