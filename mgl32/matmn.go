@@ -18,25 +18,32 @@ type MatMN struct {
 
 // Creates a matrix backed by a new slice of size m*n
 func NewMatrix(m, n int) (mat *MatMN) {
-	mat.Reshape(m, n)
-	return mat
+
+	// Slightly abuses the fact that Reshape checks for a
+	// nil pointer
+	return mat.Reshape(m, n)
 }
 
 // Returns a matrix backed by the slice dat,
-// this matrix will have dimensions 0x0 and should have
-// "Reshape" called on it before any work is done.
+// with dimensions m and n.
 //
 // For instance, to create a 3x3 MatMN from a Mat3
 //
-//    m1 := mgl32.Rotate3DX(math.Pi)
-//    mat := mgl32.NewBackedMatrix(m1[:])
-//    mat.Reshape(3,3)
+//    m1 := mgl32.Rotate3DX(3.14159)
+//    mat := mgl32.NewBackedMatrix(m1[:],3,3)
 //
 // will create an MN matrix backed by the initial
 // mat3 that still acts as a 3D rotation matrix.
-func NewBackedMatrix(dat []float32) *MatMN {
-	mat := &MatMN{m: 0, n: 0, dat: dat[:0]}
+func NewBackedMatrix(dat []float32, m, n int) *MatMN {
+	mat := &MatMN{m: 0, n: 0, dat: dat[:m*n]}
 	return mat
+}
+
+// Copies src into dst. This Reshapes dst
+// to the same size as src.
+func CopyMatMN(dst, src *MatMN) {
+	dst.Reshape(src.m, src.n)
+	copy(dst.dat, src.dat)
 }
 
 // Grows the underlying slice by the desired amount
@@ -107,17 +114,36 @@ func (mat *MatMN) Reshape(m, n int) *MatMN {
 }
 
 // Takes the transpose of mat and puts it in dst.
-// Currently dst may NOT be the same as mat, due
-// to the difficulty of the in-place transpose problem.
-// (This functionality will be added in the future)
 //
-// If dst is not of the correct dimensions, it will be Reshaped
-func (mat *MatMN) Transpose(dst *MatMN) *MatMN {
-	if mat == nil || dst == mat {
+// If dst is not of the correct dimensions, it will be Reshaped,
+// if dst and mat are the same, a temporary matrix of the correct size will
+// be allocated; these resources will be released via the ReallocCallback if
+// it is registered. This should be improved in the future.
+func (mat *MatMN) Transpose(dst *MatMN) (t *MatMN) {
+	if mat == nil {
 		return nil
 	}
 
-	dst = dst.Reshape(mat.n, mat.m)
+	if dst == mat {
+		dst = NewMatrix(mat.n, mat.m)
+
+		// Copy data to correct matrix,
+		// delete temporary buffer,
+		// and set the return value to the
+		// correct one
+		defer func() {
+			copy(mat.dat, dst.dat)
+
+			mat.m, mat.n = mat.n, mat.m
+
+			dst.destroy()
+			t = mat
+		}()
+
+		return mat
+	} else {
+		dst = dst.Reshape(mat.n, mat.m)
+	}
 
 	for r := 0; r < mat.m; r++ {
 		for c := 0; c < mat.n; c++ {
@@ -126,6 +152,14 @@ func (mat *MatMN) Transpose(dst *MatMN) *MatMN {
 	}
 
 	return dst
+}
+
+// Returns the element at the given row and column.
+// This is garbage in/garbage out and does no bounds
+// checking. If the computation happens to lead to an invalid
+// element, it will be returned; or it may panic.
+func (mat *MatMN) At(row, col int) float32 {
+	return mat.dat[col*mat.m+row]
 }
 
 func (mat *MatMN) Add(dst *MatMN, addend *MatMN) *MatMN {
