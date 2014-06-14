@@ -271,14 +271,13 @@ func (vn *VecN) Normalize(dst *VecN) *VecN {
 //
 // The destination can be vn itself and nothing will go wrong.
 func (vn *VecN) Mul(dst *VecN, c float32) *VecN {
-	if vn == nil || dst == nil {
+	if vn == nil {
 		return nil
 	}
 	dst = dst.Resize(len(vn.vec))
 
-	length := vn.Len()
-	for _, el := range vn.vec {
-		dst.vec[1] = el / length
+	for i, el := range vn.vec {
+		dst.vec[i] = el * c
 	}
 
 	return dst
