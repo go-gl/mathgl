@@ -121,6 +121,39 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 	return mat
 }
 
+// Infers an MxN matrix from a constant matrix from this package. For instance,
+// a Mat2x3 inferred with this function will work just like NewBackedMatrix(m[:],2,3)
+// where m is the Mat2x3. This uses a type switch.
+//
+// I personally recommend using NewBackedMatrix, because it avoids a potentially costly type switch.
+// However, this is also more robust and less error prone if you change the size of your matrix somewhere.
+//
+// If the value passed in is not recognized, it returns an InferMatrixError.
+func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
+	switch raw := m.(type) {
+	case Mat2:
+		return &MatMxN{m: 2, n: 2, dat: raw[:]}, nil
+	case Mat2x3:
+		return &MatMxN{m: 2, n: 3, dat: raw[:]}, nil
+	case Mat2x4:
+		return &MatMxN{m: 2, n: 4, dat: raw[:]}, nil
+	case Mat3:
+		return &MatMxN{m: 3, n: 3, dat: raw[:]}, nil
+	case Mat3x2:
+		return &MatMxN{m: 3, n: 2, dat: raw[:]}, nil
+	case Mat3x4:
+		return &MatMxN{m: 3, n: 4, dat: raw[:]}, nil
+	case Mat4:
+		return &MatMxN{m: 4, n: 4, dat: raw[:]}, nil
+	case Mat4x2:
+		return &MatMxN{m: 4, n: 2, dat: raw[:]}, nil
+	case Mat4x3:
+		return &MatMxN{m: 4, n: 3, dat: raw[:]}, nil
+	default:
+		return nil, InferMatrixError{}
+	}
+}
+
 // Takes the transpose of mat and puts it in dst.
 //
 // If dst is not of the correct dimensions, it will be Reshaped,
@@ -377,4 +410,11 @@ func (mat *MatMxN) ApproxEqualFunc(m2 *MatMxN, comp func(float32, float32) bool)
 	}
 
 	return true
+}
+
+type InferMatrixError struct{}
+
+func (me InferMatrixError) Error() string {
+	return "could not infer matrix. Make sure you're using a constant matrix such as Mat3 from within the same package"
+	+"(meaning: mgl32.MatMxN can't handle a mgl64.Mat2x3)."
 }
