@@ -104,7 +104,7 @@ func Test4DVecSub(t *testing.T) {
 
 }
 
-func TestVecScale(t *testing.T) {
+func TestVecMul(t *testing.T) {
 	v := Vec2{1.0, 0.0}
 	v = v.Mul(15.0)
 
@@ -124,6 +124,23 @@ func TestVecScale(t *testing.T) {
 
 	if !FloatEqual(v3[0], 15.0) || !FloatEqual(v3[1], 0.0) || !FloatEqual(v3[2], 1501.5) || !FloatEqual(v3[3], -15.0) {
 		t.Errorf("Vec mul does something weird [%f, %f, %f, %f]", v3[0], v3[1], v3[2], v3[3])
+	}
+}
+
+func TestVecOuterProd(t *testing.T) {
+	v1 := Vec3{1, 2, 3}
+	v2 := Vec2{10, 11}
+
+	correct := Mat3x2FromRows([3]Vec2{
+		Vec2{10, 11},
+		Vec2{20, 22},
+		Vec2{30, 33},
+	})
+
+	result := v1.OuterProd2(v2)
+
+	if !correct.ApproxEqualThreshold(correct, 1e-4) {
+		t.Errorf("Vector outer product isn't working. Got: %v. Expected: %v", result, correct)
 	}
 }
 

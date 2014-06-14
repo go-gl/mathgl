@@ -376,3 +376,138 @@ func (v Vec4) Z() float32 {
 func (v Vec4) W() float32 {
 	return v[3]
 }
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec2) OuterProd2(v2 Vec2) Mat2 {
+	return Mat2{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec2) OuterProd3(v2 Vec3) Mat2x3 {
+	return Mat2x3{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[0] * v2[2], v1[1] * v2[2]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec2) OuterProd4(v2 Vec4) Mat2x4 {
+	return Mat2x4{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[0] * v2[3], v1[1] * v2[3]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec3) OuterProd2(v2 Vec2) Mat3x2 {
+	return Mat3x2{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec3) OuterProd3(v2 Vec3) Mat3 {
+	return Mat3{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec3) OuterProd4(v2 Vec4) Mat3x4 {
+	return Mat3x4{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[0] * v2[3], v1[1] * v2[3], v1[2] * v2[3]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec4) OuterProd2(v2 Vec2) Mat4x2 {
+	return Mat4x2{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec4) OuterProd3(v2 Vec3) Mat4x3 {
+	return Mat4x3{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[3] * v2[2]}
+}
+
+// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+func (v1 Vec4) OuterProd4(v2 Vec4) Mat4 {
+	return Mat4{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[3] * v2[2], v1[0] * v2[3], v1[1] * v2[3], v1[2] * v2[3], v1[3] * v2[3]}
+}

@@ -101,6 +101,12 @@ import(
 		vecs += GenVecElement(m)
 	}
 
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			vecs += GenVecOuterProd(m, n)
+		}
+	}
+
 	/*for m := 2; m <= 4; m++ {
 		for o := 2; o <= 4; o++ {
 			vecs += GenVecMatMul(m,o)
@@ -343,6 +349,37 @@ func GenVecElement(m int) (s string) {
 	}
 
 	return
+}
+
+func GenVecOuterProd(m, n int) string {
+	vecs := `// Does the vector outer product
+// of two vectors. The outer product produces an
+// NxM matrix. E.G. a Vec2 * Vec3 = Mat2x3.
+//
+// The outer product can be thought of as the "opposite"
+// of the Dot product. The Dot product treats both vectors like matrices
+// oriented such that the left one has N columns and the right has N rows.
+// So Vec3.Vec3 = Mat1x3*Mat3x1 = Mat1 = Scalar.
+//
+// The outer product orients it so they're facing "outward": Vec2*Vec3
+// = Mat2x1*Mat1x3 = Mat2x3.
+`
+
+	vecs += fmt.Sprintf("func (v1 %s) OuterProd%d(v2 %s) %s {\n\treturn %s{", VecName(m), n, VecName(n), GenMatName(m, n), GenMatName(m, n))
+
+	for r := 0; r < n; r++ {
+		for c := 0; c < m; c++ {
+			if r != 0 || c != 0 {
+				vecs += ","
+			}
+
+			vecs += fmt.Sprintf("v1[%d]*v2[%d]", c, r)
+		}
+	}
+
+	vecs += "}\n}\n\n"
+
+	return vecs
 }
 
 func VecName(m int) (s string) {
