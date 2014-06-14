@@ -36,3 +36,33 @@ func TestVecNDot(t *testing.T) {
 		t.Errorf("Dot product doesn't work for VecN. Got: %v, Expected: %v", result, correct)
 	}
 }
+
+func TestVecNMul(t *testing.T) {
+	v1 := Vec3{1, 3, 5}
+
+	correct := v1.Mul(3)
+	correctN := NewBackedVecN(correct[:])
+
+	v1n := NewBackedVecN(v1[:])
+
+	result := v1n.Mul(nil, 3)
+
+	if !correctN.ApproxEqualThreshold(result, 1e-4) {
+		t.Errorf("VecN scalar multiplication is incorrect. Got: %v; Expected: %v", result, correct)
+	}
+}
+
+func TestVecNNormalize(t *testing.T) {
+	v1 := Vec3{1, 3, 5}
+
+	correct := v1.Normalize()
+	correctN := NewBackedVecN(correct[:])
+
+	v1n := NewBackedVecN(v1[:])
+
+	result := v1n.Normalize(nil)
+
+	if !correctN.ApproxEqualThreshold(result, 1e-4) {
+		t.Errorf("VecN normalization is incorrect. Got: %v; Expected: %v", result, correct)
+	}
+}
