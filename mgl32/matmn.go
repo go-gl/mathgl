@@ -49,6 +49,58 @@ func CopyMatMN(dst, src *MatMxN) {
 	copy(dst.dat, src.dat)
 }
 
+// Stores the NxN identity matrix in dst, reallocating as necessary.
+func IdentN(dst *MatMxN, n int) *MatMxN {
+	dst = dst.Reshape(n, n)
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			if i == j {
+				dst.Set(i, j, 1)
+			} else {
+				dst.Set(i, j, 0)
+			}
+		}
+	}
+
+	return dst
+}
+
+// Creates an NxN diagonal matrix seeded by the diagonal vector
+// diag. Meaning: for all entries, where i==j, dst.At(i,j) = diag[i]. Otherwise
+// dst.At(i,j) = 0
+//
+// This reshapes dst to the correct size, reallocating as necessary
+func DiagN(dst *MatMxN, diag *VecN) *MatMxN {
+	dst.Reshape(len(diag.vec), len(diag.vec))
+	n := len(diag.vec)
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			if i == j {
+				dst.Set(i, j, diag.vec[i])
+			} else {
+				dst.Set(i, j, 0)
+			}
+		}
+	}
+
+	return dst
+}
+
+// Reshapes the matrix to m by n and zeroes out all
+// elements.
+func (mat *MatMxN) Zero(m, n int) {
+	if mat == nil {
+		return
+	}
+
+	mat.Reshape(m, n)
+	for i := range mat.dat {
+		mat.dat[i] = 0
+	}
+}
+
 // Grows the underlying slice by the desired amount
 func (mat *MatMxN) grow(size int) *MatMxN {
 	if mat == nil {
@@ -415,6 +467,5 @@ func (mat *MatMxN) ApproxEqualFunc(m2 *MatMxN, comp func(float32, float32) bool)
 type InferMatrixError struct{}
 
 func (me InferMatrixError) Error() string {
-	return "could not infer matrix. Make sure you're using a constant matrix such as Mat3 from within the same package"
-	+"(meaning: mgl32.MatMxN can't handle a mgl64.Mat2x3)."
+	return "could not infer matrix. Make sure you're using a constant matrix such as Mat3 from within the same package (meaning: mgl32.MatMxN can't handle a mgl64.Mat2x3)."
 }
