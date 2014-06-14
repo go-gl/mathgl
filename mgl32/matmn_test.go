@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestMNTransposeWide(t *testing.T) {
+func TestMxNTransposeWide(t *testing.T) {
 	m := Mat2x3{1, 2, 3, 4, 5, 6}
 
 	mn := NewBackedMatrix(m[:], 2, 3)
@@ -20,7 +20,7 @@ func TestMNTransposeWide(t *testing.T) {
 	}
 }
 
-func TestMNTransposeTall(t *testing.T) {
+func TestMxNTransposeTall(t *testing.T) {
 	m := Mat3x2{1, 2, 3, 4, 5, 6}
 
 	mn := NewBackedMatrix(m[:], 3, 2)
@@ -36,7 +36,7 @@ func TestMNTransposeTall(t *testing.T) {
 	}
 }
 
-func TestMNTransposeSquare(t *testing.T) {
+func TestMxNTransposeSquare(t *testing.T) {
 	m := Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	mn := NewBackedMatrix(m[:], 3, 3)
@@ -52,7 +52,7 @@ func TestMNTransposeSquare(t *testing.T) {
 	}
 }
 
-func TestMNAtSet(t *testing.T) {
+func TestMxNAtSet(t *testing.T) {
 	m := Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	mn := NewBackedMatrix(m[:], 3, 3)
