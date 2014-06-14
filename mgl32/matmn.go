@@ -166,6 +166,14 @@ func (mat *MatMN) At(row, col int) float32 {
 	return mat.dat[col*mat.m+row]
 }
 
+// Sets the element at the given row and column.
+// This is garbage in/garbage out and does no bounds
+// checking. If the computation happens to lead to an invalid
+// element, it will be set; or it may panic.
+func (mat *MatMN) Set(row, col int, val float32) {
+	mat.dat[col*mat.m+row] = val
+}
+
 func (mat *MatMN) Add(dst *MatMN, addend *MatMN) *MatMN {
 	if mat == nil || addend == nil || mat.m != addend.m || mat.n != addend.n {
 		return nil
