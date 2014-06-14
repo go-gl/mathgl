@@ -604,12 +604,12 @@ func GenTranspose(m, n int) (s string) {
 `
 	s += fmt.Sprintf("func (m1 %s) Transpose() %s {\n\treturn %s{", GenMatName(m, n), GenMatName(n, m), GenMatName(n, m))
 
-	for i := 0; i < n; i++ {
-		for j := 0; j < m; j++ {
-			s += fmt.Sprintf("m1[%d]", i+j*n)
-			if i != m-1 || j != n-1 {
+	for r := 0; r < m; r++ {
+		for c := 0; c < n; c++ {
+			if r != 0 || c != 0 {
 				s += ","
 			}
+			s += fmt.Sprintf("m1[%d]", c*m+r)
 		}
 	}
 	s += "}\n}\n\n"
