@@ -242,6 +242,30 @@ func TestTransposeSquare(t *testing.T) {
 	}
 }
 
+func TestMNAtSet(t *testing.T) {
+	m := Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	v := m.At(0, 2)
+
+	if !FloatEqualThreshold(v, 7, 1e-4) {
+		t.Errorf("Incorrect value gotten by At: %v, expected %v", v, 3)
+	}
+
+	m.Set(0, 2, 9001)
+
+	v = m.At(0, 2)
+
+	if !FloatEqualThreshold(v, 9001, 1e-4) {
+		t.Errorf("Value set by Set not gotten by At: %v, expected %v", v, 9001)
+	}
+
+	correctMat := Mat3{1, 2, 3, 4, 5, 6, 9001, 8, 9}
+
+	if !correctMat.ApproxEqualThreshold(m, 1e-4) {
+		t.Errorf("After set, not equal to matrix that should be identical. Got: %v, expected: %v", m, correctMat)
+	}
+}
+
 func BenchmarkMatAdd(b *testing.B) {
 	b.StopTimer()
 	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
