@@ -55,6 +55,7 @@ func (mat *MatMN) grow(size int) *MatMN {
 		return &MatMN{m: 0, n: 0, dat: make([]float32, size, size)}
 	}
 
+	// This matches Go's reallocation semantics when append is used.
 	if len(mat.dat)+size > cap(mat.dat) {
 		newCap := len(mat.dat) * 2
 		if len(mat.dat)+size > 2*len(mat.dat) {
