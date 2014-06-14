@@ -251,3 +251,54 @@ func (mat *MatMN) Mul(dst *MatMN, mul *MatMN) *MatMN {
 
 	return dst
 }
+
+func (mat *MatMN) ApproxEqual(m2 *MatMN) bool {
+	if mat == m2 {
+		return true
+	}
+	if mat.m != m2.m || mat.n != m2.n {
+		return false
+	}
+
+	for i, el := range mat.dat {
+		if !FloatEqual(el, m2.dat[i]) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (mat *MatMN) ApproxEqualThreshold(m2 *MatMN, epsilon float32) bool {
+	if mat == m2 {
+		return true
+	}
+	if mat.m != m2.m || mat.n != m2.n {
+		return false
+	}
+
+	for i, el := range mat.dat {
+		if !FloatEqualThreshold(el, m2.dat[i], epsilon) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (mat *MatMN) ApproxEqualFunc(m2 *MatMN, comp func(float32, float32) bool) bool {
+	if mat == m2 {
+		return true
+	}
+	if mat.m != m2.m || mat.n != m2.n {
+		return false
+	}
+
+	for i, el := range mat.dat {
+		if !comp(el, m2.dat[i]) {
+			return false
+		}
+	}
+
+	return true
+}
