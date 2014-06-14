@@ -66,3 +66,37 @@ func TestVecNNormalize(t *testing.T) {
 		t.Errorf("VecN normalization is incorrect. Got: %v; Expected: %v", result, correct)
 	}
 }
+
+func TestVecNAdd(t *testing.T) {
+	v1 := Vec3{1, 3, 5}
+	v2 := Vec3{2, 4, 6}
+
+	correct := v1.Add(v2)
+	correctN := NewBackedVecN(correct[:])
+
+	v1n := NewBackedVecN(v1[:])
+	v2n := NewBackedVecN(v2[:])
+
+	result := v1n.Add(nil, v2n)
+
+	if !correctN.ApproxEqualThreshold(result, 1e-4) {
+		t.Errorf("VecN addition is incorrect. Got: %v; Expected: %v", result, correct)
+	}
+}
+
+func TestVecNSub(t *testing.T) {
+	v1 := Vec3{1, 3, 5}
+	v2 := Vec3{2, 4, 6}
+
+	correct := v1.Sub(v2)
+	correctN := NewBackedVecN(correct[:])
+
+	v1n := NewBackedVecN(v1[:])
+	v2n := NewBackedVecN(v2[:])
+
+	result := v1n.Sub(nil, v2n)
+
+	if !correctN.ApproxEqualThreshold(result, 1e-4) {
+		t.Errorf("VecN subtraction is incorrect. Got: %v; Expected: %v", result, correct)
+	}
+}
