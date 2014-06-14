@@ -16,4 +16,16 @@ The examples are now working! Go look at the examples folder for working example
 Contributing
 ============
 
-Feel free to submit pull requests for features and bug fixes. Do note that, aside from documentation bugs, meta (travis.yml etc) fixes, and example code, pull requests will not be accepted without tests corresponding to the new code. If it's a bug fix, the test should test the bug.
+Feel free to submit pull requests for features and bug fixes. Do note that, aside from documentation bugs, meta (travis.yml etc) fixes, example code, and *extremely* trivial changes (basic accessors) pull requests will not be accepted without tests corresponding to the new code. If it's a bug fix, the test should test the bug.
+
+Also note that since code generation is used in the files `matrix.go` and `vector.go`, no changes should be made to those files directly. Either changes should be made to `genprog/main.go` if you're brave enough to add to that mess, or (preferably), in a different file altogether. No such file currently exists, but something like `matrixStatic.go` would suffice.
+
+API Changes
+===========
+
+From now on, no major API breaking changes will be made between major Go version releases. That means any time the "x" in Go1.x increases. Exceptions are made, of course, for bug fixes. If a bug fix necessitates changing semantics of calling software, it will be changed. (An example is the recent update of Transpose which was mistakenly using row major rules). Deprecated functions may also be nuked at major version released. Before any API breaking changes near major releases, the most recent non-breaking commit will be tagged with the major Go version number (e.g. Go1.2). If no such tag exists, one can assume nothing has been broken.
+
+Currently Deprecated Functions
+-------
+
+EulerToQuat(ax,ay,az) ==USE INSTEAD==> AnglesToQuat(ax,ay,az,ZYX)
