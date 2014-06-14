@@ -283,6 +283,30 @@ func (vn *VecN) Mul(dst *VecN, c float32) *VecN {
 	return dst
 }
 
+// Performs the vector outer product between vn and v2.
+// The outer product is like a "reverse" dot product. Where the dot product
+// aligns both vectors with the "sized" part facing "inward" (Vec3*Vec3=Mat1x3*Mat3x1=Mat1x1=Scalar).
+// The outer product multiplied them with it facing "outward"
+// (Vec3*Vec3=Mat3x1*Mat1x3=Mat3x3).
+//
+// The matrix dst will be Reshaped to the correct size, if vn or v2 are nil,
+// this returns nil.
+func (vn *VecN) OuterProd(dst *MatMxN, v2 *VecN) *MatMxN {
+	if vn == nil || v2 == nil {
+		return nil
+	}
+
+	dst = dst.Reshape(len(vn.vec), len(v2.vec))
+
+	for c, el1 := range v2.vec {
+		for r, el2 := range vn.vec {
+			dst.Set(r, c, el1*el2)
+		}
+	}
+
+	return dst
+}
+
 func (vn *VecN) ApproxEqual(vn2 *VecN) bool {
 	if vn == nil || vn2 == nil || len(vn.vec) != len(vn2.vec) {
 		return false
