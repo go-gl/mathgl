@@ -2,9 +2,12 @@ package mgl32
 
 import (
 	"math"
+	"sync"
 )
 
 var reallocCallback func([]float32)
+
+var registerOnce = sync.Once{}
 
 // Registers a callback that will be called when a VecN or
 // MatMN has to reallocate its underlying slice. The old slice
@@ -18,13 +21,25 @@ var reallocCallback func([]float32)
 // collection on its own! The callback won't be called if you simply let the
 // VecN or MatMN go out of scope!
 //
-// Only one callback may be registered with the package, the most recent call prevails.
-// This is not thread safe, and ideally should only be called at initialization.
+// Only one callback may be registered with the package. In fact, it is enforced via
+// a sync.Once that only one call to this will ever succeed in binding the realloc callback.
+//
+// If you're doing math from multiple Goroutines, it's up to the callback to synchronize; this
+// package uses no mutexes, channels, or waitgroups to ensure non-concurrent calls to this function.
+// Likewise, registering the callback is not concurrency-safe, so do this BEFORE you use VecN or MatMxN.
 func RegisterReallocCallback(cb func([]float32)) {
-
+	registerOnce.Do(func() { reallocCallback = cb })
 }
 
 // A vector of N elements backed by a slice
+//
+// As with MatMxN, this is not for hardcore linear algebra with large dimensions. Use github.com/gonum/matrix
+// or something like BLAS/LAPACK for that. This is for corner cases in 3D math where you require
+// something a little bigger that 4D, but still relatively small.
+//
+// This slice makes use of the ReallocCallback, if the underlying vector ever grows beyond
+// its cap, the underlying slice will be reallocated and the old slice will be sent via
+// the callback if it's registered.
 type VecN struct {
 	vec []float32
 }
