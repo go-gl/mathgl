@@ -1745,3 +1745,117 @@ func (m Mat3) Diag() Vec3 {
 func (m Mat4) Diag() Vec4 {
 	return Vec4{m[0], m[5], m[10], m[15]}
 }
+
+/*
+func (m Mat2) Mat2x3() Mat2x3 {
+	col0, col1 := m.Cols()
+	return Mat2x3FromCols(
+		col0,
+		col1,
+		Vec2{0, 0},
+	)
+}
+
+func (m Mat2) Mat2x4() Mat2x4 {
+	col0, col1 := m.Cols()
+	return Mat2x4FromCols(
+		col0,
+		col1,
+		Vec2{0, 0},
+		Vec2{0, 0},
+	)
+}
+
+func (m Mat2) Mat3x2() Mat3x2 {
+	col0, col1 := m.Cols()
+	return Mat3x2FromCols(
+		col0.Vec3(0),
+		col1.Vec3(0),
+	)
+}
+
+func (m Mat2) Mat3x4() Mat3x4 {
+	col0, col1 := m.Cols()
+	return Mat3x4FromCols(
+		col0.Vec3(0),
+		col1.Vec3(0),
+		Vec3{0, 0, 1},
+		Vec3{0, 0, 0},
+	)
+}
+
+func (m Mat2) Mat4x2() Mat4x2 {
+	col0, col1 := m.Cols()
+	return Mat4x2FromCols(
+		col0.Vec4(0, 0),
+		col1.Vec4(0, 0),
+	)
+}
+
+func (m Mat2) Mat4x3() Mat4x3 {
+	col0, col1 := m.Cols()
+	return Mat4x3FromCols(
+		col0.Vec4(0, 0),
+		col1.Vec4(0, 0),
+		Vec4{0, 0, 1, 0},
+	)
+}
+
+// this becomes way too much code to do manually
+*/
+
+// only most important conversions
+
+func (m Mat2) Mat3() Mat3 {
+	col0, col1 := m.Cols()
+	return Mat3FromCols(
+		col0.Vec3(0),
+		col1.Vec3(0),
+		Vec3{0, 0, 1},
+	)
+}
+
+func (m Mat2) Mat4() Mat4 {
+	col0, col1 := m.Cols()
+	return Mat4FromCols(
+		col0.Vec4(0, 0),
+		col1.Vec4(0, 0),
+		Vec4{0, 0, 1, 0},
+		Vec4{0, 0, 0, 1},
+	)
+}
+
+func (m Mat3) Mat2() Mat2 {
+	col0, col1, _ := m.Cols()
+	return Mat2FromCols(
+		col0.Vec2(),
+		col1.Vec2(),
+	)
+}
+
+func (m Mat3) Mat4() Mat4 {
+	col0, col1, col2 := m.Cols()
+	return Mat4FromCols(
+		col0.Vec4(0),
+		col1.Vec4(0),
+		col2.Vec4(0),
+		Vec4{0, 0, 0, 1},
+	)
+}
+
+func (m Mat4) Mat2() Mat2 {
+	col0, col1, _, _ := m.Cols()
+	return Mat2FromCols(
+		col0.Vec2(),
+		col1.Vec2(),
+	)
+}
+
+func (m Mat4) Mat3() Mat3 {
+	col0, col1, col2, _ := m.Cols()
+	return Mat3FromCols(
+		col0.Vec3(),
+		col1.Vec3(),
+		col2.Vec3(),
+	)
+}
