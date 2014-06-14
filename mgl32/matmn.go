@@ -58,7 +58,7 @@ func (mat *MatMN) grow(size int) *MatMN {
 	if len(mat.dat)+size > cap(mat.dat) {
 		newCap := len(mat.dat) * 2
 		if len(mat.dat)+size > 2*len(mat.dat) {
-			newCap = len(mat.dat) + size
+			newCap = 2 * (len(mat.dat) + size)
 		}
 
 		tmp := make([]float32, size, newCap)
