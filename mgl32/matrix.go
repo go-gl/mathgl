@@ -75,6 +75,7 @@ func Diag4(v Vec4) Mat4 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat2FromRows(row0, row1 Vec2) Mat2 {
 	return Mat2{row0[0], row1[0], row0[1], row1[1]}
 }
@@ -82,6 +83,7 @@ func Mat2FromRows(row0, row1 Vec2) Mat2 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat2x3FromRows(row0, row1 Vec3) Mat2x3 {
 	return Mat2x3{row0[0], row1[0], row0[1], row1[1], row0[2], row1[2]}
 }
@@ -89,6 +91,7 @@ func Mat2x3FromRows(row0, row1 Vec3) Mat2x3 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat2x4FromRows(row0, row1 Vec4) Mat2x4 {
 	return Mat2x4{row0[0], row1[0], row0[1], row1[1], row0[2], row1[2], row0[3], row1[3]}
 }
@@ -96,6 +99,7 @@ func Mat2x4FromRows(row0, row1 Vec4) Mat2x4 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat3x2FromRows(row0, row1, row2 Vec2) Mat3x2 {
 	return Mat3x2{row0[0], row1[0], row2[0], row0[1], row1[1], row2[1]}
 }
@@ -103,6 +107,7 @@ func Mat3x2FromRows(row0, row1, row2 Vec2) Mat3x2 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat3FromRows(row0, row1, row2 Vec3) Mat3 {
 	return Mat3{row0[0], row1[0], row2[0], row0[1], row1[1], row2[1], row0[2], row1[2], row2[2]}
 }
@@ -110,6 +115,7 @@ func Mat3FromRows(row0, row1, row2 Vec3) Mat3 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat3x4FromRows(row0, row1, row2 Vec4) Mat3x4 {
 	return Mat3x4{row0[0], row1[0], row2[0], row0[1], row1[1], row2[1], row0[2], row1[2], row2[2], row0[3], row1[3], row2[3]}
 }
@@ -117,6 +123,7 @@ func Mat3x4FromRows(row0, row1, row2 Vec4) Mat3x4 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat4x2FromRows(row0, row1, row2, row3 Vec2) Mat4x2 {
 	return Mat4x2{row0[0], row1[0], row2[0], row3[0], row0[1], row1[1], row2[1], row3[1]}
 }
@@ -124,6 +131,7 @@ func Mat4x2FromRows(row0, row1, row2, row3 Vec2) Mat4x2 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat4x3FromRows(row0, row1, row2, row3 Vec3) Mat4x3 {
 	return Mat4x3{row0[0], row1[0], row2[0], row3[0], row0[1], row1[1], row2[1], row3[1], row0[2], row1[2], row2[2], row3[2]}
 }
@@ -131,6 +139,7 @@ func Mat4x3FromRows(row0, row1, row2, row3 Vec3) Mat4x3 {
 // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
 func Mat4FromRows(row0, row1, row2, row3 Vec4) Mat4 {
 	return Mat4{row0[0], row1[0], row2[0], row3[0], row0[1], row1[1], row2[1], row3[1], row0[2], row1[2], row2[2], row3[2], row0[3], row1[3], row2[3], row3[3]}
 }
@@ -1449,102 +1458,57 @@ func (m Mat4) Row(row int) Vec4 {
 	return Vec4{m[row+0], m[row+4], m[row+8], m[row+12]}
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat2) SetRow(row int, v Vec2) {
-	m[row+0], m[row+2] = v[0], v[1]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat2x3) SetRow(row int, v Vec3) {
-	m[row+0], m[row+2], m[row+4] = v[0], v[1], v[2]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat2x4) SetRow(row int, v Vec4) {
-	m[row+0], m[row+2], m[row+4], m[row+6] = v[0], v[1], v[2], v[3]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat3x2) SetRow(row int, v Vec2) {
-	m[row+0], m[row+3] = v[0], v[1]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat3) SetRow(row int, v Vec3) {
-	m[row+0], m[row+3], m[row+6] = v[0], v[1], v[2]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat3x4) SetRow(row int, v Vec4) {
-	m[row+0], m[row+3], m[row+6], m[row+9] = v[0], v[1], v[2], v[3]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat4x2) SetRow(row int, v Vec2) {
-	m[row+0], m[row+4] = v[0], v[1]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat4x3) SetRow(row int, v Vec3) {
-	m[row+0], m[row+4], m[row+8] = v[0], v[1], v[2]
-}
-
-// Sets a Row within the Matrix, so it mutates the calling matrix.
-func (m *Mat4) SetRow(row int, v Vec4) {
-	m[row+0], m[row+4], m[row+8], m[row+12] = v[0], v[1], v[2], v[3]
-}
-
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat2) Rows() (v0, v1 Vec2) {
+func (m Mat2) Rows() (row0, row1 Vec2) {
 	return m.Row(0), m.Row(1)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat2x3) Rows() (v0, v1 Vec3) {
+func (m Mat2x3) Rows() (row0, row1 Vec3) {
 	return m.Row(0), m.Row(1)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat2x4) Rows() (v0, v1 Vec4) {
+func (m Mat2x4) Rows() (row0, row1 Vec4) {
 	return m.Row(0), m.Row(1)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat3x2) Rows() (v0, v1, v2 Vec2) {
+func (m Mat3x2) Rows() (row0, row1, row2 Vec2) {
 	return m.Row(0), m.Row(1), m.Row(2)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat3) Rows() (v0, v1, v2 Vec3) {
+func (m Mat3) Rows() (row0, row1, row2 Vec3) {
 	return m.Row(0), m.Row(1), m.Row(2)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat3x4) Rows() (v0, v1, v2 Vec4) {
+func (m Mat3x4) Rows() (row0, row1, row2 Vec4) {
 	return m.Row(0), m.Row(1), m.Row(2)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat4x2) Rows() (v0, v1, v2, v3 Vec2) {
+func (m Mat4x2) Rows() (row0, row1, row2, row3 Vec2) {
 	return m.Row(0), m.Row(1), m.Row(2), m.Row(3)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat4x3) Rows() (v0, v1, v2, v3 Vec3) {
+func (m Mat4x3) Rows() (row0, row1, row2, row3 Vec3) {
 	return m.Row(0), m.Row(1), m.Row(2), m.Row(3)
 }
 
 // Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
-func (m Mat4) Rows() (v0, v1, v2, v3 Vec4) {
+func (m Mat4) Rows() (row0, row1, row2, row3 Vec4) {
 	return m.Row(0), m.Row(1), m.Row(2), m.Row(3)
 }
 
@@ -1611,102 +1575,57 @@ func (m Mat4) Col(col int) Vec4 {
 	return Vec4{m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3]}
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat2) SetCol(col int, v Vec2) {
-	m[col*2+0], m[col*2+1] = v[0], v[1]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat2x3) SetCol(col int, v Vec2) {
-	m[col*2+0], m[col*2+1] = v[0], v[1]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat2x4) SetCol(col int, v Vec2) {
-	m[col*2+0], m[col*2+1] = v[0], v[1]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat3x2) SetCol(col int, v Vec3) {
-	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat3) SetCol(col int, v Vec3) {
-	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat3x4) SetCol(col int, v Vec3) {
-	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat4x2) SetCol(col int, v Vec4) {
-	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat4x3) SetCol(col int, v Vec4) {
-	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
-}
-
-// Sets a Column within the Matrix, so it mutates the calling matrix.
-func (m *Mat4) SetCol(col int, v Vec4) {
-	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
-}
-
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat2) Cols() (v0, v1 Vec2) {
+func (m Mat2) Cols() (col0, col1 Vec2) {
 	return m.Col(0), m.Col(1)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat2x3) Cols() (v0, v1, v2 Vec2) {
+func (m Mat2x3) Cols() (col0, col1, col2 Vec2) {
 	return m.Col(0), m.Col(1), m.Col(2)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat2x4) Cols() (v0, v1, v2, v3 Vec2) {
+func (m Mat2x4) Cols() (col0, col1, col2, col3 Vec2) {
 	return m.Col(0), m.Col(1), m.Col(2), m.Col(3)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat3x2) Cols() (v0, v1 Vec3) {
+func (m Mat3x2) Cols() (col0, col1 Vec3) {
 	return m.Col(0), m.Col(1)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat3) Cols() (v0, v1, v2 Vec3) {
+func (m Mat3) Cols() (col0, col1, col2 Vec3) {
 	return m.Col(0), m.Col(1), m.Col(2)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat3x4) Cols() (v0, v1, v2, v3 Vec3) {
+func (m Mat3x4) Cols() (col0, col1, col2, col3 Vec3) {
 	return m.Col(0), m.Col(1), m.Col(2), m.Col(3)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat4x2) Cols() (v0, v1 Vec4) {
+func (m Mat4x2) Cols() (col0, col1 Vec4) {
 	return m.Col(0), m.Col(1)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat4x3) Cols() (v0, v1, v2 Vec4) {
+func (m Mat4x3) Cols() (col0, col1, col2 Vec4) {
 	return m.Col(0), m.Col(1), m.Col(2)
 }
 
 // Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
-func (m Mat4) Cols() (v0, v1, v2, v3 Vec4) {
+func (m Mat4) Cols() (col0, col1, col2, col3 Vec4) {
 	return m.Col(0), m.Col(1), m.Col(2), m.Col(3)
 }
 
@@ -1726,136 +1645,4 @@ func (m Mat3) Trace() float32 {
 // sums up all elements on the main diagonal (meaning all elements such that row==col).
 func (m Mat4) Trace() float32 {
 	return m[0] + m[5] + m[10] + m[15]
-}
-
-// Trace is a basic operation on a square matrix that simply
-// sums up all elements on the main diagonal (meaning all elements such that row==col).
-func (m Mat2) Diag() Vec2 {
-	return Vec2{m[0], m[3]}
-}
-
-// Trace is a basic operation on a square matrix that simply
-// sums up all elements on the main diagonal (meaning all elements such that row==col).
-func (m Mat3) Diag() Vec3 {
-	return Vec3{m[0], m[4], m[8]}
-}
-
-// Trace is a basic operation on a square matrix that simply
-// sums up all elements on the main diagonal (meaning all elements such that row==col).
-func (m Mat4) Diag() Vec4 {
-	return Vec4{m[0], m[5], m[10], m[15]}
-}
-
-/*
-func (m Mat2) Mat2x3() Mat2x3 {
-	col0, col1 := m.Cols()
-	return Mat2x3FromCols(
-		col0,
-		col1,
-		Vec2{0, 0},
-	)
-}
-
-func (m Mat2) Mat2x4() Mat2x4 {
-	col0, col1 := m.Cols()
-	return Mat2x4FromCols(
-		col0,
-		col1,
-		Vec2{0, 0},
-		Vec2{0, 0},
-	)
-}
-
-func (m Mat2) Mat3x2() Mat3x2 {
-	col0, col1 := m.Cols()
-	return Mat3x2FromCols(
-		col0.Vec3(0),
-		col1.Vec3(0),
-	)
-}
-
-func (m Mat2) Mat3x4() Mat3x4 {
-	col0, col1 := m.Cols()
-	return Mat3x4FromCols(
-		col0.Vec3(0),
-		col1.Vec3(0),
-		Vec3{0, 0, 1},
-		Vec3{0, 0, 0},
-	)
-}
-
-func (m Mat2) Mat4x2() Mat4x2 {
-	col0, col1 := m.Cols()
-	return Mat4x2FromCols(
-		col0.Vec4(0, 0),
-		col1.Vec4(0, 0),
-	)
-}
-
-func (m Mat2) Mat4x3() Mat4x3 {
-	col0, col1 := m.Cols()
-	return Mat4x3FromCols(
-		col0.Vec4(0, 0),
-		col1.Vec4(0, 0),
-		Vec4{0, 0, 1, 0},
-	)
-}
-
-// this becomes way too much code to do manually
-*/
-
-// only most important conversions
-
-func (m Mat2) Mat3() Mat3 {
-	col0, col1 := m.Cols()
-	return Mat3FromCols(
-		col0.Vec3(0),
-		col1.Vec3(0),
-		Vec3{0, 0, 1},
-	)
-}
-
-func (m Mat2) Mat4() Mat4 {
-	col0, col1 := m.Cols()
-	return Mat4FromCols(
-		col0.Vec4(0, 0),
-		col1.Vec4(0, 0),
-		Vec4{0, 0, 1, 0},
-		Vec4{0, 0, 0, 1},
-	)
-}
-
-func (m Mat3) Mat2() Mat2 {
-	col0, col1, _ := m.Cols()
-	return Mat2FromCols(
-		col0.Vec2(),
-		col1.Vec2(),
-	)
-}
-
-func (m Mat3) Mat4() Mat4 {
-	col0, col1, col2 := m.Cols()
-	return Mat4FromCols(
-		col0.Vec4(0),
-		col1.Vec4(0),
-		col2.Vec4(0),
-		Vec4{0, 0, 0, 1},
-	)
-}
-
-func (m Mat4) Mat2() Mat2 {
-	col0, col1, _, _ := m.Cols()
-	return Mat2FromCols(
-		col0.Vec2(),
-		col1.Vec2(),
-	)
-}
-
-func (m Mat4) Mat3() Mat3 {
-	col0, col1, col2, _ := m.Cols()
-	return Mat3FromCols(
-		col0.Vec3(),
-		col1.Vec3(),
-		col2.Vec3(),
-	)
 }

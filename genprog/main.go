@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -862,12 +863,15 @@ func GenMatRow(m, n int) (s string) {
 	return
 }
 
+var rowNames = [...]string{"row0", "row1", "row2", "row3"}
+var colNames = [...]string{"col0", "col1", "col2", "col3"}
+
 func GenMatRows(m, n int) (s string) {
 	s = `// Rows decomposes a matrix into its corresponding row vectors.
 // This is equivalent to calling mat.Row for each row.
 `
-
-	s += fmt.Sprintf("func (m %s) Rows() [%d]%s {\n\treturn [%d]%s{", GenMatName(m, n), m, VecName(n), m, VecName(n))
+	args := strings.Join(rowNames[:m], ", ")
+	s += fmt.Sprintf("func (m %s) Rows() (%s %s) {\n\treturn ", GenMatName(m, n), args, VecName(n))
 
 	for i := 0; i < m; i++ {
 		if i != 0 {
@@ -876,7 +880,7 @@ func GenMatRows(m, n int) (s string) {
 		s += fmt.Sprintf("m.Row(%d)", i)
 	}
 
-	s += "}\n}\n\n"
+	s += "\n}\n\n"
 
 	return
 }
@@ -885,9 +889,12 @@ func GenMatFromRows(m, n int) (s string) {
 	s = ` // Mat<Size>FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
+
+
 `
 
-	s += fmt.Sprintf("func %sFromRows(rows [%d]%s) %s {\n\treturn %s{", GenMatName(m, n), m, VecName(n), GenMatName(m, n), GenMatName(m, n))
+	args := strings.Join(rowNames[:m], ", ")
+	s += fmt.Sprintf("func %sFromRows(%s %s) %s {\n\treturn %s{", GenMatName(m, n), args, VecName(n), GenMatName(m, n), GenMatName(m, n))
 
 	for i := 0; i < n; i++ {
 		for j := 0; j < m; j++ {
@@ -895,7 +902,7 @@ func GenMatFromRows(m, n int) (s string) {
 				s += ","
 			}
 
-			s += fmt.Sprintf("rows[%d][%d]", j, i)
+			s += fmt.Sprintf("%s[%d]", rowNames[j], i)
 		}
 	}
 
@@ -928,8 +935,8 @@ func GenMatCols(m, n int) (s string) {
 	s = `// Cols decomposes a matrix into its corresponding column vectors.
 // This is equivalent to calling mat.Col for each column.
 `
-
-	s += fmt.Sprintf("func (m %s) Cols() [%d]%s {\n\treturn [%d]%s{", GenMatName(m, n), n, VecName(m), n, VecName(m))
+	args := strings.Join(colNames[:n], ", ")
+	s += fmt.Sprintf("func (m %s) Cols() (%s %s) {\n\treturn ", GenMatName(m, n), args, VecName(m))
 
 	for i := 0; i < n; i++ {
 		if i != 0 {
@@ -938,7 +945,7 @@ func GenMatCols(m, n int) (s string) {
 		s += fmt.Sprintf("m.Col(%d)", i)
 	}
 
-	s += "}\n}\n\n"
+	s += "\n}\n\n"
 
 	return
 }
@@ -946,8 +953,8 @@ func GenMatCols(m, n int) (s string) {
 func GenMatFromCols(m, n int) (s string) {
 	s = ` // Mat<Size>FromCols builds a new matrix from column vectors.
 `
-
-	s += fmt.Sprintf("func %sFromCols(cols [%d]%s) %s {\n\treturn %s{", GenMatName(m, n), n, VecName(m), GenMatName(m, n), GenMatName(m, n))
+	args := strings.Join(colNames[:n], ", ")
+	s += fmt.Sprintf("func %sFromCols(%s %s) %s {\n\treturn %s{", GenMatName(m, n), args, VecName(m), GenMatName(m, n), GenMatName(m, n))
 
 	for i := 0; i < n; i++ {
 		for j := 0; j < m; j++ {
@@ -955,12 +962,11 @@ func GenMatFromCols(m, n int) (s string) {
 				s += ","
 			}
 
-			s += fmt.Sprintf("cols[%d][%d]", i, j)
+			s += fmt.Sprintf("%s[%d]", colNames[i], j)
 		}
 	}
 
 	s += "}\n}\n\n"
-
 	return
 }
 
