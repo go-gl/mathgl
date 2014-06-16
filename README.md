@@ -11,14 +11,14 @@ This package is split into two sub-packages. The package `mgl32` deals with 32-b
 
 The old repository, before the split between the 32-bit and 64-bit subpackages, is kept at github.com/Jragonmiris/mathgl (the old repository path), but is no longer maintained.
 
-The examples are now working! Go look at the examples folder for working examples of how to use the code!
+Examples can be found in github.com/go-gl/examples.
 
 Contributing
 ============
 
 Feel free to submit pull requests for features and bug fixes. Do note that, aside from documentation bugs, meta (travis.yml etc) fixes, example code, and *extremely* trivial changes (basic accessors) pull requests will not be accepted without tests corresponding to the new code. If it's a bug fix, the test should test the bug.
 
-Also note that since code generation is used in the files `matrix.go` and `vector.go`, no changes should be made to those files directly. Either changes should be made to `genprog/main.go` if you're brave enough to add to that mess, or (preferably), in a different file altogether. No such file currently exists, but something like `matrixStatic.go` would suffice.
+Also note that since code generation is used in the files `matrix.go` and `vector.go`, no changes should be made to those files directly. Either changes should be made to `genprog/main.go` if you're brave enough to add to that mess, or (preferably), in a different file altogether. Right now there are two files called `vectorStatic.go` and `matrixStatic.go` for this purpose.
 
 API Changes
 ===========
