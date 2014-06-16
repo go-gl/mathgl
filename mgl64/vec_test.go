@@ -131,11 +131,11 @@ func TestVecOuterProd(t *testing.T) {
 	v1 := Vec3{1, 2, 3}
 	v2 := Vec2{10, 11}
 
-	correct := Mat3x2FromRows([3]Vec2{
+	correct := Mat3x2FromRows(
 		Vec2{10, 11},
 		Vec2{20, 22},
 		Vec2{30, 33},
-	})
+	)
 
 	result := v1.OuterProd2(v2)
 
