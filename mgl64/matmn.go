@@ -213,8 +213,9 @@ func (mat *MatMxN) Trace() float64 {
 //
 // If dst is not of the correct dimensions, it will be Reshaped,
 // if dst and mat are the same, a temporary matrix of the correct size will
-// be allocated; these resources will be released via the memory pool if
-// it is registered. This should be improved in the future.
+// be allocated; these resources will be released via the memory pool.
+//
+// This should be improved in the future.
 func (mat *MatMxN) Transpose(dst *MatMxN) (t *MatMxN) {
 	if mat == nil {
 		return nil
@@ -336,7 +337,7 @@ func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 	}
 
 	if dst == mul {
-		mul = &MatMxN{m: mul.m, n: mul.n, dat: make([]float64, mul.m*mul.n)}
+		mul = &MatMxN{m: mul.m, n: mul.n, dat: grabFromPool(mat.m * mat.n)}
 		copy(mul.dat, dst.dat)
 
 		// If mul==dst==mul, we need to change
@@ -347,7 +348,7 @@ func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 
 		defer mul.destroy()
 	} else if dst == mat {
-		mat = &MatMxN{m: mat.m, n: mat.n, dat: make([]float64, mat.m*mat.n)}
+		mat = &MatMxN{m: mat.m, n: mat.n, dat: grabFromPool(mat.m * mat.n)}
 		copy(mat.dat, dst.dat)
 
 		defer mat.destroy()
