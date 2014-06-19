@@ -9,6 +9,8 @@ import (
 )
 
 func TestProject(t *testing.T) {
+	t.Parallel()
+
 	obj := Vec3{1002, 960, 0}
 	modelview := Mat4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 203, 1, 0, 1}
 	projection := Mat4{0.0013020833721384406, 0, 0, 0, -0, -0.0020833334419876337, -0, -0, -0, -0, -1, -0, -1, 1, 0, 1}

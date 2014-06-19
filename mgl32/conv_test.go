@@ -9,6 +9,8 @@ import (
 )
 
 func TestCartesianToSphere(t *testing.T) {
+	t.Parallel()
+
 	v := Vec3{5, 12, 9}
 
 	r, theta, phi := CartesianToSpherical(v)
@@ -27,6 +29,8 @@ func TestCartesianToSphere(t *testing.T) {
 }
 
 func TestSphereToCartesian(t *testing.T) {
+	t.Parallel()
+
 	v := Vec3{5, 12, 9}
 
 	result := SphericalToCartesian(15.8114, 0.965250852, 1.1760046)
@@ -37,6 +41,8 @@ func TestSphereToCartesian(t *testing.T) {
 }
 
 func TestCartesianToCylinder(t *testing.T) {
+	t.Parallel()
+
 	v := Vec3{5, 12, 9}
 
 	rho, phi, z := CartesianToCylindical(v)
@@ -55,6 +61,8 @@ func TestCartesianToCylinder(t *testing.T) {
 }
 
 func TestCylinderToCartesian(t *testing.T) {
+	t.Parallel()
+
 	v := Vec3{5, 12, 9}
 
 	result := CylindricalToCartesian(13, 1.17601, 9)
@@ -65,6 +73,8 @@ func TestCylinderToCartesian(t *testing.T) {
 }
 
 func TestCylinderToSphere(t *testing.T) {
+	t.Parallel()
+
 	r, theta, phi := CylindircalToSpherical(13, 1.17601, 9)
 
 	if !FloatEqualThreshold(r, 15.8114, 1e-4) {
@@ -81,6 +91,8 @@ func TestCylinderToSphere(t *testing.T) {
 }
 
 func TestSphereToCylinder(t *testing.T) {
+	t.Parallel()
+
 	rho, phi, z := SphericalToCylindrical(15.8114, 0.965250852, 1.1760046)
 
 	if !FloatEqualThreshold(rho, 13, 1e-4) {

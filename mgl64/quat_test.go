@@ -12,6 +12,8 @@ import (
 )
 
 func TestQuatMulIdentity(t *testing.T) {
+	t.Parallel()
+
 	i1 := Quat{1.0, Vec3{0, 0, 0}}
 	i2 := QuatIdent()
 	i3 := QuatIdent()
@@ -30,6 +32,8 @@ func TestQuatMulIdentity(t *testing.T) {
 }
 
 func TestQuatRotateOnAxis(t *testing.T) {
+	t.Parallel()
+
 	var angleDegrees float64 = 30.0
 	axis := Vec3{1, 0, 0}
 
@@ -45,6 +49,8 @@ func TestQuatRotateOnAxis(t *testing.T) {
 }
 
 func TestQuatRotateOffAxis(t *testing.T) {
+	t.Parallel()
+
 	var angleRads float64 = DegToRad(30.0)
 	axis := Vec3{1, 0, 0}
 
@@ -64,6 +70,8 @@ func TestQuatRotateOffAxis(t *testing.T) {
 }
 
 func TestQuatIdentityToMatrix(t *testing.T) {
+	t.Parallel()
+
 	quat := QuatIdent()
 	matrix := quat.Mat4()
 	answer := Ident4()
@@ -74,6 +82,8 @@ func TestQuatIdentityToMatrix(t *testing.T) {
 }
 
 func TestQuatRotationToMatrix(t *testing.T) {
+	t.Parallel()
+
 	var angle float64 = DegToRad(45.0)
 
 	axis := Vec3{1, 2, 3}.Normalize()
@@ -88,6 +98,8 @@ func TestQuatRotationToMatrix(t *testing.T) {
 
 // Taken from the Matlab AnglesToQuat documentation example
 func TestAnglesToQuatZYX(t *testing.T) {
+	t.Parallel()
+
 	q := AnglesToQuat(.7854, 0.1, 0, ZYX)
 
 	t.Log("Calculated quaternion: ", q, "\n")
@@ -102,6 +114,8 @@ func TestAnglesToQuatZYX(t *testing.T) {
 }
 
 func TestQuatMatRotateY(t *testing.T) {
+	t.Parallel()
+
 	q := QuatRotate(float64(math.Pi), Vec3{0, 1, 0})
 	q = q.Normalize()
 	v := Vec3{1, 0, 0}

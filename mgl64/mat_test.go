@@ -11,6 +11,8 @@ import (
 )
 
 func TestMulIdent(t *testing.T) {
+	t.Parallel()
+
 	i1 := [...]float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
 	i2 := Ident4()
 	i3 := Ident4()
@@ -25,7 +27,9 @@ func TestMulIdent(t *testing.T) {
 }
 
 // M>N
-func TestMatRowsMGTN(t *testing.T) {
+func TestMatRowsTall(t *testing.T) {
+	t.Parallel()
+
 	row0 := Vec3{1, 2, 3}
 	row1 := Vec3{4, 5, 6}
 	rows := [2]Vec3{row0, row1}
@@ -55,7 +59,8 @@ func TestMatRowsMGTN(t *testing.T) {
 }
 
 // M<N
-func TestMatRowsMLTN(t *testing.T) {
+func TestMatRowsWide(t *testing.T) {
+	t.Parallel()
 
 	v0 := Vec3{1, 2, 3}
 	v1 := Vec3{4, 5, 6}
@@ -89,7 +94,8 @@ func TestMatRowsMLTN(t *testing.T) {
 }
 
 // Square matrix
-func TestMatRowsM(t *testing.T) {
+func TestMatRowsSquare(t *testing.T) {
+	t.Parallel()
 
 	v0 := Vec4{1, 2, 3, 4}
 	v1 := Vec4{5, 6, 7, 8}
@@ -121,7 +127,7 @@ func TestMatRowsM(t *testing.T) {
 }
 
 // M<N
-func TestMatColsMLTN(t *testing.T) {
+func TestMatColsTall(t *testing.T) {
 
 	v0 := Vec3{1, 2, 3}
 	v1 := Vec3{4, 5, 6}
@@ -151,7 +157,8 @@ func TestMatColsMLTN(t *testing.T) {
 }
 
 // M>N
-func TestMatColsMGTN(t *testing.T) {
+func TestMatColsWide(t *testing.T) {
+	t.Parallel()
 
 	v0 := Vec3{1, 2, 3}
 	v1 := Vec3{4, 5, 6}
@@ -183,7 +190,9 @@ func TestMatColsMGTN(t *testing.T) {
 }
 
 // Square matrix
-func TestMatColsM(t *testing.T) {
+func TestMatColsSquare(t *testing.T) {
+	t.Parallel()
+
 	v0 := Vec4{1, 2, 3, 4}
 	v1 := Vec4{5, 6, 7, 8}
 	v2 := Vec4{9, 10, 11, 12}
@@ -214,6 +223,8 @@ func TestMatColsM(t *testing.T) {
 }
 
 func TestTransposeTall(t *testing.T) {
+	t.Parallel()
+
 	m := Mat3x2FromCols(
 		Vec3{1, 2, 3},
 		Vec3{4, 5, 6},
@@ -232,6 +243,8 @@ func TestTransposeTall(t *testing.T) {
 }
 
 func TestTransposeWide(t *testing.T) {
+	t.Parallel()
+
 	m := Mat2x3FromCols(
 		Vec2{1, 2},
 		Vec2{3, 4},
@@ -252,6 +265,8 @@ func TestTransposeWide(t *testing.T) {
 }
 
 func TestTransposeSquare(t *testing.T) {
+	t.Parallel()
+
 	m := Mat3FromCols(
 		Vec3{1, 2, 3},
 		Vec3{4, 5, 6},
@@ -272,6 +287,8 @@ func TestTransposeSquare(t *testing.T) {
 }
 
 func TestAtSet(t *testing.T) {
+	t.Parallel()
+
 	m := Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	v := m.At(0, 2)
@@ -296,6 +313,8 @@ func TestAtSet(t *testing.T) {
 }
 
 func TestDiagTrace(t *testing.T) {
+	t.Parallel()
+
 	m := Diag4(Vec4{1, 2, 3, 4})
 
 	tr := m.Trace()

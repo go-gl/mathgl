@@ -11,6 +11,8 @@ import (
 )
 
 func TestEqual(t *testing.T) {
+	t.Parallel()
+
 	var a float32 = 1.5
 	var b float32 = 1.0 + .5
 
@@ -42,6 +44,8 @@ func TestEqual(t *testing.T) {
 }
 
 func TestEqualThreshold(t *testing.T) {
+	t.Parallel()
+
 	// |1.0 - 1.01| < .1
 	if !FloatEqualThreshold(1.0, 1.01, 1e-1) {
 		t.Errorf("Thresholded equal returns negative on threshold")
@@ -54,6 +58,8 @@ func TestEqualThreshold(t *testing.T) {
 }
 
 func TestEqual32(t *testing.T) {
+	t.Parallel()
+
 	a := float32(1.5)
 	b := float32(1.0 + .5)
 
@@ -81,24 +87,8 @@ func TestEqual32(t *testing.T) {
 }
 
 func TestClampf(t *testing.T) {
-	if !FloatEqual(Clamp(-1.0, 0.0, 1.0), 0.0) {
-		t.Errorf("Clamp returns incorrect value for below threshold")
-	}
+	t.Parallel()
 
-	if !FloatEqual(Clamp(0.0, 0.0, 1.0), 0.0) {
-		t.Errorf("Clamp does something weird when value is at threshold")
-	}
-
-	if !FloatEqual(Clamp(.14, 0.0, 1.0), .14) {
-		t.Errorf("Clamp fails to return correct value when value is within threshold")
-	}
-
-	if !FloatEqual(Clamp(1.1, 0.0, 1.0), 1.0) {
-		t.Errorf("Clamp fails to return max threshold when appropriate")
-	}
-}
-
-func TestClampd(t *testing.T) {
 	if !FloatEqual(Clamp(-1.0, 0.0, 1.0), 0.0) {
 		t.Errorf("Clamp returns incorrect value for below threshold")
 	}
@@ -117,6 +107,8 @@ func TestClampd(t *testing.T) {
 }
 
 func TestIsClamped(t *testing.T) {
+	t.Parallel()
+
 	if IsClamped(-1.0, 0.0, 1.0) {
 		t.Errorf("Test below min is considered clamped")
 	}
