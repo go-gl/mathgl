@@ -13,8 +13,7 @@ import (
 // This is meant to complement future algorithms that may require matrices larger than
 // 4x4, but still relatively small (e.g. Jacobeans for inverse kinematics).
 //
-// It makes use of the same realloc callback as VecN, for use in memory pools if you
-// want to avoid garbage collection.
+// It makes use of the same memory sync.Pool set that VecN is.
 //
 // MatMN will always check if the receiver is nil on any method. Meaning MathMN(nil).Add(dst,m2)
 // should always work. Except for the Reshape function, the semantics of this is to "propogate" nils
@@ -26,24 +25,26 @@ type MatMxN struct {
 
 // Creates a matrix backed by a new slice of size m*n
 func NewMatrix(m, n int) (mat *MatMxN) {
-	return &MatMxN{m: m, n: n, dat: make([]float32, m*n)}
+	return &MatMxN{m: m, n: n, dat: grabFromPool(m * n)}
 }
 
-// Returns a matrix backed by the slice dat,
-// with dimensions m and n.
+// Returns a matrix with data specified by the data in src
 //
 // For instance, to create a 3x3 MatMN from a Mat3
 //
 //    m1 := mgl32.Rotate3DX(3.14159)
 //    mat := mgl32.NewBackedMatrix(m1[:],3,3)
 //
-// will create an MN matrix backed by the initial
-// mat3 that still acts as a 3D rotation matrix.
+// will create an MN matrix matching the data in the original
+// rotation matrix. This matrix is NOT backed by the initial slice;
+// it's a copy of the data
 //
-// If m*n > cap(dat), this function will panic.
-func NewBackedMatrix(dat []float32, m, n int) *MatMxN {
-	mat := &MatMxN{m: m, n: n, dat: dat[:m*n]}
-	return mat
+// If m*n > cap(src), this function will panic.
+func NewMatrixFromData(src []float32, m, n int) *MatMxN {
+	internal := grabFromPool(m * n)
+	copy(internal, src[:m*n])
+
+	return &MatMxN{m: m, n: n, dat: internal}
 }
 
 // Copies src into dst. This Reshapes dst
@@ -110,44 +111,14 @@ func (mat *MatMxN) Zero(m, n int) {
 	}
 }
 
-// Grows the underlying slice by the desired amount
-func (mat *MatMxN) grow(size int) *MatMxN {
-	if mat == nil {
-		return &MatMxN{m: 0, n: 0, dat: make([]float32, size, size)}
-	}
-
-	// This matches Go's reallocation semantics when append is used.
-	if len(mat.dat)+size > cap(mat.dat) {
-		newCap := len(mat.dat) * 2
-		if len(mat.dat)+size > 2*len(mat.dat) {
-			newCap = len(mat.dat) + size
-		}
-
-		tmp := make([]float32, size, newCap)
-		copy(tmp, mat.dat)
-		if reallocCallback != nil {
-			reallocCallback(mat.dat)
-		}
-
-		mat.dat = tmp
-
-		return mat
-	}
-
-	mat.dat = mat.dat[:len(mat.dat)+size]
-
-	return mat
-}
-
-// Returns the underlying matrix slice via the callback
-// if it exists
+// Returns the underlying matrix slice to the memory pool
 func (mat *MatMxN) destroy() {
 	if mat == nil {
 		return
 	}
 
-	if reallocCallback != nil && mat.dat != nil {
-		reallocCallback(mat.dat)
+	if mat.dat != nil {
+		returnToPool(mat.dat)
 	}
 	mat.m, mat.n = 0, 0
 	mat.dat = nil
@@ -156,7 +127,8 @@ func (mat *MatMxN) destroy() {
 // Reshapes the matrix to the desired dimensions.
 // If the overall size of the new matrix (m*n) is bigger
 // than the current size, the underlying slice will
-// be grown, reallocating if the needed memory exceeds its cap.
+// be grown, sending the current slice to the memory pool
+// and grabbing a bigger one if necessary
 //
 // If the caller is a nil pointer, the return value will be a new
 // matrix, as if NewMatrix(m,n) had been called. Otherwise it's
@@ -166,7 +138,7 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 		return NewMatrix(m, n)
 	}
 
-	if m*n <= len(mat.dat) {
+	if m*n <= cap(mat.dat) {
 		if mat.dat != nil {
 			mat.dat = mat.dat[:m*n]
 		} else {
@@ -176,7 +148,10 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 		return mat
 	}
 
-	mat.grow(m*n - len(mat.dat))
+	if mat.dat != nil {
+		returnToPool(mat.dat)
+	}
+	mat.dat = grabFromPool(m * n)
 	mat.m, mat.n = m, n
 
 	return mat
@@ -193,23 +168,23 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
 	switch raw := m.(type) {
 	case Mat2:
-		return &MatMxN{m: 2, n: 2, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 2, 2), nil
 	case Mat2x3:
-		return &MatMxN{m: 2, n: 3, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 2, 3), nil
 	case Mat2x4:
-		return &MatMxN{m: 2, n: 4, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 2, 4), nil
 	case Mat3:
-		return &MatMxN{m: 3, n: 3, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 3, 3), nil
 	case Mat3x2:
-		return &MatMxN{m: 3, n: 2, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 3, 2), nil
 	case Mat3x4:
-		return &MatMxN{m: 3, n: 4, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 3, 4), nil
 	case Mat4:
-		return &MatMxN{m: 4, n: 4, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 4, 4), nil
 	case Mat4x2:
-		return &MatMxN{m: 4, n: 2, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 4, 2), nil
 	case Mat4x3:
-		return &MatMxN{m: 4, n: 3, dat: raw[:]}, nil
+		return NewMatrixFromData(raw[:], 4, 3), nil
 	default:
 		return nil, InferMatrixError{}
 	}

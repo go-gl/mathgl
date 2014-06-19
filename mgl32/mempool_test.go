@@ -30,6 +30,7 @@ func TestBinLog(t *testing.T) {
 }
 
 func TestGetPool(t *testing.T) {
+	slicePools = nil
 	pool := getPool(3)
 
 	if len(slicePools) != 4 || pool == nil {
@@ -43,6 +44,7 @@ func TestGetPool(t *testing.T) {
 }
 
 func TestGrabFromPool(t *testing.T) {
+	slicePools = nil
 	slice := grabFromPool(17)
 
 	if slice == nil || len(slice) != 17 || cap(slice) != 32 {
