@@ -49,7 +49,7 @@ func genPoolNew(i int) func() interface{} {
 
 // Grabs a slice from the memory pool, such that its cap
 // is 2^p where p is Ceil(log_2(size)). It will be downsliced
-// such that the cap is size.
+// such that the len is size.
 func grabFromPool(size int) []float32 {
 	pool, exact := binLog(size)
 
