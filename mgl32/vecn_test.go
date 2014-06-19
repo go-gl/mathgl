@@ -109,7 +109,7 @@ func TestVecNOuterProd(t *testing.T) {
 	v2n := NewBackedVecN(v2[:])
 
 	correct := v1.OuterProd2(v2)
-	correctN := NewBackedMatrix(correct[:], 3, 2)
+	correctN := NewMatrixFromData(correct[:], 3, 2)
 
 	result := v1n.OuterProd(nil, v2n)
 
