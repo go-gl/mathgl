@@ -23,9 +23,14 @@ Also note that since code generation is used in the files `matrix.go` and `vecto
 API Changes
 ===========
 
-From now on, no major API breaking changes will be made between major Go version releases. That means any time the "x" in Go1.x increases. Exceptions are made, of course, for bug fixes. If a bug fix necessitates changing semantics of calling software, it will be changed. (An example is the recent update of Transpose which was mistakenly using row major rules). Deprecated functions may also be nuked at major version released. Before any API breaking changes near major releases, the most recent non-breaking commit will be tagged with the major Go version number (e.g. Go1.2). If no such tag exists, one can assume nothing has been broken.
+From now on, no major API breaking changes will be made between  Go version releases. That means any time any "x" in Go1.x.x increases. Exceptions are made, of course, for bug fixes. If a bug fix necessitates changing semantics of calling software, it will be changed. (An example is the recent update of Transpose which was mistakenly using row major rules). Deprecated functions may also be nuked at major version released. Before any API breaking changes near major releases, the most recent non-breaking commit will be tagged with the previous Go version number (e.g. Go1.2.2). If no such tag exists, one can assume nothing has been broken.
 
 Currently Deprecated Functions
 -------
 
-EulerToQuat(ax,ay,az) ==USE INSTEAD==> AnglesToQuat(ax,ay,az,ZYX)
+None
+
+API-Breaking changes made for latest Go release
+----
+
+Removal of EulerToQuat; use AnglesToQuat with the order ZYX instead.

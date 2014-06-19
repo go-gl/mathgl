@@ -59,29 +59,6 @@ func QuatRotate(angle float32, axis Vec3) Quat {
 	return Quat{c, axis.Mul(s)}
 }
 
-// This function is deprecated. Instead, use AnglesToQuat
-//
-// The behavior of this function should be equivalent to AnglesToQuat(zAngle, yAngle, xAngle, ZYX)
-func EulerToQuat(xAngle, yAngle, zAngle float32) Quat {
-	sinz, cosz := math.Sincos(float64(zAngle))
-	sz, cz := float32(sinz), float32(cosz)
-
-	siny, cosy := math.Sincos(float64(yAngle))
-	sy, cy := float32(siny), float32(cosy)
-
-	sinx, cosx := math.Sincos(float64(xAngle))
-	sx, cx := float32(sinx), float32(cosx)
-
-	return Quat{
-		W: cx*cy*cz + sx*sy*sz,
-		V: Vec3{
-			sx*cy*cz - cx*sy*sz,
-			cx*sy*cz + sx*cy*sz,
-			cx*cy*sz - sx*sy*cz,
-		},
-	}
-}
-
 // A convenient alias for q.V[0]
 func (q Quat) X() float32 {
 	return q.V[0]
