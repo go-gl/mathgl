@@ -13,6 +13,11 @@ The old repository, before the split between the 32-bit and 64-bit subpackages, 
 
 Examples can be found in github.com/go-gl/examples.
 
+Why am I not getting what I see on github!?
+=======
+
+You're probably using a combination of `go get` and an old Go version. The `go get` utility is programmed to look for tags matching the current Go version. Right now there's a tag for Go1.2.2 for instance, so if you haven't upgraded to Go1.3, `go get` will grab an older API. See the [API Changes](https://github.com/go-gl/mathgl#api-changes) section for details on the version tagging.
+
 Contributing
 ============
 
