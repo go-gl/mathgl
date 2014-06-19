@@ -337,7 +337,7 @@ func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 	}
 
 	if dst == mul {
-		mul = &MatMxN{m: mul.m, n: mul.n, dat: grabFromPool(mat.m * mat.n)}
+		mul = NewMatrix(mul.m, mul.n)
 		copy(mul.dat, dst.dat)
 
 		// If mul==dst==mul, we need to change
@@ -348,7 +348,7 @@ func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 
 		defer mul.destroy()
 	} else if dst == mat {
-		mat = &MatMxN{m: mat.m, n: mat.n, dat: grabFromPool(mat.m * mat.n)}
+		mat = NewMatrix(mat.m, mat.n)
 		copy(mat.dat, dst.dat)
 
 		defer mat.destroy()
@@ -397,7 +397,7 @@ func (mat *MatMxN) MulNx1(dst, v *VecN) *VecN {
 		return nil
 	}
 	if dst == v {
-		v = &VecN{make([]float32, len(v.vec))}
+		v = NewVecN(len(v.vec))
 		copy(v.vec, dst.vec)
 
 		defer v.destroy()
