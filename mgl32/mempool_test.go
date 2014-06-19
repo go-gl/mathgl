@@ -51,3 +51,21 @@ func TestGrabFromPool(t *testing.T) {
 		t.Errorf("Got bad, ill sized, or badly capped slice from grabFromPool. Slice: %v, len: %v, cap: %v", slice, len(slice), cap(slice))
 	}
 }
+
+func BenchmarkBinLogReasonable(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, _ = binLog(100)
+	}
+}
+
+func BenchmarkBinLogBig(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, _ = binLog(1<<30 + 1)
+	}
+}
+
+func BenchmarkBinLogSmall(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, _ = binLog(10)
+	}
+}
