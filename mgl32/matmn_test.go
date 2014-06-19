@@ -146,10 +146,10 @@ func TestMxNMulNx1(t *testing.T) {
 
 	v := Vec4{5, 5, 5, 1}
 	correct := model.Mul4x1(v)
-	correctn := NewBackedVecN(correct[:])
+	correctn := NewVecNFromData(correct[:])
 
 	modelMN := NewMatrixFromData(model[:], 4, 4)
-	vn := NewBackedVecN(v[:])
+	vn := NewVecNFromData(v[:])
 
 	result := modelMN.MulNx1(nil, vn)
 
@@ -159,7 +159,7 @@ func TestMxNMulNx1(t *testing.T) {
 }
 
 func TestMxNTrace(t *testing.T) {
-	m := DiagN(nil, NewBackedVecN([]float32{1, 2, 3, 4, 5}))
+	m := DiagN(nil, NewVecNFromData([]float32{1, 2, 3, 4, 5}))
 
 	if !FloatEqualThreshold(m.Trace(), 15, 1e-4) {
 		t.Errorf("MatMxN's trace of a diagonal with 1,2,3,4,5 is not 15. Got: %v", m.Trace())
