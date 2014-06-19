@@ -10,9 +10,9 @@ import (
 // or something like BLAS/LAPACK for that. This is for corner cases in 3D math where you require
 // something a little bigger that 4D, but still relatively small.
 //
-// This slice makes use of the ReallocCallback, if the underlying vector ever grows beyond
-// its cap, the underlying slice will be reallocated and the old slice will be sent via
-// the callback if it's registered.
+// This VecN uses several sync.Pool objects as a memory pool. The rule is that for any sized vector, the backing slice
+// has CAPACITY (not length) of 2^p where p is Ceil(log_2(N)) -- or in other words, rounding up the base-2
+// log of the size of the vector. E.G. a VecN of size 17 will have a backing slice of Cap 32.
 type VecN struct {
 	vec []float32
 }

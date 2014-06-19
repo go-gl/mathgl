@@ -9,6 +9,13 @@ var (
 	listLock   sync.RWMutex
 )
 
+// Returns the given memory pool. If the pool doesn't exist, it will
+// create all pools up to element i. The number "i" corresponds to "p"
+// in most other comments. That is, it's Ceil(log_2(whatever)). So i=0
+// means you'll get the pool for slices of size 1, i=1 for size 2, i=2 for size 4,
+// and so on.
+//
+// This is concurrency safe and uses an RWMutex to protect the list expansion.
 func getPool(i int) *sync.Pool {
 	listLock.RLock()
 	if i >= len(slicePools) {
@@ -36,6 +43,9 @@ func genPoolNew(i int) func() interface{} {
 	}
 }
 
+// Grabs a slice from the memory pool, such that its cap
+// is 2^p where p is Ceil(log_2(size)). It will be downsliced
+// such that the cap is size.
 func grabFromPool(size int) []float32 {
 	pool, exact := binLog(size)
 
@@ -57,6 +67,8 @@ func grabFromPool(size int) []float32 {
 	return slice
 }
 
+// Returns a slice to the appropriate pool. If the slice does not have a cap that's precisely
+// a power of 2, this will panic.
 func returnToPool(slice []float32) {
 	if cap(slice) == 0 {
 		return
@@ -65,18 +77,19 @@ func returnToPool(slice []float32) {
 	pool, exact := binLog(cap(slice))
 
 	if !exact {
-		panic("attempt to pool slice with non-exact cap")
+		panic("attempt to pool slice with non-exact cap. If you're a user, please file an issue with github.com/go-gl/mathgl about this bug. This should never happen.")
 	}
 
 	getPool(pool).Put(slice)
 }
 
-// The integer base 2 log of the value
-// and whether the log is exact or rounded down
+// This returns the integer base 2 log of the value
+// and whether the log is exact or rounded down.
 //
-// This is only for positive integers
+// This is only for positive integers.
 //
-// Faster ways to do this, open to suggestions
+// There are faster ways to do this, I'm open to suggestions. Most rely on knowing system endianness
+// which Go makes hard to do. I'm hesistant to use float conversions and the math package because of off-by-one errors.
 func binLog(val int) (int, bool) {
 	if val <= 0 {
 		return -1, false

@@ -13,7 +13,7 @@ import (
 // This is meant to complement future algorithms that may require matrices larger than
 // 4x4, but still relatively small (e.g. Jacobeans for inverse kinematics).
 //
-// It makes use of the same memory sync.Pool set that VecN is.
+// It makes use of the same memory sync.Pool set that VecN does, with the same sizing rules.
 //
 // MatMN will always check if the receiver is nil on any method. Meaning MathMN(nil).Add(dst,m2)
 // should always work. Except for the Reshape function, the semantics of this is to "propogate" nils
@@ -80,7 +80,7 @@ func IdentN(dst *MatMxN, n int) *MatMxN {
 // diag. Meaning: for all entries, where i==j, dst.At(i,j) = diag[i]. Otherwise
 // dst.At(i,j) = 0
 //
-// This reshapes dst to the correct size, reallocating as necessary
+// This reshapes dst to the correct size, returning/grabbing from the memory pool as necessary.
 func DiagN(dst *MatMxN, diag *VecN) *MatMxN {
 	dst = dst.Reshape(len(diag.vec), len(diag.vec))
 	n := len(diag.vec)
@@ -158,10 +158,10 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 }
 
 // Infers an MxN matrix from a constant matrix from this package. For instance,
-// a Mat2x3 inferred with this function will work just like NewBackedMatrix(m[:],2,3)
+// a Mat2x3 inferred with this function will work just like NewMatrixFromData(m[:],2,3)
 // where m is the Mat2x3. This uses a type switch.
 //
-// I personally recommend using NewBackedMatrix, because it avoids a potentially costly type switch.
+// I personally recommend using NewMatrixFromData, because it avoids a potentially costly type switch.
 // However, this is also more robust and less error prone if you change the size of your matrix somewhere.
 //
 // If the value passed in is not recognized, it returns an InferMatrixError.
@@ -209,7 +209,7 @@ func (mat *MatMxN) Trace() float32 {
 //
 // If dst is not of the correct dimensions, it will be Reshaped,
 // if dst and mat are the same, a temporary matrix of the correct size will
-// be allocated; these resources will be released via the ReallocCallback if
+// be allocated; these resources will be released via the memory pool if
 // it is registered. This should be improved in the future.
 func (mat *MatMxN) Transpose(dst *MatMxN) (t *MatMxN) {
 	if mat == nil {
@@ -322,8 +322,7 @@ func (mat *MatMxN) Sub(dst *MatMxN, minuend *MatMxN) *MatMxN {
 // Performs matrix multiplication on MxN matrix mat and NxO matrix mul, storing the result in dst.
 // This returns dst, or nil if the operation is not able to be performed.
 //
-// If mat == dst, or mul == dst a temporary matrix will be allocated, the temporary slice will be returned
-// to the user after use if the reallocation callback is registered.
+// If mat == dst, or mul == dst a temporary matrix will be used.
 //
 // This uses the naive algorithm (though on smaller matrices,
 // this can actually be faster; about len(mat)+len(mul) < ~100)
