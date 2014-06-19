@@ -2,34 +2,7 @@ package mgl32
 
 import (
 	"math"
-	"sync"
 )
-
-var reallocCallback func([]float32)
-
-var registerOnce = sync.Once{}
-
-// Registers a callback that will be called when a VecN or
-// MatMN has to reallocate its underlying slice. The old slice
-// will be sent to the receiver.
-//
-// This is useful for memory pools; this callback does not discriminate,
-// if you register the same slice multiple times, you get it back
-// every time it's thrown away.
-//
-// Note that registering on this callback does not prevent garbage
-// collection on its own! The callback won't be called if you simply let the
-// VecN or MatMN go out of scope!
-//
-// Only one callback may be registered with the package. In fact, it is enforced via
-// a sync.Once that only one call to this will ever succeed in binding the realloc callback.
-//
-// If you're doing math from multiple Goroutines, it's up to the callback to synchronize; this
-// package uses no mutexes, channels, or waitgroups to ensure non-concurrent calls to this function.
-// Likewise, registering the callback is not concurrency-safe, so do this BEFORE you use VecN or MatMxN.
-func RegisterReallocCallback(cb func([]float32)) {
-	registerOnce.Do(func() { reallocCallback = cb })
-}
 
 // A vector of N elements backed by a slice
 //
@@ -44,19 +17,29 @@ type VecN struct {
 	vec []float32
 }
 
-// Creates a new vector with backing slice initial.
-// If initial is nil, this vector will generate its own
-// slice when needed.
-func NewBackedVecN(initial []float32) *VecN {
-	return &VecN{initial}
+// Creates a new vector with a backing slice filled with the contents
+// of initial. It is NOT backed by initial, but rather a slice with cap
+// 2^p where p is Ceil(log_2(len(initial))), with the data from initial copied into
+// it.
+func NewVecNFromData(initial []float32) *VecN {
+	if initial == nil {
+		return &VecN{}
+	}
+	internal := grabFromPool(len(initial))
+	copy(internal, initial)
+	return &VecN{vec: internal}
 }
 
-// Creates a new vector with a backing slice of size n
+// Creates a new vector with a backing slice of
+// 2^p where p = Ceil(log_2(n))
 func NewVecN(n int) *VecN {
-	return &VecN{make([]float32, n)}
+	return &VecN{vec: grabFromPool(n)}
 }
 
 // Returns the raw slice backing the VecN
+//
+// This may be sent back to the memory pool at any time
+// and you aren't advised to rely on this value
 func (vn VecN) Raw() []float32 {
 	return vn.vec
 }
@@ -74,56 +57,21 @@ func (vn *VecN) destroy() {
 		return
 	}
 
-	if reallocCallback != nil {
-		reallocCallback(vn.vec)
-	}
-
+	returnToPool(vn.vec)
 	vn.vec = nil
 }
 
-// Grows the slice by the desired amount
-func (vn *VecN) grow(size int) {
-	if len(vn.vec)+size > cap(vn.vec) {
-		newCap := len(vn.vec) * 2
-		if len(vn.vec)+size > newCap {
-			newCap = len(vn.vec) + size
-		}
-		tmp := make([]float32, len(vn.vec), newCap)
-		copy(tmp, vn.vec)
-		if reallocCallback != nil {
-			reallocCallback(vn.vec)
-		}
-
-		vn.vec = tmp
-
-		return
-	}
-
-	vn.vec = vn.vec[:len(vn.vec)+size]
-}
-
-// Appends to the slice, calling the realloc callback if necessary
-func (vn *VecN) append(toAdd []float32) {
-	if reallocCallback != nil && len(vn.vec)+len(toAdd) > cap(vn.vec) {
-		// Done this way so the callback doesn't do something to our slice before
-		// it's copied into the new one
-		tmp := vn.vec
-		vn.vec = append(vn.vec, toAdd...)
-		reallocCallback(tmp)
-		return
-	}
-
-	vn.vec = append(vn.vec, toAdd...)
-}
-
-// Resizes the underlying slice to the desired amount, reallocating
+// Resizes the underlying slice to the desired amount, reallocating or retrieving from the pool
 // if necessary. This does not zero any values.
+//
+// If the caller is a nil pointer, this returns a value as if NewVecN(n) had been called,
+// otherwise it simply returns the caller.
 func (vn *VecN) Resize(n int) *VecN {
 	if vn == nil {
 		return NewVecN(n)
 	}
 
-	if n <= len(vn.vec) {
+	if n <= cap(vn.vec) {
 		if vn.vec != nil {
 			vn.vec = vn.vec[:n]
 		} else {
@@ -132,7 +80,10 @@ func (vn *VecN) Resize(n int) *VecN {
 		return vn
 	}
 
-	vn.grow(n - len(vn.vec))
+	if vn.vec != nil {
+		returnToPool(vn.vec)
+	}
+	vn.vec = grabFromPool(n)
 	return vn
 }
 
