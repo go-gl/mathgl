@@ -29,7 +29,11 @@ type MatMxN struct {
 
 // Creates a matrix backed by a new slice of size m*n
 func NewMatrix(m, n int) (mat *MatMxN) {
-	return &MatMxN{m: m, n: n, dat: grabFromPool(m * n)}
+	if shouldPool {
+		return &MatMxN{m: m, n: n, dat: grabFromPool(m * n)}
+	} else {
+		return &MatMxN{m: m, n: n, dat: make([]float32, m*n)}
+	}
 }
 
 // Returns a matrix with data specified by the data in src
@@ -45,7 +49,12 @@ func NewMatrix(m, n int) (mat *MatMxN) {
 //
 // If m*n > cap(src), this function will panic.
 func NewMatrixFromData(src []float32, m, n int) *MatMxN {
-	internal := grabFromPool(m * n)
+	var internal []float32
+	if shouldPool {
+		internal = grabFromPool(m * n)
+	} else {
+		internal = make([]float32, m*n)
+	}
 	copy(internal, src[:m*n])
 
 	return &MatMxN{m: m, n: n, dat: internal}
@@ -121,7 +130,7 @@ func (mat *MatMxN) destroy() {
 		return
 	}
 
-	if mat.dat != nil {
+	if shouldPool && mat.dat != nil {
 		returnToPool(mat.dat)
 	}
 	mat.m, mat.n = 0, 0
@@ -152,11 +161,10 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 		return mat
 	}
 
-	if mat.dat != nil {
+	if shouldPool && mat.dat != nil {
 		returnToPool(mat.dat)
 	}
-	mat.dat = grabFromPool(m * n)
-	mat.m, mat.n = m, n
+	(*mat) = (*NewMatrix(m, n))
 
 	return mat
 }

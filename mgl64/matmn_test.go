@@ -5,6 +5,7 @@
 package mgl64
 
 import (
+	"runtime"
 	"testing"
 )
 
@@ -168,4 +169,36 @@ func TestMxNTrace(t *testing.T) {
 	if !FloatEqualThreshold(m.Trace(), 15, 1e-4) {
 		t.Errorf("MatMxN's trace of a diagonal with 1,2,3,4,5 is not 15. Got: %v", m.Trace())
 	}
+}
+
+func complexOperations() {
+	m := NewMatrix(15, 20)
+	t := m.Transpose(nil)
+
+	t.MulMxN(m, m).MulMxN(m, t)
+
+	t = t.Transpose(t)
+}
+
+func BenchmarkMxNWithPooling(b *testing.B) {
+	shouldPool = true
+	slicePools = nil
+
+	for n := 0; n < b.N; n++ {
+		complexOperations()
+	}
+
+	b.StopTimer()
+	runtime.GC()
+}
+
+func BenchmarkMxNWithoutPooling(b *testing.B) {
+	shouldPool = false
+
+	for n := 0; n < b.N; n++ {
+		complexOperations()
+	}
+
+	b.StopTimer()
+	runtime.GC()
 }

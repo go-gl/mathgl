@@ -29,7 +29,12 @@ func NewVecNFromData(initial []float32) *VecN {
 	if initial == nil {
 		return &VecN{}
 	}
-	internal := grabFromPool(len(initial))
+	var internal []float32
+	if shouldPool {
+		internal = grabFromPool(len(initial))
+	} else {
+		internal = make([]float32, len(initial))
+	}
 	copy(internal, initial)
 	return &VecN{vec: internal}
 }
@@ -37,7 +42,11 @@ func NewVecNFromData(initial []float32) *VecN {
 // Creates a new vector with a backing slice of
 // 2^p where p = Ceil(log_2(n))
 func NewVecN(n int) *VecN {
-	return &VecN{vec: grabFromPool(n)}
+	if shouldPool {
+		return &VecN{vec: grabFromPool(n)}
+	} else {
+		return &VecN{vec: make([]float32, n)}
+	}
 }
 
 // Returns the raw slice backing the VecN
@@ -61,12 +70,14 @@ func (vn *VecN) destroy() {
 		return
 	}
 
-	returnToPool(vn.vec)
+	if shouldPool {
+		returnToPool(vn.vec)
+	}
 	vn.vec = nil
 }
 
 // Resizes the underlying slice to the desired amount, reallocating or retrieving from the pool
-// if necessary. This does not zero any values.
+// if necessary. The values after a Resize cannot be expected to be related to the values before a Resize.
 //
 // If the caller is a nil pointer, this returns a value as if NewVecN(n) had been called,
 // otherwise it simply returns the caller.
@@ -84,10 +95,11 @@ func (vn *VecN) Resize(n int) *VecN {
 		return vn
 	}
 
-	if vn.vec != nil {
+	if shouldPool && vn.vec != nil {
 		returnToPool(vn.vec)
 	}
-	vn.vec = grabFromPool(n)
+	*vn = (*NewVecN(n))
+
 	return vn
 }
 

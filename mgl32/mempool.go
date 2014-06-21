@@ -13,6 +13,12 @@ var (
 	listLock   sync.RWMutex
 )
 
+var shouldPool = true
+
+func DisableMemoryPooling() {
+	shouldPool = false
+}
+
 // Returns the given memory pool. If the pool doesn't exist, it will
 // create all pools up to element i. The number "i" corresponds to "p"
 // in most other comments. That is, it's Ceil(log_2(whatever)). So i=0
