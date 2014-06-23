@@ -5,7 +5,6 @@
 package mgl32
 
 import (
-	"math"
 	"math/rand"
 	"testing"
 	"time"
@@ -56,13 +55,6 @@ func TestEqualThreshold(t *testing.T) {
 
 func TestEqualThresholdTable(t *testing.T) {
 	// http://floating-point-gui.de/errors/NearlyEqualsTest.java
-
-	MinValue := float32(math.SmallestNonzeroFloat32)
-	//MinNorm := float32(1.17549435082229e-38)
-	MaxValue := float32(math.MaxFloat32)
-	InfPos := float32(math.Inf(1))
-	InfNeg := float32(math.Inf(-1))
-	NaN := float32(math.NaN())
 
 	tests := []struct {
 		A, B, Ep float32
@@ -148,7 +140,7 @@ func TestEqualThresholdTable(t *testing.T) {
 		{-1.000000001, 1.0, 0.00001, false},
 		{1.0, -1.000000001, 0.00001, false},
 		{10 * MinValue, 10 * -MinValue, 0.00001, true},
-		// TODO: {10000 * MinValue, 10000 * -MinValue, 0.00001, false},
+		{10000 * MinValue, 10000 * -MinValue, 0.00001, true},
 
 		// Comparisons of numbers very close to zero
 		{MinValue, -MinValue, 0.00001, true},

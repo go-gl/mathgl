@@ -34,15 +34,7 @@ func Abs(a float32) float32 {
 //
 // It is slightly altered to not call Abs when not needed.
 func FloatEqual(a, b float32) bool {
-
-	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
-		return true
-	} else if a*b == 0 { // If a or b are 0
-		return Abs(a-b) < Epsilon*Epsilon
-	}
-
-	// Else compare difference
-	return Abs(a-b)/(Abs(a)+Abs(b)) < Epsilon
+	return FloatEqualThreshold(a, b, Epsilon)
 }
 
 // FloatEqualFunc is a utility closure that will generate a function that
@@ -54,6 +46,16 @@ func FloatEqualFunc(epsilon float32) func(float32, float32) bool {
 	}
 }
 
+var (
+	MinNormal = float32(1.1754943508222875e-38) // 1 / 2**(127 - 1)
+	MinValue  = float32(math.SmallestNonzeroFloat32)
+	MaxValue  = float32(math.MaxFloat32)
+
+	InfPos = float32(math.Inf(1))
+	InfNeg = float32(math.Inf(-1))
+	NaN    = float32(math.NaN())
+)
+
 // FloatEqualThreshold is a utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
 //
@@ -61,15 +63,17 @@ func FloatEqualFunc(epsilon float32) func(float32, float32) bool {
 //
 // This differs from FloatEqual in that it lets you pass in your comparison threshold, so that you can adjust the comparison value to your specific needs
 func FloatEqualThreshold(a, b, epsilon float32) bool {
-
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
 		return true
-	} else if a*b == 0 { // If a or b is 0
-		return Abs(a-b) < epsilon*epsilon
+	}
+
+	diff := Abs(a - b)
+	if a*b == 0 || diff < MinNormal { // If a or b are 0 or both are extremely close to it
+		return diff < epsilon*epsilon
 	}
 
 	// Else compare difference
-	return Abs(a-b)/(Abs(a)+Abs(b)) < epsilon
+	return diff/(Abs(a)+Abs(b)) < epsilon
 }
 
 // Clamp takes in a value and two thresholds. If the value is smaller than the low
