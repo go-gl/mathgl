@@ -163,3 +163,25 @@ func HomogRotate3D(angle float64, axis Vec3) Mat4 {
 
 	return Mat4{x*x*k + c, x*y*k + z*s, x*z*k - y*s, 0, x*y*k - z*s, y*y*k + c, y*z*k + x*s, 0, x*z*k + y*s, y*z*k - x*s, z*z*k + c, 0, 0, 0, 0, 1}
 }
+
+// Extracts the 3d scaling from a homogeneous matrix
+func Extract3DScale(m Mat4) (x, y, z float64) {
+	return math.Sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]),
+		math.Sqrt(m[4]*m[4] + m[5]*m[5] + m[6]*m[6]),
+		math.Sqrt(m[8]*m[8] + m[9]*m[9] + m[10]*m[10])
+}
+
+// Extracts the maximum scaling from a homogeneous matrix
+func ExtractMaxScale(m Mat4) float64 {
+	scaleX := m[0]*m[0] + m[1]*m[1] + m[2]*m[2]
+	scaleY := m[4]*m[4] + m[5]*m[5] + m[6]*m[6]
+	scaleZ := m[8]*m[8] + m[9]*m[9] + m[10]*m[10]
+
+	return math.Sqrt(math.Max(scaleX, math.Max(scaleY, scaleZ)))
+}
+
+// Calculates the Normal of the Matrix
+func Mat4Normal(m Mat4) Mat3 {
+	n := m.Inv().Transpose()
+	return Mat3{n[0], n[1], n[2], n[4], n[5], n[6], n[8], n[9], n[10]}
+}

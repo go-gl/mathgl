@@ -4,6 +4,10 @@
 
 package mgl64
 
+import (
+	"math"
+)
+
 // Epsilon is some tiny value that determines how precisely equal we want our floats to be
 // This is exported and left as a variable in case you want to change the default threshold for the
 // purposes of certain methods (e.g. Unproject uses the default epsilon when determining
@@ -30,15 +34,7 @@ func Abs(a float64) float64 {
 //
 // It is slightly altered to not call Abs when not needed.
 func FloatEqual(a, b float64) bool {
-
-	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
-		return true
-	} else if a*b == 0 { // If a or b are 0
-		return Abs(a-b) < Epsilon*Epsilon
-	}
-
-	// Else compare difference
-	return Abs(a-b)/(Abs(a)+Abs(b)) < Epsilon
+	return FloatEqualThreshold(a, b, Epsilon)
 }
 
 // FloatEqualFunc is a utility closure that will generate a function that
@@ -50,6 +46,16 @@ func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
 	}
 }
 
+var (
+	MinNormal = 2.2250738585072014e-308 // 1 / 2**(1023 - 1)
+	MinValue  = math.SmallestNonzeroFloat64
+	MaxValue  = math.MaxFloat64
+
+	InfPos = math.Inf(1)
+	InfNeg = math.Inf(-1)
+	NaN    = math.NaN()
+)
+
 // FloatEqualThreshold is a utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
 //
@@ -57,15 +63,17 @@ func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
 //
 // This differs from FloatEqual in that it lets you pass in your comparison threshold, so that you can adjust the comparison value to your specific needs
 func FloatEqualThreshold(a, b, epsilon float64) bool {
-
 	if a == b { // Handles the case of inf or shortcuts the loop when no significant error has accumulated
 		return true
-	} else if a*b == 0 { // If a or b is 0
-		return Abs(a-b) < epsilon*epsilon
+	}
+
+	diff := Abs(a - b)
+	if a*b == 0 || diff < MinNormal { // If a or b are 0 or both are extremely close to it
+		return diff < epsilon*epsilon
 	}
 
 	// Else compare difference
-	return Abs(a-b)/(Abs(a)+Abs(b)) < epsilon
+	return diff/(Abs(a)+Abs(b)) < epsilon
 }
 
 // Clamp takes in a value and two thresholds. If the value is smaller than the low
@@ -116,4 +124,15 @@ func SetMax(a, b *float64) {
 	if *a < *b {
 		*a = *b
 	}
+}
+
+// Round shortens a float32 value to a specified precision (number of digits after the decimal point)
+// with "round half up" tie-braking rule. Half-way values (23.5) are always rounded up (24).
+func Round(v float64, precision int) float64 {
+	p := float64(precision)
+	t := v * math.Pow(10, p)
+	if t > 0 {
+		return math.Floor(t+0.5) / math.Pow(10, p)
+	}
+	return math.Ceil(t-0.5) / math.Pow(10, p)
 }

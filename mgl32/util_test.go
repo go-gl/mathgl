@@ -57,6 +57,115 @@ func TestEqualThreshold(t *testing.T) {
 	}
 }
 
+func TestEqualThresholdTable(t *testing.T) {
+	// http://floating-point-gui.de/errors/NearlyEqualsTest.java
+
+	tests := []struct {
+		A, B, Ep float32
+		Expected bool
+	}{
+		{1.0, 1.01, 1e-1, true},
+		{1.0, 1.01, 1e-3, false},
+
+		// Regular large numbers
+		{1000000.0, 1000001.0, 0.00001, true},
+		{1000001.0, 1000000.0, 0.00001, true},
+		{10000.0, 10001.0, 0.00001, false},
+		{10001.0, 10000.0, 0.00001, false},
+
+		// Negative large numbers
+		{-1000000.0, -1000001.0, 0.00001, true},
+		{-1000001.0, -1000000.0, 0.00001, true},
+		{-10000.0, -10001.0, 0.00001, false},
+		{-10001.0, -10000.0, 0.00001, false},
+
+		// Numbers around 1
+		{1.0000001, 1.0000002, 0.00001, true},
+		{1.0000002, 1.0000001, 0.00001, true},
+		{1.0002, 1.0001, 0.00001, false},
+		{1.0001, 1.0002, 0.00001, false},
+
+		// Numbers around -1
+		{-1.000001, -1.000002, 0.00001, true},
+		{-1.000002, -1.000001, 0.00001, true},
+		{-1.0001, -1.0002, 0.00001, false},
+		{-1.0002, -1.0001, 0.00001, false},
+
+		// Numbers between 1 and 0
+		{0.000000001000001, 0.000000001000002, 0.00001, true},
+		{0.000000001000002, 0.000000001000001, 0.00001, true},
+		{0.000000000001002, 0.000000000001001, 0.00001, false},
+		{0.000000000001001, 0.000000000001002, 0.00001, false},
+
+		// Numbers between -1 and 0
+		{-0.000000001000001, -0.000000001000002, 0.00001, true},
+		{-0.000000001000002, -0.000000001000001, 0.00001, true},
+		{-0.000000000001002, -0.000000000001001, 0.00001, false},
+		{-0.000000000001001, -0.000000000001002, 0.00001, false},
+
+		// Comparisons involving zero
+		{0.0, 0.0, 0.00001, true},
+		{0.0, -0.0, 0.00001, true},
+		{-0.0, -0.0, 0.00001, true},
+		{0.00000001, 0.0, 0.00001, false},
+		{0.0, 0.00000001, 0.00001, false},
+		{-0.00000001, 0.0, 0.00001, false},
+		{0.0, -0.00000001, 0.00001, false},
+
+		// Comparisons involving infinities
+		{InfPos, InfPos, 0.00001, true},
+		{InfNeg, InfNeg, 0.00001, true},
+		{InfNeg, InfPos, 0.00001, false},
+		{InfPos, MaxValue, 0.00001, false},
+		{InfNeg, -MaxValue, 0.00001, false},
+
+		// Comparisons involving NaN values
+		{NaN, NaN, 0.00001, false},
+		{0.0, NaN, 0.00001, false},
+		{NaN, 0.0, 0.00001, false},
+		{-0.0, NaN, 0.00001, false},
+		{NaN, -0.0, 0.00001, false},
+		{NaN, InfPos, 0.00001, false},
+		{InfPos, NaN, 0.00001, false},
+		{NaN, InfNeg, 0.00001, false},
+		{InfNeg, NaN, 0.00001, false},
+		{NaN, MaxValue, 0.00001, false},
+		{MaxValue, NaN, 0.00001, false},
+		{NaN, -MaxValue, 0.00001, false},
+		{-MaxValue, NaN, 0.00001, false},
+		{NaN, MinValue, 0.00001, false},
+		{MinValue, NaN, 0.00001, false},
+		{NaN, -MinValue, 0.00001, false},
+		{-MinValue, NaN, 0.00001, false},
+
+		// Comparisons of numbers on opposite sides of 0
+		{1.000000001, -1.0, 0.00001, false},
+		{-1.0, 1.000000001, 0.00001, false},
+		{-1.000000001, 1.0, 0.00001, false},
+		{1.0, -1.000000001, 0.00001, false},
+		{10 * MinValue, 10 * -MinValue, 0.00001, true},
+		{10000 * MinValue, 10000 * -MinValue, 0.00001, true},
+
+		// Comparisons of numbers very close to zero
+		{MinValue, -MinValue, 0.00001, true},
+		{-MinValue, MinValue, 0.00001, true},
+		{MinValue, 0, 0.00001, true},
+		{0, MinValue, 0.00001, true},
+		{-MinValue, 0, 0.00001, true},
+		{0, -MinValue, 0.00001, true},
+		{0.000000001, -MinValue, 0.00001, false},
+		{0.000000001, MinValue, 0.00001, false},
+		{MinValue, 0.000000001, 0.00001, false},
+		{-MinValue, 0.000000001, 0.00001, false},
+	}
+
+	for _, c := range tests {
+		if r := FloatEqualThreshold(c.A, c.B, c.Ep); r != c.Expected {
+			t.Errorf("FloatEqualThreshold(%v, %v, %v) != %v (got %v)", c.A, c.B, c.Ep, c.Expected, r)
+		}
+	}
+}
+
 func TestEqual32(t *testing.T) {
 	t.Parallel()
 
@@ -162,5 +271,38 @@ func BenchmarkClampf(b *testing.B) {
 		b.StartTimer()
 
 		Clamp(a, t1, t2)
+	}
+}
+
+func TestRound(t *testing.T) {
+	tests := []struct {
+		Value     float32
+		Precision int
+		Expected  float32
+	}{
+		{0.5, 0, 1},
+		{0.123, 2, 0.12},
+		{9.99999999, 6, 10},
+		{-9.99999999, 6, -10},
+		{-0.000099, 4, -0.0001},
+	}
+
+	for _, c := range tests {
+		if r := Round(c.Value, c.Precision); r != c.Expected {
+			t.Errorf("Round(%v, %v) != %v (got %v)", c.Value, c.Precision, c.Expected, r)
+		}
+	}
+}
+
+func BenchmarkRound(b *testing.B) {
+	b.StopTimer()
+	r := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		v := r.Float32()
+		p := r.Intn(10)
+		b.StartTimer()
+
+		Round(v, p)
 	}
 }
