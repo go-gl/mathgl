@@ -158,16 +158,15 @@ func BenchmarkVec4Add(b *testing.B) {
 	}
 }
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+var v1 = Vec4{rand.Float32(), rand.Float32(), rand.Float32(), rand.Float32()}
+var v2 = Vec4{rand.Float32(), rand.Float32(), rand.Float32(), rand.Float32()}
+
 func BenchmarkVec4Sub(b *testing.B) {
-	b.StopTimer()
-	r := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
-
 	for i := 0; i < b.N; i++ {
-		b.StopTimer()
-		v1 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		v2 := Vec4{r.Float32(), r.Float32(), r.Float32(), r.Float32()}
-		b.StartTimer()
-
 		v1.Sub(v2)
 	}
 }

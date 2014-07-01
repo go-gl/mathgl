@@ -316,8 +316,8 @@ func (mat *MatMxN) Add(dst *MatMxN, addend *MatMxN) *MatMxN {
 	return dst
 }
 
-func (mat *MatMxN) Sub(dst *MatMxN, minuend *MatMxN) *MatMxN {
-	if mat == nil || minuend == nil || mat.m != minuend.m || mat.n != minuend.n {
+func (mat *MatMxN) Sub(dst *MatMxN, subtrahend *MatMxN) *MatMxN {
+	if mat == nil || subtrahend == nil || mat.m != subtrahend.m || mat.n != subtrahend.n {
 		return nil
 	}
 
@@ -326,7 +326,7 @@ func (mat *MatMxN) Sub(dst *MatMxN, minuend *MatMxN) *MatMxN {
 	// No need to care about rows and columns
 	// since it's element-wise anyway
 	for i, el := range mat.dat {
-		dst.dat[i] = el - minuend.dat[i]
+		dst.dat[i] = el - subtrahend.dat[i]
 	}
 
 	return dst
