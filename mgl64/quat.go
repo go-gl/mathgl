@@ -124,6 +124,12 @@ func (q1 Quat) Normalize() Quat {
 	if FloatEqual(1, length) {
 		return q1
 	}
+	if length == 0 {
+		return QuatIdent()
+	}
+	if length == InfPos {
+		length = MaxValue
+	}
 
 	return Quat{q1.W * 1 / length, q1.V.Mul(1 / length)}
 }
@@ -191,14 +197,19 @@ func QuatSlerp(q1, q2 Quat, amount float64) Quat {
 	q1, q2 = q1.Normalize(), q2.Normalize()
 	dot := q1.Dot(q2)
 
+	// If the inputs are too close for comfort, linearly interpolate and normalize the result.
+	if dot > 0.9995 {
+		return QuatNlerp(q1, q2, amount)
+	}
+
 	// This is here for precision errors, I'm perfectly aware the *technically* the dot is bound [-1,1], but since Acos will freak out if it's not (even if it's just a liiiiitle bit over due to normal error) we need to clamp it
 	dot = Clamp(dot, -1, 1)
 
-	theta := float64(math.Acos(float64(dot))) * amount
-	c, s := float64(math.Cos(float64(theta))), float64(math.Sin(float64(theta)))
+	theta := math.Acos(dot) * amount
+	c, s := math.Cos(theta), math.Sin(theta)
 	rel := q2.Sub(q1.Scale(dot)).Normalize()
 
-	return q2.Sub(q1.Scale(c)).Add(rel.Scale(s))
+	return q1.Scale(c).Add(rel.Scale(s))
 }
 
 // *L*inear Int*erp*olation between two Quaternions, cheap and simple.
