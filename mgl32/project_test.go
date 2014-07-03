@@ -22,6 +22,14 @@ func TestProject(t *testing.T) {
 	if !win.ApproxEqualThreshold(answer, 1e-4) {
 		t.Errorf("Project does something weird, differs from expected by of %v", win.Sub(answer).Len())
 	}
+
+	objr, err := UnProject(win, modelview, projection, initialX, initialY, width, height)
+	if err != nil {
+		t.Errorf("UnProject returned error:", err)
+	}
+	if !objr.ApproxEqualThreshold(obj, 1e-4) {
+		t.Errorf("UnProject(%v) != %v (got %v)", win, obj, objr)
+	}
 }
 
 func TestLookAtV(t *testing.T) {
@@ -93,6 +101,10 @@ func TestLookAtV(t *testing.T) {
 	for _, c := range tests {
 		if r := LookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: LookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
+		}
+
+		if r := LookAt(c.Eye[0], c.Eye[1], c.Eye[2], c.Center[0], c.Center[1], c.Center[2], c.Up[0], c.Up[1], c.Up[2]); !r.ApproxEqualThreshold(c.Expected, threshold) {
+			t.Errorf("%v failed: LookAt(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
 		}
 	}
 }

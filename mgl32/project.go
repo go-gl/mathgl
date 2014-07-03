@@ -98,9 +98,18 @@ func UnProject(win Vec3, modelview, projection Mat4, initialX, initialY, width, 
 		return Vec3{}, errors.New("Could not find matrix inverse (projection times modelview is probably non-singular)")
 	}
 
-	obj[0] = (2 * (win[0] - float32(initialX)) / float32(width)) - 1
-	obj[1] = (2 * (win[1] - float32(initialY)) / float32(height)) - 1
-	obj[2] = 2*win[2] - 1
+	obj4 := inv.Mul4x1(Vec4{
+		(2 * (win[0] - float32(initialX)) / float32(width)) - 1,
+		(2 * (win[1] - float32(initialY)) / float32(height)) - 1,
+		2*win[2] - 1,
+		1.0,
+	})
+	obj = obj4.Vec3()
+
+	//if obj4[3] > MinValue {}
+	obj[0] /= obj4[3]
+	obj[1] /= obj4[3]
+	obj[2] /= obj4[3]
 
 	return obj, nil
 }

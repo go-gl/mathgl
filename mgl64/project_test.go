@@ -22,6 +22,14 @@ func TestProject(t *testing.T) {
 	if !win.ApproxEqualThreshold(answer, 1e-4) {
 		t.Errorf("Project does something weird, differs from expected by of %v", win.Sub(answer).Len())
 	}
+
+	objr, err := UnProject(win, modelview, projection, initialX, initialY, width, height)
+	if err != nil {
+		t.Errorf("UnProject returned error:", err)
+	}
+	if !objr.ApproxEqualThreshold(obj, 1e-4) {
+		t.Errorf("UnProject(%v) != %v (got %v)", win, obj, objr)
+	}
 }
 
 func TestLookAtV(t *testing.T) {
