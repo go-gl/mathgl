@@ -5,6 +5,7 @@
 package mgl32
 
 import (
+	"math"
 	"testing"
 )
 
@@ -105,5 +106,45 @@ func TestSphereToCylinder(t *testing.T) {
 
 	if !FloatEqualThreshold(z, 9, 1e-4) {
 		t.Errorf("Got incorrect value for phi. Got: %f, expected: %f", z, 9.)
+	}
+}
+
+func TestDegToRad(t *testing.T) {
+	tests := []struct {
+		Deg, Rad float32
+	}{
+		{0, 0},
+		{90, math.Pi / 2},
+		{180, math.Pi},
+		{270, math.Pi + math.Pi/2},
+		{360, math.Pi * 2},
+		{-90, -math.Pi / 2},
+		{-360, -math.Pi * 2},
+	}
+
+	for _, c := range tests {
+		if r := DegToRad(c.Deg); r != c.Rad {
+			t.Errorf("DegToRad(%v) != %v (got %v)", c.Deg, c.Rad, r)
+		}
+	}
+}
+
+func TestRadToDeg(t *testing.T) {
+	tests := []struct {
+		Deg, Rad float32
+	}{
+		{0, 0},
+		{90, math.Pi / 2},
+		{180, math.Pi},
+		{270, math.Pi + math.Pi/2},
+		{360, math.Pi * 2},
+		{-90, -math.Pi / 2},
+		{-360, -math.Pi * 2},
+	}
+
+	for _, c := range tests {
+		if r := RadToDeg(c.Rad); r != c.Deg {
+			t.Errorf("RadToDeg(%v) != %v (got %v)", c.Rad, c.Deg, r)
+		}
 	}
 }
