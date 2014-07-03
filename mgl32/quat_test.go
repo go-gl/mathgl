@@ -348,7 +348,7 @@ func TestQuatLookAtV(t *testing.T) {
 
 	threshold := float32(math.Pow(10, -2))
 	for _, c := range tests {
-		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !FloatEqualThreshold(Abs(r.Dot(c.Expected)), 1, threshold) {
+		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
 		}
 	}
@@ -556,6 +556,23 @@ func TestQuatSlerp(t *testing.T) {
 	for _, c := range tests {
 		if r := QuatSlerp(c.A, c.B, c.Scalar); !r.ApproxEqualThreshold(c.Expected, 1e-2) {
 			t.Errorf("QuatSlerp(%v, %v, %v) != %v (got %v)", c.A, c.B, c.Scalar, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatDot(t *testing.T) {
+	tests := []struct {
+		A, B     Quat
+		Expected float32
+	}{
+		{Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}, 0},
+		{Quat{0, Vec3{1, 2, 3}}, Quat{0, Vec3{4, 5, 6}}, 32},
+		{Quat{4, Vec3{1, 2, 3}}, Quat{8, Vec3{5, 6, 7}}, 70},
+	}
+
+	for _, c := range tests {
+		if r := c.A.Dot(c.B); !FloatEqualThreshold(r, c.Expected, 1e-4) {
+			t.Errorf("Quat(%v).Dot(Quat(%v)) != %v (got %v)", c.A, c.B, c.Expected, r)
 		}
 	}
 }
