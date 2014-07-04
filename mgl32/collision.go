@@ -1,9 +1,5 @@
 package mgl32
 
-import (
-	"fmt"
-)
-
 // AABB stands for Axis-Aligned Bounding Box -- a box whose planes
 // are parallel with the 3 basis axes of your coordinate system.
 //
@@ -148,8 +144,6 @@ func (aabb *AABB) Transform(transformation Mat4) *AABB {
 
 	newCenter := TransformCoordinate(center, transformation)
 	newExtent := TransformNormal(extent, transformation.Abs())
-
-	fmt.Println(newCenter, newExtent)
 
 	return &AABB{Min: newCenter.Sub(newExtent), Max: newCenter.Add(newExtent)}
 }

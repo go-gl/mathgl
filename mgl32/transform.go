@@ -5,7 +5,6 @@
 package mgl32
 
 import "math"
-import "fmt"
 
 // Rotate2D returns a rotation Matrix about a angle in 2-D space. Specifically about the origin.
 // It is a 2x2 matrix, if you need a 3x3 for Homogeneous math (e.g. composition with a Translation matrix)
