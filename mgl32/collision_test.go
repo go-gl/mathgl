@@ -93,6 +93,8 @@ func TestAABBTransform(t *testing.T) {
 		out AABB
 	}{
 		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Translate3D(0, 0, .5), AABB{Min: Vec3{0, 0, .5}, Max: Vec3{1, 1, 1.5}}},
+		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Ident4(), AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}},
+		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Translate3D(0, 0, .5).Mul4(Scale3D(2, 1, 1)), AABB{Min: Vec3{0, 0, .5}, Max: Vec3{2, 1, 1.5}}},
 	}
 
 	for _, test := range transformTests {
