@@ -199,7 +199,7 @@ func Mat4Normal(m Mat4) Mat3 {
 //     vec3 newV = r.xyz;
 func TransformCoordinate(v Vec3, m Mat4) Vec3 {
 	t := v.Vec4(1)
-	m.Mul4x1(t)
+	t = m.Mul4x1(t)
 	t.Mul(1 / t[3])
 
 	return t.Vec3()
@@ -217,7 +217,7 @@ func TransformCoordinate(v Vec3, m Mat4) Vec3 {
 //    vec3 newV = r.xyz
 func TransformNormal(v Vec3, m Mat4) Vec3 {
 	t := v.Vec4(0)
-	m.Mul4x1(t)
+	t = m.Mul4x1(t)
 
 	return t.Vec3()
 }
