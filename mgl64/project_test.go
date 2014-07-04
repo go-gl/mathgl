@@ -32,7 +32,7 @@ func TestProject(t *testing.T) {
 	}
 }
 
-func TestUnprojectNonsingular(t *testing.T) {
+func TestUnprojectSingular(t *testing.T) {
 	if _, err := UnProject(Vec3{}, Mat4{}, Mat4{}, 0, 0, 2048, 1152); err == nil {
 		t.Errorf("Did not get error from UnProject on singular matrix")
 	} else {
