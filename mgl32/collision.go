@@ -52,7 +52,7 @@ func (aabb *AABB) IntersectsRay(rayOrigin, rayDirection Vec3) (intersects bool, 
 }
 
 // Here in case we want to export it. I thought 3 types of ray/direction tests were too much.
-func rayIntersectsAABBInverseDir(rayOrigin, inverseRayDirection Vec3, aabb AABB) (intersects bool, tmin, tmax float32) {
+func rayIntersectsAABBInverseDir(rayOrigin, inverseRayDirection Vec3, aabb *AABB) (intersects bool, tmin, tmax float32) {
 	bounds := [2]Vec3{aabb.Min, aabb.Max}
 	sign := [3]int{}
 	for i := range sign {
@@ -116,17 +116,10 @@ func RayIntersectsAABBFromPrecomputedInfo(rayOrigin, inverseRayDirection Vec3, s
 
 // Transforms the AABB with the given transformation matrix.
 func (aabb *AABB) Transform(transformation Mat4) *AABB {
-	min := Vec4{aabb.Min[0], aabb.Min[1], aabb.Min[2], 0}
-	max := Vec4{aabb.Max[0], aabb.Max[1], aabb.Max[2], 0}
-	center, extent := min.Add(max).Mul(.5), max.Sub(min).Mul(.5)
+	center, extent := aabb.Min.Add(aabb.Max).Mul(.5), aabb.Max.Sub(aabb.Min).Mul(.5)
 
-	center[3] = 1 // only apply translation to the center, not the extent
+	newCenter := TransformCoordinate(center, transformation)
+	newExtent := TransformNormal(extent, transformation.Abs())
 
-	newCenter := transformation.Mul4x1(center)
-	newCenter = newCenter.Mul(1 / newCenter[3]) // Project onto the w=1 plane
-	newExtent := transformation.Abs().Mul4x1(extent)
-
-	min = newCenter.Sub(newExtent)
-	max = newCenter.Add(newExtent)
-	return &AABB{Min: Vec3{min[0], min[1], min[2]}, Max: Vec3{max[0], max[1], max[2]}}
+	return &AABB{Min: newCenter.Sub(newExtent), Max: newCenter.Add(newExtent)}
 }
