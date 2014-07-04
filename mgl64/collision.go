@@ -147,3 +147,16 @@ func (aabb *AABB) Transform(transformation Mat4) *AABB {
 
 	return &AABB{Min: newCenter.Sub(newExtent), Max: newCenter.Add(newExtent)}
 }
+
+// Returns the point on the ray starting at rayFrom
+// pointing in direction dir at factor t.
+//
+// The value "t" is a multiplicative factor on the direction,
+// so if the vector dir is normalized, t is the actual distance
+// away from the origin of the ray.
+//
+// This can be used along with tmin and tmax from AABB.IntersectsRay to determine
+// the point the ray enters and exits the AABB, respectively.
+func Ray(rayFrom, dir Vec3, t float64) Vec3 {
+	return rayFrom.Add(dir.Mul(t))
+}

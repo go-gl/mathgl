@@ -104,3 +104,22 @@ func TestAABBTransform(t *testing.T) {
 		}
 	}
 }
+
+func TestRay(t *testing.T) {
+	var tests = [...]struct {
+		rayFrom, dir Vec3
+		t            float64
+
+		out Vec3
+	}{
+		{Vec3{0, 0, 0}, Vec3{1, 0, 0}, .5, Vec3{.5, 0, 0}},
+		{Vec3{0, 0, 0}, Rotate3DY(DegToRad(-90)).Mul3x1(Vec3{1, 0, 0}), 2, Vec3{0, 0, 2}},
+	}
+
+	for _, test := range tests {
+		out := Ray(test.rayFrom, test.dir, test.t)
+		if !out.ApproxEqualThreshold(test.out, 1e-3) { // No joke 1e-4 is too sensitive for test 2
+			t.Errorf("Ray at %v pointing %v results in vector %v and not the expected %v", test.rayFrom, test.dir, out, test.out)
+		}
+	}
+}
