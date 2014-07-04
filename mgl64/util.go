@@ -47,13 +47,13 @@ func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
 }
 
 var (
-	MinNormal = 2.2250738585072014e-308 // 1 / 2**(1023 - 1)
-	MinValue  = math.SmallestNonzeroFloat64
-	MaxValue  = math.MaxFloat64
+	MinNormal = float64(1.1754943508222875e-38) // 1 / 2**(127 - 1)
+	MinValue  = float64(math.SmallestNonzeroFloat32)
+	MaxValue  = float64(math.MaxFloat32)
 
-	InfPos = math.Inf(1)
-	InfNeg = math.Inf(-1)
-	NaN    = math.NaN()
+	InfPos = float64(math.Inf(1))
+	InfNeg = float64(math.Inf(-1))
+	NaN    = float64(math.NaN())
 )
 
 // FloatEqualThreshold is a utility function to compare floats.
@@ -130,9 +130,9 @@ func SetMax(a, b *float64) {
 // with "round half up" tie-braking rule. Half-way values (23.5) are always rounded up (24).
 func Round(v float64, precision int) float64 {
 	p := float64(precision)
-	t := v * math.Pow(10, p)
+	t := float64(v) * math.Pow(10, p)
 	if t > 0 {
-		return math.Floor(t+0.5) / math.Pow(10, p)
+		return float64(math.Floor(t+0.5) / math.Pow(10, p))
 	}
-	return math.Ceil(t-0.5) / math.Pow(10, p)
+	return float64(math.Ceil(t-0.5) / math.Pow(10, p))
 }

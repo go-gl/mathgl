@@ -1650,3 +1650,48 @@ func (m Mat3) Trace() float32 {
 func (m Mat4) Trace() float32 {
 	return m[0] + m[5] + m[10] + m[15]
 }
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat2) Abs() Mat2 {
+	return Mat2{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat2x3) Abs() Mat2x3 {
+	return Mat2x3{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat2x4) Abs() Mat2x4 {
+	return Mat2x4{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat3x2) Abs() Mat3x2 {
+	return Mat3x2{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat3) Abs() Mat3 {
+	return Mat3{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat3x4) Abs() Mat3x4 {
+	return Mat3x4{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8]), Abs(m[9]), Abs(m[10]), Abs(m[11])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat4x2) Abs() Mat4x2 {
+	return Mat4x2{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat4x3) Abs() Mat4x3 {
+	return Mat4x3{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8]), Abs(m[9]), Abs(m[10]), Abs(m[11])}
+}
+
+// Abs returns the element-wise absolute value of this matrix
+func (m Mat4) Abs() Mat4 {
+	return Mat4{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8]), Abs(m[9]), Abs(m[10]), Abs(m[11]), Abs(m[12]), Abs(m[13]), Abs(m[14]), Abs(m[15])}
+}

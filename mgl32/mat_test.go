@@ -324,6 +324,19 @@ func TestDiagTrace(t *testing.T) {
 	}
 }
 
+func TestMatAbs(t *testing.T) {
+	t.Parallel()
+
+	m := Mat3{1, -3, 4, 5, -6, 8, -9, 10, 0}
+	result := Mat3{1, 3, 4, 5, 6, 8, 9, 10, 0}
+
+	m = m.Abs()
+
+	if !result.ApproxEqualThreshold(m, 1e-6) {
+		t.Errorf("Matrix absolute value does not work properly. Got: %v, Expected: %v", m, result)
+	}
+}
+
 func BenchmarkMatAdd(b *testing.B) {
 	b.StopTimer()
 	rand := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))

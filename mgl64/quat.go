@@ -320,7 +320,7 @@ func Mat4ToQuat(m Mat4) Quat {
 	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 
 	if tr := m[0] + m[5] + m[10]; tr > 0 {
-		s := 0.5 / math.Sqrt(tr+1.0)
+		s := float64(0.5 / math.Sqrt(float64(tr+1.0)))
 		return Quat{
 			0.25 / s,
 			Vec3{
@@ -332,7 +332,7 @@ func Mat4ToQuat(m Mat4) Quat {
 	}
 
 	if (m[0] > m[5]) && (m[0] > m[10]) {
-		s := 2.0 * math.Sqrt(1.0+m[0]-m[5]-m[10])
+		s := float64(2.0 * math.Sqrt(float64(1.0+m[0]-m[5]-m[10])))
 		return Quat{
 			(m[6] - m[9]) / s,
 			Vec3{
@@ -344,7 +344,7 @@ func Mat4ToQuat(m Mat4) Quat {
 	}
 
 	if m[5] > m[10] {
-		s := 2.0 * math.Sqrt(1.0+m[5]-m[0]-m[10])
+		s := float64(2.0 * math.Sqrt(float64(1.0+m[5]-m[0]-m[10])))
 		return Quat{
 			(m[8] - m[2]) / s,
 			Vec3{
@@ -356,7 +356,7 @@ func Mat4ToQuat(m Mat4) Quat {
 
 	}
 
-	s := 2.0 * math.Sqrt(1.0+m[10]-m[0]-m[5])
+	s := float64(2.0 * math.Sqrt(float64(1.0+m[10]-m[0]-m[5])))
 	return Quat{
 		(m[1] - m[4]) / s,
 		Vec3{
@@ -382,7 +382,7 @@ func QuatLookAtV(eye, center, up Vec3) Quat {
 		return Quat{1, Vec3{0, 0, 0}}
 	}
 
-	angle := math.Acos(dot)
+	angle := float64(math.Acos(float64(dot)))
 	axis := f.Cross(forward).Normalize()
 	return QuatRotate(angle, axis)
 }

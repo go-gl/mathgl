@@ -251,7 +251,7 @@ func TestMat4ToQuat(t *testing.T) {
 		},
 	}
 
-	threshold := math.Pow(10, -2)
+	threshold := float64(math.Pow(10, -2))
 	for _, c := range tests {
 		if r := Mat4ToQuat(c.Rotation); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: Mat4ToQuat(%v) != %v (got %v)", c.Description, c.Rotation, c.Expected, r)
@@ -293,7 +293,7 @@ func TestQuatRotate(t *testing.T) {
 		},
 	}
 
-	threshold := math.Pow(10, -2)
+	threshold := float64(math.Pow(10, -2))
 	for _, c := range tests {
 		if r := QuatRotate(c.Angle, c.Axis); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: QuatRotate(%v, %v) != %v (got %v)", c.Description, c.Angle, c.Axis, c.Expected, r)
@@ -346,7 +346,7 @@ func TestQuatLookAtV(t *testing.T) {
 		},
 	}
 
-	threshold := math.Pow(10, -2)
+	threshold := float64(math.Pow(10, -2))
 	for _, c := range tests {
 		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !FloatEqualThreshold(Abs(r.Dot(c.Expected)), 1, threshold) {
 			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)

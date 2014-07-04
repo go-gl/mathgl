@@ -539,6 +539,12 @@ import(
 		mats += GenMatTrace(m)
 	}
 
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatAbs(m, n)
+		}
+	}
+
 	//fmt.Println(mats)
 	return mats
 }
@@ -1027,5 +1033,20 @@ func GenMatDiag(m int) (s string) {
 
 	s += "\n\treturn m\n}\n\n"
 
+	return s
+}
+
+func GenMatAbs(m, n int) (s string) {
+	s = `// Abs returns the element-wise absolute value of this matrix
+`
+	s += fmt.Sprintf("func (m %s) Abs() %s {\n\treturn %s{", GenMatName(m, n), GenMatName(m, n), GenMatName(m, n))
+	for i := 0; i < m*n; i++ {
+		if i != 0 {
+			s += ","
+		}
+		s += fmt.Sprintf("Abs(m[%d])", i)
+	}
+
+	s += "}\n}\n\n"
 	return s
 }

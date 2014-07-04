@@ -63,7 +63,7 @@ func TestHomogRotate3D(t *testing.T) {
 		},
 	}
 
-	threshold := math.Pow(10, -2)
+	threshold := float64(math.Pow(10, -2))
 	for _, c := range tests {
 		if r := HomogRotate3D(c.Angle, c.Axis); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: HomogRotate3D(%v, %v) != %v (got %v)", c.Description, c.Angle, c.Axis, c.Expected, r)
