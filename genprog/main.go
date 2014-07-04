@@ -732,10 +732,9 @@ func GenInv(m int) string {
 // In this library, the math is precomputed, and uses no loops, though the multiplications, additions, determinant calculation, and scaling
 // are still done. This can still be (relatively) expensive for a 4x4.
 //
-// This function does not check the determinant to see if the matrix is invertible. 
-// If the determinant is 0.0, the value of all elements will be
-// infinite. (See here for why: http://play.golang.org/p/Aaj7SnbqIp ) 
-// Therefore, if the program really cares, it should check the determinant first.
+// This function checks the determinant to see if the matrix is invertible. 
+// If the determinant is 0.0, this function returns the zero matrix. However, due to floating point errors, it is
+// entirely plausible to get a false positive or negative.
 // In the future, an alternate function may be written which takes in a pre-computed determinant. 
 `
 	s += fmt.Sprintf("func (m %s) Inv() %s {\n\t", GenMatName(m, m), GenMatName(m, m))
