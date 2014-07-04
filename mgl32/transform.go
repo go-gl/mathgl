@@ -180,8 +180,44 @@ func ExtractMaxScale(m Mat4) float32 {
 	return float32(math.Sqrt(math.Max(scaleX, math.Max(scaleY, scaleZ))))
 }
 
-// Calculates the Normal of the Matrix
+// Calculates the Normal of the Matrix (aka the inverse transpose)
 func Mat4Normal(m Mat4) Mat3 {
 	n := m.Inv().Transpose()
 	return Mat3{n[0], n[1], n[2], n[4], n[5], n[6], n[8], n[9], n[10]}
+}
+
+// Multiplies a 3D vector by a transformation given by
+// the homogeneous 4D matrix m, applying any translation.
+// If this transformation is non-affine, it will project this
+// vector onto the plane w=1 before returning the result.
+//
+// This is similar to saying you're transforming and projecting a point.
+//
+// This is effectively equivalent to the GLSL code
+//     vec4 r = (m * vec4(v,1.));
+//     r = r/r.w;
+//     vec3 newV = r.xyz;
+func TransformCoordinate(v Vec3, m Mat4) Vec3 {
+	t := v.Vec4(1)
+	m.Mul4x1(t)
+	t.Mul(1 / t[3])
+
+	return t.Vec3()
+}
+
+// Multiplies a 3D vector by a transformation given by
+// the homogeneous 4D matrix m, NOT applying any translations.
+//
+// This is similar to saying you're applying a transformation
+// to a direction or normal. Rotation still applies (as does scaling),
+// but translating a direction or normal is meaningless.
+//
+// This is effectively equivalent to the GLSL code
+//    vec4 r = (m * vec4(v,0.));
+//    vec3 newV = r.xyz
+func TransformNormal(v Vec3, m Mat4) Vec3 {
+	t := v.Vec4(0)
+	m.Mul4x1(t)
+
+	return t.Vec3()
 }

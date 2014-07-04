@@ -77,7 +77,7 @@ func LookAtV(eye, center, up Vec3) Mat4 {
 // Window coordinates are continuous, not discrete (well, as continuous as an IEEE Floating Point can be), so you won't get exact pixel locations
 // without rounding or similar
 func Project(obj Vec3, modelview, projection Mat4, initialX, initialY, width, height int) (win Vec3) {
-	obj4 := Vec4{obj[0], obj[1], obj[2], 1.0}
+	obj4 := obj.Vec4(1)
 
 	vpp := projection.Mul4(modelview).Mul4x1(obj4)
 	win[0] = float32(initialX) + (float32(width)*(vpp[0]+1))/2
