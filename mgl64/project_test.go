@@ -22,6 +22,14 @@ func TestProject(t *testing.T) {
 	if !win.ApproxEqualThreshold(answer, 1e-4) {
 		t.Errorf("Project does something weird, differs from expected by of %v", win.Sub(answer).Len())
 	}
+
+	objr, err := UnProject(win, modelview, projection, initialX, initialY, width, height)
+	if err != nil {
+		t.Errorf("UnProject returned error:", err)
+	}
+	if !objr.ApproxEqualThreshold(obj, 1e-4) {
+		t.Errorf("UnProject(%v) != %v (got %v)", win, obj, objr)
+	}
 }
 
 func TestLookAtV(t *testing.T) {
@@ -93,6 +101,107 @@ func TestLookAtV(t *testing.T) {
 	for _, c := range tests {
 		if r := LookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: LookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
+		}
+
+		if r := LookAt(c.Eye[0], c.Eye[1], c.Eye[2], c.Center[0], c.Center[1], c.Center[2], c.Up[0], c.Up[1], c.Up[2]); !r.ApproxEqualThreshold(c.Expected, threshold) {
+			t.Errorf("%v failed: LookAt(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
+		}
+	}
+}
+
+func TestOrtho(t *testing.T) {
+	tests := []struct {
+		Left, Right,
+		Bottom, Top,
+		Near, Far float64
+		Expected Mat4
+	}{
+		{
+			-1.0, 1.0, -1.0, 1.0, 1.0, -1.0,
+			Ident4(),
+		}, {
+			-10.0, 10.0, -10.0, 10.0, 0.0, 100.0,
+			Mat4{0.1, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, -0.02, 0.0, 0.0, 0.0, -1.0, 1.0},
+		}, {
+			0.0, 10.0, 0.0, 10.0, 0.0, 100.0,
+			Mat4{0.2, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, -0.02, 0.0, -1.0, -1.0, -1.0, 1.0},
+		},
+	}
+
+	for _, c := range tests {
+		if r := Ortho(c.Left, c.Right, c.Bottom, c.Top, c.Near, c.Far); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Ortho(%v, %v, %v, %v, %v, %v) != %v (got %v)", c.Left, c.Right, c.Bottom, c.Top, c.Near, c.Far, c.Expected, r)
+		}
+	}
+}
+
+func TestOrtho2D(t *testing.T) {
+	tests := []struct {
+		Left, Right,
+		Bottom, Top float64
+		Expected Mat4
+	}{
+		{
+			-1.0, 1.0, -1.0, 1.0,
+			Mat4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1},
+		}, {
+			-10.0, 10.0, -10.0, 10.0,
+			Mat4{0.1, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0},
+		}, {
+			0.0, 10.0, 0.0, 10.0,
+			Mat4{0.2, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, -1.0, -1.0, 0.0, 1.0},
+		},
+	}
+
+	for _, c := range tests {
+		if r := Ortho2D(c.Left, c.Right, c.Bottom, c.Top); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Ortho2D(%v, %v, %v, %v) != %v (got %v)", c.Left, c.Right, c.Bottom, c.Top, c.Expected, r)
+		}
+	}
+}
+
+func TestPerspective(t *testing.T) {
+	tests := []struct {
+		Fovy, Aspect,
+		Near, Far float64
+		Expected Mat4
+	}{
+		{
+			DegToRad(450.0), 1.0, -1.0, 1.0,
+			Mat4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0},
+		}, {
+			DegToRad(45.0), 4.0 / 3.0, 0.1, 100.0,
+			Mat4{1.810660, 0.0, 0.0, 0.0, 0.0, 2.4142134, 0.0, 0.0, 0.0, 0.0, -1.002002, -1.0, 0.0, 0.0, -0.2002002, 0.0},
+		}, {
+			DegToRad(90.0), 16.0 / 9.0, -1.0, 1.0,
+			Mat4{0.562500, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, -0.0, -1.0, 0.0, 0.0, 1.0, 0.0},
+		},
+	}
+
+	for _, c := range tests {
+		if r := Perspective(c.Fovy, c.Aspect, c.Near, c.Far); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Perspective(%v, %v, %v, %v) != %v (got %v)", c.Fovy, c.Aspect, c.Near, c.Far, c.Expected, r)
+		}
+	}
+}
+
+func TestFrustum(t *testing.T) {
+	tests := []struct {
+		Left, Right,
+		Bottom, Top,
+		Near, Far float64
+		Expected Mat4
+	}{
+		{
+			-1.0, 1.0, -1.0, 1.0, 1.0, 0.0,
+			Mat4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -1, 0, 0, 0, 0},
+		},
+		// TODO: more tests
+	}
+
+	for _, c := range tests {
+		if r := Frustum(c.Left, c.Right, c.Bottom, c.Top, c.Near, c.Far); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Frustum(%v, %v, %v, %v, %v, %v) != %v (got %v)", c.Left, c.Right, c.Bottom, c.Top, c.Near, c.Far, c.Expected, r)
 		}
 	}
 }

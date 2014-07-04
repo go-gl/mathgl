@@ -124,6 +124,12 @@ func (q1 Quat) Normalize() Quat {
 	if FloatEqual(1, length) {
 		return q1
 	}
+	if length == 0 {
+		return QuatIdent()
+	}
+	if length == InfPos {
+		length = MaxValue
+	}
 
 	return Quat{q1.W * 1 / length, q1.V.Mul(1 / length)}
 }
@@ -161,7 +167,7 @@ func (q1 Quat) Mat4() Mat4 {
 
 // The dot product between two quaternions, equivalent to if this was a Vec4
 func (q1 Quat) Dot(q2 Quat) float32 {
-	return q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2]
+	return q1.W*q2.W + q1.V[0]*q2.V[0] + q1.V[1]*q2.V[1] + q1.V[2]*q2.V[2]
 }
 
 // Returns whether the quaternions are approximately equal, as if
@@ -191,6 +197,11 @@ func QuatSlerp(q1, q2 Quat, amount float32) Quat {
 	q1, q2 = q1.Normalize(), q2.Normalize()
 	dot := q1.Dot(q2)
 
+	// If the inputs are too close for comfort, linearly interpolate and normalize the result.
+	if dot > 0.9995 {
+		return QuatNlerp(q1, q2, amount)
+	}
+
 	// This is here for precision errors, I'm perfectly aware the *technically* the dot is bound [-1,1], but since Acos will freak out if it's not (even if it's just a liiiiitle bit over due to normal error) we need to clamp it
 	dot = Clamp(dot, -1, 1)
 
@@ -198,7 +209,7 @@ func QuatSlerp(q1, q2 Quat, amount float32) Quat {
 	c, s := float32(math.Cos(float64(theta))), float32(math.Sin(float64(theta)))
 	rel := q2.Sub(q1.Scale(dot)).Normalize()
 
-	return q2.Sub(q1.Scale(c)).Add(rel.Scale(s))
+	return q1.Scale(c).Add(rel.Scale(s))
 }
 
 // *L*inear Int*erp*olation between two Quaternions, cheap and simple.
@@ -368,21 +379,39 @@ func Mat4ToQuat(m Mat4) Quat {
 }
 
 func QuatLookAtV(eye, center, up Vec3) Quat {
-	forward := eye.Sub(center).Normalize()
-	f := Vec3{0, 0, 1}
-	dot := f.Dot(forward)
+	forward := center.Sub(eye).Normalize()
+	s := forward.Cross(up).Normalize()
+	u := s.Cross(forward)
 
-	if Abs(dot-(-1.0)) < 0.0001 {
-		// vectors point in opposite direction
-		return QuatRotate(math.Pi, up)
+	m := Mat4{
+		s[0], u[0], -forward[0], 0,
+		s[1], u[1], -forward[1], 0,
+		s[2], u[2], -forward[2], 0,
+
+		s[0]*-eye[0] + s[1]*-eye[1] + s[2]*-eye[2],
+		u[0]*-eye[0] + u[1]*-eye[1] + u[2]*-eye[2],
+		-forward[0]*-eye[0] + -forward[1]*-eye[1] + -forward[2]*-eye[2],
+		1,
 	}
 
-	if Abs(dot-(1.0)) < 0.0001 {
-		// vectors point in same direction
-		return Quat{1, Vec3{0, 0, 0}}
-	}
+	return Mat4ToQuat(m)
+	/*
+		forward := eye.Sub(center).Normalize()
+		f := Vec3{0, 0, 1}
+		dot := f.Dot(forward)
 
-	angle := float32(math.Acos(float64(dot)))
-	axis := f.Cross(forward).Normalize()
-	return QuatRotate(angle, axis)
+		if Abs(dot-(-1.0)) < 0.0001 {
+			// vectors point in opposite direction
+			return QuatRotate(math.Pi, up)
+		}
+
+		if Abs(dot-(1.0)) < 0.0001 {
+			// vectors point in same direction
+			return Quat{1, Vec3{0, 0, 0}}
+		}
+
+		angle := float32(math.Acos(float64(dot)))
+		axis := f.Cross(forward).Normalize()
+		return QuatRotate(angle, axis)
+	*/
 }

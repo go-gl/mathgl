@@ -120,3 +120,39 @@ func TestExtractMaxScale(t *testing.T) {
 		}
 	}
 }
+
+func TestTransformCoordinate(t *testing.T) {
+	tests := [...]struct {
+		v Vec3
+		m Mat4
+
+		out Vec3
+	}{
+		{Vec3{1, 1, 1}, Ident4(), Vec3{1, 1, 1}},
+		{Vec3{1, 1, 1}, Translate3D(0, 1, 1).Mul4(Scale3D(2, 2, 2)), Vec3{2, 3, 3}},
+	}
+
+	for _, test := range tests {
+		if v := TransformCoordinate(test.v, test.m); !test.out.ApproxEqualThreshold(v, 1e-4) {
+			t.Errorf("TransformCoordinate on vector %v and matrix %v fails to give result %v (got %v)", test.v, test.m, test.out, v)
+		}
+	}
+}
+
+func TestTransformNormal(t *testing.T) {
+	tests := [...]struct {
+		v Vec3
+		m Mat4
+
+		out Vec3
+	}{
+		{Vec3{1, 1, 1}, Ident4(), Vec3{1, 1, 1}},
+		{Vec3{1, 1, 1}, Translate3D(0, 1, 1).Mul4(Scale3D(2, 2, 2)), Vec3{2, 2, 2}},
+	}
+
+	for _, test := range tests {
+		if v := TransformNormal(test.v, test.m); !test.out.ApproxEqualThreshold(v, 1e-4) {
+			t.Errorf("TransformNormal on vector %v and matrix %v fails to give result %v (got %v)", test.v, test.m, test.out, v)
+		}
+	}
+}

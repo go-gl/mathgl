@@ -348,7 +348,7 @@ func TestQuatLookAtV(t *testing.T) {
 
 	threshold := float32(math.Pow(10, -2))
 	for _, c := range tests {
-		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !FloatEqualThreshold(Abs(r.Dot(c.Expected)), 1, threshold) {
+		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
 		}
 	}
@@ -379,6 +379,200 @@ func TestQuatMatConversion(t *testing.T) {
 
 		if !FloatEqualThreshold(Abs(q1.Dot(q2)), 1, 1e-4) {
 			t.Errorf("Quaternions for %v %v do not match:\n%v\n%v", RadToDeg(c.Angle), c.Axis, q1, q2)
+		}
+	}
+}
+
+func TestQuatGetter(t *testing.T) {
+	tests := []Quat{
+		Quat{0, Vec3{0, 0, 0}},
+		Quat{1, Vec3{2, 3, 4}},
+		Quat{-4, Vec3{-3, -2, -1}},
+	}
+
+	for _, q := range tests {
+		if r := q.X(); !FloatEqualThreshold(r, q.V[0], 1e-4) {
+			t.Errorf("Quat(%v).X() != %v (got %v)", q, q.V[0], r)
+		}
+
+		if r := q.Y(); !FloatEqualThreshold(r, q.V[1], 1e-4) {
+			t.Errorf("Quat(%v).Y() != %v (got %v)", q, q.V[1], r)
+		}
+
+		if r := q.Z(); !FloatEqualThreshold(r, q.V[2], 1e-4) {
+			t.Errorf("Quat(%v).Z() != %v (got %v)", q, q.V[2], r)
+		}
+	}
+}
+
+func TestQuatEqual(t *testing.T) {
+	tests := []struct {
+		A, B     Quat
+		Expected bool
+	}{
+		{Quat{1, Vec3{0, 0, 0}}, Quat{1, Vec3{0, 0, 0}}, true},
+		{Quat{1, Vec3{2, 3, 4}}, Quat{1, Vec3{2, 3, 4}}, true},
+		{Quat{0.0000000000001, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}, true},
+		{Quat{MaxValue, Vec3{1, 0, 0}}, Quat{MaxValue, Vec3{1, 0, 0}}, true},
+		{Quat{0, Vec3{0, 1, 0}}, Quat{1, Vec3{0, 0, 0}}, false},
+		{Quat{1, Vec3{2, 3, 0}}, Quat{-4, Vec3{5, 6, 0}}, false},
+	}
+
+	for _, c := range tests {
+		if r := c.A.ApproxEqualThreshold(c.B, 1e-4); r != c.Expected {
+			t.Errorf("Quat(%v).ApproxEqualThreshold(Quat(%v), 1e-4) != %v (got %v)", c.A, c.B, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatAdd(t *testing.T) {
+	tests := []struct {
+		A, B     Quat
+		Expected Quat
+	}{
+		{Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}},
+		{Quat{1, Vec3{0, 0, 0}}, Quat{1, Vec3{0, 0, 0}}, Quat{2, Vec3{0, 0, 0}}},
+		{Quat{1, Vec3{2, 3, 4}}, Quat{5, Vec3{6, 7, 8}}, Quat{6, Vec3{8, 10, 12}}},
+	}
+
+	for _, c := range tests {
+		if r := c.A.Add(c.B); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Quat(%v).Add(Quat(%v)) != %v (got %v)", c.A, c.B, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatSub(t *testing.T) {
+	tests := []struct {
+		A, B     Quat
+		Expected Quat
+	}{
+		{Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}},
+		{Quat{1, Vec3{0, 0, 0}}, Quat{1, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}},
+		{Quat{1, Vec3{2, 3, 4}}, Quat{5, Vec3{6, 7, 8}}, Quat{-4, Vec3{-4, -4, -4}}},
+	}
+
+	for _, c := range tests {
+		if r := c.A.Sub(c.B); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Quat(%v).Sub(Quat(%v)) != %v (got %v)", c.A, c.B, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatScale(t *testing.T) {
+	tests := []struct {
+		Rotation Quat
+		Scalar   float32
+		Expected Quat
+	}{
+		{Quat{0, Vec3{0, 0, 0}}, 1, Quat{0, Vec3{0, 0, 0}}},
+		{Quat{1, Vec3{0, 0, 0}}, 2, Quat{2, Vec3{0, 0, 0}}},
+		{Quat{1, Vec3{2, 3, 4}}, 3, Quat{3, Vec3{6, 9, 12}}},
+	}
+
+	for _, c := range tests {
+		if r := c.Rotation.Scale(c.Scalar); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Quat(%v).Scale(%v) != %v (got %v)", c.Rotation, c.Scalar, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatLen(t *testing.T) {
+	tests := []struct {
+		Rotation Quat
+		Expected float32
+	}{
+		{Quat{0, Vec3{1, 0, 0}}, 1},
+		{Quat{0, Vec3{0.0000000000001, 0, 0}}, 0},
+		{Quat{0, Vec3{MaxValue, 1, 0}}, InfPos},
+		{Quat{4, Vec3{1, 2, 3}}, float32(math.Sqrt(1*1 + 2*2 + 3*3 + 4*4))},
+		{Quat{0, Vec3{3.1, 4.2, 1.3}}, float32(math.Sqrt(3.1*3.1 + 4.2*4.2 + 1.3*1.3))},
+	}
+
+	for _, c := range tests {
+		if r := c.Rotation.Len(); !FloatEqualThreshold(c.Expected, r, 1e-4) {
+			t.Errorf("Quat(%v).Len() != %v (got %v)", c.Rotation, c.Expected, r)
+		}
+
+		if !FloatEqualThreshold(c.Rotation.Len(), c.Rotation.Norm(), 1e-4) {
+			t.Error("Quat().Len() != Quat().Norm()")
+		}
+	}
+}
+
+func TestQuatNormalize(t *testing.T) {
+	tests := []struct {
+		Rotation Quat
+		Expected Quat
+	}{
+		{Quat{0, Vec3{0, 0, 0}}, Quat{1, Vec3{0, 0, 0}}},
+		{Quat{0, Vec3{1, 0, 0}}, Quat{0, Vec3{1, 0, 0}}},
+		{Quat{0, Vec3{0.0000000000001, 0, 0}}, Quat{0, Vec3{1, 0, 0}}},
+		{Quat{0, Vec3{MaxValue, 1, 0}}, Quat{0, Vec3{1, 0, 0}}},
+		{Quat{4, Vec3{1, 2, 3}}, Quat{4.0 / 5.477, Vec3{1.0 / 5.477, 2.0 / 5.477, 3.0 / 5.477}}},
+		{Quat{0, Vec3{3.1, 4.2, 1.3}}, Quat{0, Vec3{3.1 / 5.3795, 4.2 / 5.3795, 1.3 / 5.3795}}},
+	}
+
+	for _, c := range tests {
+		if r := c.Rotation.Normalize(); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Quat(%v).Normalize() != %v (got %v)", c.Rotation, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatInverse(t *testing.T) {
+	tests := []struct {
+		Rotation Quat
+		Expected Quat
+	}{
+		{Quat{0, Vec3{1, 0, 0}}, Quat{0, Vec3{-1, 0, 0}}},
+		{Quat{3, Vec3{-1, 4, 3}}, Quat{3.0 / 35.0, Vec3{1.0 / 35.0, -4.0 / 35.0, -3.0 / 35.0}}},
+		{Quat{1, Vec3{0, 0, 2}}, Quat{1.0 / 5.0, Vec3{0, 0, -2.0 / 5.0}}},
+	}
+
+	for _, c := range tests {
+		if r := c.Rotation.Inverse(); !r.ApproxEqualThreshold(c.Expected, 1e-4) {
+			t.Errorf("Quat(%v).Inverse() != %v (got %v)", c.Rotation, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatSlerp(t *testing.T) {
+	tests := []struct {
+		A, B     Quat
+		Scalar   float32
+		Expected Quat
+	}{
+		{Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}, 0, Quat{1, Vec3{0, 0, 0}}},
+		{Quat{0, Vec3{1, 0, 0}}, Quat{0, Vec3{1, 0, 0}}, 0.5, Quat{0, Vec3{1, 0, 0}}},
+		{Quat{1, Vec3{0, 0, 0}}, Quat{0, Vec3{1, 0, 0}}, 0.5, Quat{0.7071067811865475, Vec3{0.7071067811865475, 0, 0}}},
+		{Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, Quat{0.996, Vec3{-0.080, -0.080, 0}}, 1, Quat{0.996, Vec3{-0.080, -0.080, 0}}},
+		{Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, Quat{0.996, Vec3{-0.080, -0.080, 0}}, 0, Quat{0.5, Vec3{-0.5, -0.5, 0.5}}},
+		{Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, Quat{0.996, Vec3{-0.080, -0.080, 0}}, 0.2, Quat{0.6553097459373098, Vec3{-0.44231939784548874, -0.44231939784548874, 0.4237176207195655}}},
+		{Quat{0.996, Vec3{-0.080, -0.080, 0}}, Quat{0.5, Vec3{-0.5, -0.5, 0.5}}, 0.8, Quat{0.6553097459373098, Vec3{-0.44231939784548874, -0.44231939784548874, 0.4237176207195655}}},
+		{Quat{1, Vec3{0, 0, 0}}, Quat{-0.9999999, Vec3{0, 0, 0}}, 0, Quat{1, Vec3{0, 0, 0}}},
+	}
+
+	for _, c := range tests {
+		if r := QuatSlerp(c.A, c.B, c.Scalar); !r.ApproxEqualThreshold(c.Expected, 1e-2) {
+			t.Errorf("QuatSlerp(%v, %v, %v) != %v (got %v)", c.A, c.B, c.Scalar, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatDot(t *testing.T) {
+	tests := []struct {
+		A, B     Quat
+		Expected float32
+	}{
+		{Quat{0, Vec3{0, 0, 0}}, Quat{0, Vec3{0, 0, 0}}, 0},
+		{Quat{0, Vec3{1, 2, 3}}, Quat{0, Vec3{4, 5, 6}}, 32},
+		{Quat{4, Vec3{1, 2, 3}}, Quat{8, Vec3{5, 6, 7}}, 70},
+	}
+
+	for _, c := range tests {
+		if r := c.A.Dot(c.B); !FloatEqualThreshold(r, c.Expected, 1e-4) {
+			t.Errorf("Quat(%v).Dot(Quat(%v)) != %v (got %v)", c.A, c.B, c.Expected, r)
 		}
 	}
 }

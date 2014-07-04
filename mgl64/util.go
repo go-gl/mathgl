@@ -49,7 +49,7 @@ func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
 var (
 	MinNormal = float64(1.1754943508222875e-38) // 1 / 2**(127 - 1)
 	MinValue  = float64(math.SmallestNonzeroFloat32)
-	MaxValue  = float64(math.MaxFloat32)
+	MaxValue  = float64(math.MaxFloat64)
 
 	InfPos = float64(math.Inf(1))
 	InfNeg = float64(math.Inf(-1))
