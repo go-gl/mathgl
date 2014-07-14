@@ -132,9 +132,8 @@ func (ms *MatStack) undoRebase(n int, prev []mgl32.Mat4) {
 // Rebase replays the current matrix stack as if the transformation that occurred at index "from"
 // in ms had instead started at the top of m.
 //
-// If this completes insuccessfully, m and ms will not be altered,
-// if this completes successfuly ms and m will point to the same underlying slice, with the Ident4
-// at the bottom of m being the new stack bottom.
+// This returns a brand new stack containing all of m followed by all transformations
+// at from and after on ms as if they has been done on m instead.
 func Rebase(ms *MatStack, from int, m *MatStack) (*MatStack, error) {
 	if from <= 0 || from >= len(*ms) {
 		return nil, errors.New("Cannot rebase, index out of range")
