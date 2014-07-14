@@ -5,6 +5,7 @@
 package mgl64
 
 import (
+	"fmt"
 	"math/rand"
 	"testing"
 	"time"
@@ -334,6 +335,20 @@ func TestMatAbs(t *testing.T) {
 
 	if !result.ApproxEqualThreshold(m, 1e-6) {
 		t.Errorf("Matrix absolute value does not work properly. Got: %v, Expected: %v", m, result)
+	}
+}
+
+func TestString(t *testing.T) {
+	m := Ident4()
+
+	str := fmt.Sprintf(` %[2]f %[1]f %[1]f %[1]f
+ %[1]f %[2]f %[1]f %[1]f
+ %[1]f %[1]f %[2]f %[1]f
+ %[1]f %[1]f %[1]f %[2]f
+`, 0.0, 1.0)
+
+	if str != m.String() {
+		t.Errorf("Mat string conversion not working got %q expected %q", m.String(), str)
 	}
 }
 

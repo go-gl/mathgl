@@ -1,6 +1,7 @@
 package matstack
 
 import (
+	"fmt"
 	"github.com/go-gl/mathgl/mgl32"
 	"testing"
 )
@@ -93,6 +94,30 @@ func TestRebase(t *testing.T) {
 	}
 
 	if !stack.Peek().ApproxEqualThreshold(trans2.Mul4(rot).Mul4(scale), 1e-4) {
-		t.Fatalf("Rebase does not remultiply correctly. Got %v expected %v. (Previous state: %v)", stack.Peek(), trans2.Mul4(rot).Mul4(scale), trans.Mul4(rot).Mul4(scale))
+		t.Fatalf("Rebase does not remultiply correctly. Got\n %v expected\n %v. (Previous state:\n %v)", stack.Peek(), trans2.Mul4(rot).Mul4(scale), trans.Mul4(rot).Mul4(scale))
 	}
+}
+
+func ExampleRebase() {
+	stack := NewMatStack()
+
+	scale := mgl32.Scale3D(2, 2, 2)
+	rot := mgl32.HomogRotate3DY(mgl32.DegToRad(90))
+	trans := mgl32.Translate3D(4, 5, 6)
+
+	stack.Push(trans)
+	stack.Push(rot)
+	stack.Push(scale)
+
+	fmt.Println("Initial state:\n", stack.Peek())
+
+	trans2 := mgl32.Translate3D(1, 2, 3)
+
+	err := stack.Rebase(1, trans2)
+	if err == nil {
+		panic("Rebase failed")
+	}
+
+	fmt.Println("After rebase:\n", stack.Peek())
+	fmt.Println("Should be:\n", trans2.Mul4(rot).Mul4(scale))
 }

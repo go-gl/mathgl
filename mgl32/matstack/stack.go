@@ -76,7 +76,7 @@ func (ms *MatStack) Copy() *MatStack {
 }
 
 // Rebase is tricky. It attempts to seed an arbitrary point in the matrix and replay all transformations
-// as if that point in the push at that point had been change instead of the original value.
+// as if that point in the push had been the argument "change" instead of the original value.
 // The matrix stack does NOT keep track of arguments so this is done via consecutive inverses.
 // If the inverse of element i can be found, we can calculate the transformation that was given at point i+1.
 // This transformation can then be multiplied by the NEW matrix at point i to complete the "what if".
@@ -111,7 +111,7 @@ func (ms *MatStack) Rebase(n int, change mgl32.Mat4) error {
 		ghost := inv.Mul4((*ms)[i])
 
 		curr = (*ms)[i]
-		(*ms)[i] = ghost.Mul4((*ms)[i-1])
+		(*ms)[i] = (*ms)[i-1].Mul4(ghost)
 	}
 
 	return nil
