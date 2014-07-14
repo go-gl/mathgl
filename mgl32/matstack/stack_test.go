@@ -98,6 +98,29 @@ func TestReseed(t *testing.T) {
 	}
 }
 
+func TestRebase(t *testing.T) {
+	stack := NewMatStack()
+	stack2 := NewMatStack()
+
+	scale := mgl32.Scale3D(2, 2, 2)
+	rot := mgl32.HomogRotate3DY(mgl32.DegToRad(90))
+	trans := mgl32.Translate3D(4, 5, 6)
+	trans2 := mgl32.Translate3D(1, 2, 3)
+
+	stack.Push(trans)
+	stack.Push(rot)
+
+	stack2.Push(trans2)
+	stack2.Push(scale)
+
+	out, _ := Rebase(stack2, 1, stack)
+
+	if !out.Peek().ApproxEqualThreshold(trans.Mul4(rot).Mul4(trans2).Mul4(scale), 1e-4) {
+		t.Log("\n", out)
+		t.Errorf("Rebase unsuccessful. Got\n %v, expected\n %v", out.Peek(), trans.Mul4(rot).Mul4(trans2).Mul4(scale))
+	}
+}
+
 func ExampleReseed() {
 	stack := NewMatStack()
 
@@ -120,4 +143,35 @@ func ExampleReseed() {
 
 	fmt.Println("After rebase:\n", stack.Peek())
 	fmt.Println("Should be:\n", trans2.Mul4(rot).Mul4(scale))
+}
+
+func ExampleRebase() {
+	parent1 := NewMatStack()
+
+	scale := mgl32.Scale3D(2, 2, 2)
+	rot := mgl32.HomogRotate3DY(mgl32.DegToRad(90))
+	trans := mgl32.Translate3D(5, 5, 5)
+
+	parent1.Push(trans)
+	parent1.Push(rot)
+	parent1.Push(scale)
+
+	parent2 := parent1.Copy()
+
+	trans2 := mgl32.Translate3D(1, 1, 1)
+	rot2 := mgl32.HomogRotate3DX(mgl32.DegToRad(45))
+	parent1.Push(trans2)
+	parent1.Push(rot2)
+
+	// Replay the pushes onto parent1 after the copy, as if
+	// they had been done on parent2 instead
+	parent2, err := Rebase(parent1, 4, parent2)
+
+	if err != nil {
+		panic(err)
+	}
+
+	// Now parent2 and parent 1 should be the same!
+	fmt.Println(parent2.Peek().ApproxEqualThreshold(parent1.Peek(), 1e-4))
+	// Output: true
 }

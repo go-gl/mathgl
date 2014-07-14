@@ -93,6 +93,12 @@ func (ms *MatStack) Reseed(n int, change mgl32.Mat4) error {
 		return errors.New("Cannot rebase at the given point on the stack, it is out of bounds.")
 	}
 
+	return ms.reseed(n, change)
+}
+
+// Operates like reseed with no bounds checking; allows us to overwrite
+// the leading identity matrix with Rebase.
+func (ms *MatStack) reseed(n int, change mgl32.Mat4) error {
 	backup := []mgl32.Mat4((*ms)[n:])
 	backup = append([]mgl32.Mat4{}, backup...) // copy into new slice
 
@@ -123,6 +129,38 @@ func (ms *MatStack) undoRebase(n int, prev []mgl32.Mat4) {
 	}
 }
 
+// Rebase replays the current matrix stack as if the transformation that occurred at index "from"
+// in ms had instead started at the top of m.
+//
+// If this completes insuccessfully, m and ms will not be altered,
+// if this completes successfuly ms and m will point to the same underlying slice, with the Ident4
+// at the bottom of m being the new stack bottom.
+func Rebase(ms *MatStack, from int, m *MatStack) (*MatStack, error) {
+	if from <= 0 || from >= len(*ms) {
+		return nil, errors.New("Cannot rebase, index out of range")
+	}
+
+	// Shift tmp so that the element immediately
+	// preceding our target is the "top" element of the list.
+	tmp := ms.Copy()
+	if from == 1 {
+		(*tmp) = append(*tmp, mgl32.Mat4{})
+	}
+	copy((*tmp)[1:], (*tmp)[from-1:])
+	if from-2 > 0 {
+		(*tmp) = (*tmp)[:len(*tmp)-(from-2)]
+	}
+
+	err := tmp.Reseed(1, m.Peek())
+	if err != nil {
+		return nil, err
+	}
+
+	(*tmp) = append(*m, (*tmp)[2:]...)
+
+	return tmp, nil
+}
+
 // A NoInverseError is returned on rebase when an inverse cannot be found along the chain,
 // due to a transformation projecting the matrix into a singularity. The values include the matrix
 // no inverse can be found for, and the location of that matrix.
@@ -132,5 +170,5 @@ type NoInverseError struct {
 }
 
 func (nie NoInverseError) Error() string {
-	return fmt.Sprintf("cannot find inverse of matrix %v at location %d in matrix stack, aborting rebase")
+	return fmt.Sprintf("cannot find inverse of matrix %v at location %d in matrix stack, aborting rebase/reseed")
 }
