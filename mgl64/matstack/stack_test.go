@@ -2,14 +2,15 @@ package matstack
 
 import (
 	"fmt"
-	"github.com/go-gl/mathgl/mgl32"
 	"testing"
+
+	"github.com/go-gl/mathgl/mgl64"
 )
 
 func TestStackNew(t *testing.T) {
 	stack := NewMatStack()
 
-	if !(*stack)[0].ApproxEqual(mgl32.Ident4()) {
+	if !(*stack)[0].ApproxEqual(mgl64.Ident4()) {
 		t.Errorf("Cannot construct stack correctly")
 	}
 }
@@ -17,13 +18,13 @@ func TestStackNew(t *testing.T) {
 func TestStackPushPopPeek(t *testing.T) {
 	stack := NewMatStack()
 
-	if !stack.Peek().ApproxEqual(mgl32.Ident4()) {
+	if !stack.Peek().ApproxEqual(mgl64.Ident4()) {
 		t.Errorf("Peek not working")
 	}
 
-	stack.Push(mgl32.HomogRotate3DY(mgl32.DegToRad(90)))
+	stack.Push(mgl64.HomogRotate3DY(mgl64.DegToRad(90)))
 
-	if !stack.Peek().ApproxEqual(mgl32.HomogRotate3DY(mgl32.DegToRad(90))) {
+	if !stack.Peek().ApproxEqual(mgl64.HomogRotate3DY(mgl64.DegToRad(90))) {
 		t.Errorf("Peek not working")
 	}
 
@@ -32,7 +33,7 @@ func TestStackPushPopPeek(t *testing.T) {
 	}
 
 	pop, err := stack.Pop()
-	if err != nil || !pop.ApproxEqual(mgl32.HomogRotate3DY(mgl32.DegToRad(90))) {
+	if err != nil || !pop.ApproxEqual(mgl64.HomogRotate3DY(mgl64.DegToRad(90))) {
 		t.Errorf("Pop is unsuccessful")
 	}
 
@@ -50,9 +51,9 @@ func TestStackPushPopPeek(t *testing.T) {
 func TestStackMultiPush(t *testing.T) {
 	stack := NewMatStack()
 
-	scale := mgl32.Scale3D(2, 2, 2)
-	rot := mgl32.HomogRotate3DY(mgl32.DegToRad(90))
-	trans := mgl32.Translate3D(4, 5, 6)
+	scale := mgl64.Scale3D(2, 2, 2)
+	rot := mgl64.HomogRotate3DY(mgl64.DegToRad(90))
+	trans := mgl64.Translate3D(4, 5, 6)
 
 	stack.Push(trans)
 	stack.Push(rot)
@@ -78,15 +79,15 @@ func TestStackMultiPush(t *testing.T) {
 func TestRebase(t *testing.T) {
 	stack := NewMatStack()
 
-	scale := mgl32.Scale3D(2, 2, 2)
-	rot := mgl32.HomogRotate3DY(mgl32.DegToRad(90))
-	trans := mgl32.Translate3D(4, 5, 6)
+	scale := mgl64.Scale3D(2, 2, 2)
+	rot := mgl64.HomogRotate3DY(mgl64.DegToRad(90))
+	trans := mgl64.Translate3D(4, 5, 6)
 
 	stack.Push(trans)
 	stack.Push(rot)
 	stack.Push(scale)
 
-	trans2 := mgl32.Translate3D(1, 2, 3)
+	trans2 := mgl64.Translate3D(1, 2, 3)
 	err := stack.Rebase(1, trans2)
 
 	if err != nil {
@@ -101,9 +102,9 @@ func TestRebase(t *testing.T) {
 func ExampleRebase() {
 	stack := NewMatStack()
 
-	scale := mgl32.Scale3D(2, 2, 2)
-	rot := mgl32.HomogRotate3DY(mgl32.DegToRad(90))
-	trans := mgl32.Translate3D(4, 5, 6)
+	scale := mgl64.Scale3D(2, 2, 2)
+	rot := mgl64.HomogRotate3DY(mgl64.DegToRad(90))
+	trans := mgl64.Translate3D(4, 5, 6)
 
 	stack.Push(trans)
 	stack.Push(rot)
@@ -111,7 +112,7 @@ func ExampleRebase() {
 
 	fmt.Println("Initial state:\n", stack.Peek())
 
-	trans2 := mgl32.Translate3D(1, 2, 3)
+	trans2 := mgl64.Translate3D(1, 2, 3)
 
 	err := stack.Rebase(1, trans2)
 	if err == nil {

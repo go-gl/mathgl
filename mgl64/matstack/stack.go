@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/go-gl/mathgl/mgl32"
+	"github.com/go-gl/mathgl/mgl64"
 )
 
 // A matrix stack is a linear fully-persistent data structure of matrix multiplications
@@ -13,28 +13,28 @@ import (
 //
 // This is extremely useful for scenegraphs, where you can push the transformation of the current
 // object for children to use, and pop the transformation before returning to the parent.
-type MatStack []mgl32.Mat4
+type MatStack []mgl64.Mat4
 
 // Returns a matrix stack where the top element is the identity.
 func NewMatStack() *MatStack {
 	ms := make(MatStack, 1)
-	ms[0] = mgl32.Ident4()
+	ms[0] = mgl64.Ident4()
 
 	return &ms
 }
 
 // Multiplies the current top matrix by m, and pushes the result
 // on the stack.
-func (ms *MatStack) Push(m mgl32.Mat4) {
+func (ms *MatStack) Push(m mgl64.Mat4) {
 	prev := (*ms)[len(*ms)-1]
 	(*ms) = append(*ms, prev.Mul4(m))
 }
 
 // Pops the current matrix off the top of the stack and returns it.
 // If the matrix stack only has one element left, this will return an error.
-func (ms *MatStack) Pop() (mgl32.Mat4, error) {
+func (ms *MatStack) Pop() (mgl64.Mat4, error) {
 	if len(*ms) == 1 {
-		return mgl32.Mat4{}, errors.New("attempt to pop last element of the stack; Matrix Stack must have at least one element")
+		return mgl64.Mat4{}, errors.New("attempt to pop last element of the stack; Matrix Stack must have at least one element")
 	}
 
 	retVal := (*ms)[len(*ms)-1]
@@ -46,7 +46,7 @@ func (ms *MatStack) Pop() (mgl32.Mat4, error) {
 
 // Returns the value of the current top element of the stack, without
 // removing it.
-func (ms *MatStack) Peek() mgl32.Mat4 {
+func (ms *MatStack) Peek() mgl64.Mat4 {
 	return (*ms)[len(*ms)-1]
 }
 
@@ -88,13 +88,13 @@ func (ms *MatStack) Copy() *MatStack {
 // If you have the old transformations retained, it is recommended
 // that you use Unwind followed by Push(change) and then further calling Push for each transformation. Rebase is
 // imprecise by nature, and sometimes impossible. It's also expensive due to the inverse calculation at each point.
-func (ms *MatStack) Rebase(n int, change mgl32.Mat4) error {
+func (ms *MatStack) Rebase(n int, change mgl64.Mat4) error {
 	if n >= len(*ms) || n <= 0 {
 		return errors.New("Cannot rebase at the given point on the stack, it is out of bounds.")
 	}
 
-	backup := []mgl32.Mat4((*ms)[n:])
-	backup = append([]mgl32.Mat4{}, backup...) // copy into new slice
+	backup := []mgl64.Mat4((*ms)[n:])
+	backup = append([]mgl64.Mat4{}, backup...) // copy into new slice
 
 	curr := (*ms)[n]
 	(*ms)[n] = (*ms)[n-1].Mul4(change)
@@ -102,7 +102,7 @@ func (ms *MatStack) Rebase(n int, change mgl32.Mat4) error {
 	for i := n + 1; i < len(*ms); i++ {
 		inv := curr.Inv()
 
-		blank := mgl32.Mat4{}
+		blank := mgl64.Mat4{}
 		if inv == blank {
 			ms.undoRebase(n, backup)
 			return NoInverseError{Loc: i - 1, Mat: curr}
@@ -117,7 +117,7 @@ func (ms *MatStack) Rebase(n int, change mgl32.Mat4) error {
 	return nil
 }
 
-func (ms *MatStack) undoRebase(n int, prev []mgl32.Mat4) {
+func (ms *MatStack) undoRebase(n int, prev []mgl64.Mat4) {
 	for i := n; i < len(*ms); i++ {
 		(*ms)[i] = prev[i-n]
 	}
@@ -127,7 +127,7 @@ func (ms *MatStack) undoRebase(n int, prev []mgl32.Mat4) {
 // due to a transformation projecting the matrix into a singularity. The values include the matrix
 // no inverse can be found for, and the location of that matrix.
 type NoInverseError struct {
-	Mat mgl32.Mat4
+	Mat mgl64.Mat4
 	Loc int
 }
 
