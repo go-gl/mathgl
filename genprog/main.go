@@ -404,6 +404,9 @@ package mgl32
 
 import(
 	// "math"
+	"text/tabwriter"
+	"bytes"
+	"fmt"
 )
 
 `
@@ -542,6 +545,12 @@ import(
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
 			mats += GenMatAbs(m, n)
+		}
+	}
+
+	for m := 2; m <= 4; m++ {
+		for n := 2; n <= 4; n++ {
+			mats += GenMatString(m, n)
 		}
 	}
 
@@ -1047,5 +1056,25 @@ func GenMatAbs(m, n int) (s string) {
 	}
 
 	s += "}\n}\n\n"
+	return s
+}
+
+func GenMatString(m, n int) (s string) {
+	s = `// Pretty prints the matrix
+`
+	s += fmt.Sprintf("func (m %s) String() string {", GenMatName(m, n))
+	s += fmt.Sprintf(`
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	for i := 0; i < %d; i++ {
+		for _,col := range m.Row(i) {
+			fmt.Fprintf(w, "%s\t", col)
+		}
+	}
+
+	return buf.String()
+}
+
+`, n, "%d")
 	return s
 }
