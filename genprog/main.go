@@ -1065,16 +1065,19 @@ func GenMatString(m, n int) (s string) {
 	s += fmt.Sprintf("func (m %s) String() string {", GenMatName(m, n))
 	s += fmt.Sprintf(`
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < %d; i++ {
 		for _,col := range m.Row(i) {
 			fmt.Fprintf(w, "%s\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
 
-`, n, "%d")
+`, n, "%f")
 	return s
 }

@@ -1708,12 +1708,15 @@ func (m Mat4) Abs() Mat4 {
 // Pretty prints the matrix
 func (m Mat2) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 2; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1721,12 +1724,15 @@ func (m Mat2) String() string {
 // Pretty prints the matrix
 func (m Mat2x3) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 3; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1734,12 +1740,15 @@ func (m Mat2x3) String() string {
 // Pretty prints the matrix
 func (m Mat2x4) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 4; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1747,12 +1756,15 @@ func (m Mat2x4) String() string {
 // Pretty prints the matrix
 func (m Mat3x2) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 2; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1760,12 +1772,15 @@ func (m Mat3x2) String() string {
 // Pretty prints the matrix
 func (m Mat3) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 3; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1773,12 +1788,15 @@ func (m Mat3) String() string {
 // Pretty prints the matrix
 func (m Mat3x4) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 4; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1786,12 +1804,15 @@ func (m Mat3x4) String() string {
 // Pretty prints the matrix
 func (m Mat4x2) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 2; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1799,12 +1820,15 @@ func (m Mat4x2) String() string {
 // Pretty prints the matrix
 func (m Mat4x3) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 3; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
@@ -1812,12 +1836,15 @@ func (m Mat4x3) String() string {
 // Pretty prints the matrix
 func (m Mat4) String() string {
 	buf := new(bytes.Buffer)
-	w := tabwriter.NewWriter(buf, 4, 4, 0, ' ', tabwriter.AlignRight)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
 	for i := 0; i < 4; i++ {
 		for _,col := range m.Row(i) {
-			fmt.Fprintf(w, "%d\t", col)
+			fmt.Fprintf(w, "%f\t", col)
 		}
+
+		fmt.Fprintln(w, "")
 	}
+	w.Flush()
 
 	return buf.String()
 }
