@@ -75,7 +75,7 @@ func (ms *MatStack) Copy() *MatStack {
 	return &v
 }
 
-// Rebase is tricky. It attempts to seed an arbitrary point in the matrix and replay all transformations
+// Reseed is tricky. It attempts to seed an arbitrary point in the matrix and replay all transformations
 // as if that point in the push had been the argument "change" instead of the original value.
 // The matrix stack does NOT keep track of arguments so this is done via consecutive inverses.
 // If the inverse of element i can be found, we can calculate the transformation that was given at point i+1.
@@ -88,7 +88,7 @@ func (ms *MatStack) Copy() *MatStack {
 // If you have the old transformations retained, it is recommended
 // that you use Unwind followed by Push(change) and then further calling Push for each transformation. Rebase is
 // imprecise by nature, and sometimes impossible. It's also expensive due to the inverse calculation at each point.
-func (ms *MatStack) Rebase(n int, change mgl32.Mat4) error {
+func (ms *MatStack) Reseed(n int, change mgl32.Mat4) error {
 	if n >= len(*ms) || n <= 0 {
 		return errors.New("Cannot rebase at the given point on the stack, it is out of bounds.")
 	}

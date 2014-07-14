@@ -75,7 +75,7 @@ func TestStackMultiPush(t *testing.T) {
 	}
 }
 
-func TestRebase(t *testing.T) {
+func TestReseed(t *testing.T) {
 	stack := NewMatStack()
 
 	scale := mgl32.Scale3D(2, 2, 2)
@@ -87,7 +87,7 @@ func TestRebase(t *testing.T) {
 	stack.Push(scale)
 
 	trans2 := mgl32.Translate3D(1, 2, 3)
-	err := stack.Rebase(1, trans2)
+	err := stack.Reseed(1, trans2)
 
 	if err != nil {
 		t.Fatalf("Rebase returned error when it should not %v", err)
@@ -98,7 +98,7 @@ func TestRebase(t *testing.T) {
 	}
 }
 
-func ExampleRebase() {
+func ExampleReseed() {
 	stack := NewMatStack()
 
 	scale := mgl32.Scale3D(2, 2, 2)
@@ -113,7 +113,7 @@ func ExampleRebase() {
 
 	trans2 := mgl32.Translate3D(1, 2, 3)
 
-	err := stack.Rebase(1, trans2)
+	err := stack.Reseed(1, trans2)
 	if err == nil {
 		panic("Rebase failed")
 	}
