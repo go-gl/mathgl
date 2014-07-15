@@ -29,7 +29,7 @@ func Perspective(fovy, aspect, near, far float32) Mat4 {
 
 func Frustum(left, right, bottom, top, near, far float32) Mat4 {
 	rml, tmb, fmn := (right - left), (top - bottom), (far - near)
-	A, B, C, D := (right+left)/rml, (top+bottom)/tmb, -(far+near)/fmn, (2*far*near)/fmn
+	A, B, C, D := (right+left)/rml, (top+bottom)/tmb, -(far+near)/fmn, -(2*far*near)/fmn
 
 	return Mat4{float32((2. * near) / rml), 0, 0, 0, 0, float32((2. * near) / tmb), 0, 0, float32(A), float32(B), float32(C), -1, 0, 0, float32(D), 0}
 }
