@@ -164,7 +164,7 @@ func ExampleRebase() {
 	parent1.Push(trans2)
 	parent1.Push(rot2)
 
-	// Replay the pushes onto parent1 after the copy, as if
+	// Replay the pushes the changes from parent1 after the copy onto parent2, as if
 	// they had been done on parent2 instead
 	parent2, err := Rebase(parent1, 4, parent2)
 
