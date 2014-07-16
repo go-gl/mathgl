@@ -1,18 +1,20 @@
-package mgl64
+package collision
 
 import (
 	"testing"
+
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 func TestPointCollision(t *testing.T) {
 	var pointTests = [...]struct {
 		aabb  AABB
-		point Vec3
+		point mgl32.Vec3
 
 		out bool
 	}{
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Vec3{.5, .5, .5}, true},
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Vec3{1, 1, 1.5}, false},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Vec3{.5, .5, .5}, true},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Vec3{1, 1, 1.5}, false},
 	}
 
 	for _, test := range pointTests {
@@ -29,8 +31,8 @@ func TestAABBCollision(t *testing.T) {
 
 		out bool
 	}{
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, AABB{Min: Vec3{-.5, -.5, -.5}, Max: Vec3{.5, .5, .5}}, true},
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, AABB{Min: Vec3{-.5, -.5, -.5}, Max: Vec3{-.1, -.1, -.1}}, false},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, AABB{Min: mgl32.Vec3{-.5, -.5, -.5}, Max: mgl32.Vec3{.5, .5, .5}}, true},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, AABB{Min: mgl32.Vec3{-.5, -.5, -.5}, Max: mgl32.Vec3{-.1, -.1, -.1}}, false},
 	}
 
 	for _, test := range aabbTests {
@@ -43,12 +45,12 @@ func TestAABBCollision(t *testing.T) {
 func TestTriangleCollision(t *testing.T) {
 	var triangleTests = [...]struct {
 		aabb       AABB
-		p1, p2, p3 Vec3
+		p1, p2, p3 mgl32.Vec3
 
 		out bool
 	}{
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Vec3{.5, .5, .5}, Vec3{0, 0, 0}, Vec3{1, 1, 1}, true},
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Vec3{1.1, 1.1, 1.1}, Vec3{1.5, 1.5, 1.5}, Vec3{2.4, 3.7, 9.1}, false},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Vec3{.5, .5, .5}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{1, 1, 1}, true},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Vec3{1.1, 1.1, 1.1}, mgl32.Vec3{1.5, 1.5, 1.5}, mgl32.Vec3{2.4, 3.7, 9.1}, false},
 	}
 
 	for _, test := range triangleTests {
@@ -61,13 +63,13 @@ func TestTriangleCollision(t *testing.T) {
 func TestRayIntersection(t *testing.T) {
 	var rayTests = [...]struct {
 		aabb         AABB
-		rayFrom, dir Vec3
+		rayFrom, dir mgl32.Vec3
 
 		out          bool
 		correctedOut bool // If the intersection is behind the ray
 	}{
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Vec3{-1, .5, .5}, Vec3{1, 0, 0}, true, true},
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Vec3{-1.5, .5, .5}, Vec3{-1, 0, 0}, true, false},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Vec3{-1, .5, .5}, mgl32.Vec3{1, 0, 0}, true, true},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Vec3{-1.5, .5, .5}, mgl32.Vec3{-1, 0, 0}, true, false},
 	}
 
 	for _, test := range rayTests {
@@ -88,13 +90,13 @@ func TestRayIntersection(t *testing.T) {
 func TestAABBTransform(t *testing.T) {
 	var transformTests = [...]struct {
 		aabb      AABB
-		transform Mat4
+		transform mgl32.Mat4
 
 		out AABB
 	}{
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Translate3D(0, 0, .5), AABB{Min: Vec3{0, 0, .5}, Max: Vec3{1, 1, 1.5}}},
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Ident4(), AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}},
-		{AABB{Min: Vec3{0, 0, 0}, Max: Vec3{1, 1, 1}}, Translate3D(0, 0, .5).Mul4(Scale3D(2, 1, 1)), AABB{Min: Vec3{0, 0, .5}, Max: Vec3{2, 1, 1.5}}},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Translate3D(0, 0, .5), AABB{Min: mgl32.Vec3{0, 0, .5}, Max: mgl32.Vec3{1, 1, 1.5}}},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Ident4(), AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}},
+		{AABB{Min: mgl32.Vec3{0, 0, 0}, Max: mgl32.Vec3{1, 1, 1}}, mgl32.Translate3D(0, 0, .5).Mul4(mgl32.Scale3D(2, 1, 1)), AABB{Min: mgl32.Vec3{0, 0, .5}, Max: mgl32.Vec3{2, 1, 1.5}}},
 	}
 
 	for _, test := range transformTests {
@@ -107,13 +109,13 @@ func TestAABBTransform(t *testing.T) {
 
 func TestRay(t *testing.T) {
 	var tests = [...]struct {
-		rayFrom, dir Vec3
-		t            float64
+		rayFrom, dir mgl32.Vec3
+		t            float32
 
-		out Vec3
+		out mgl32.Vec3
 	}{
-		{Vec3{0, 0, 0}, Vec3{1, 0, 0}, .5, Vec3{.5, 0, 0}},
-		{Vec3{0, 0, 0}, Rotate3DY(DegToRad(-90)).Mul3x1(Vec3{1, 0, 0}), 2, Vec3{0, 0, 2}},
+		{mgl32.Vec3{0, 0, 0}, mgl32.Vec3{1, 0, 0}, .5, mgl32.Vec3{.5, 0, 0}},
+		{mgl32.Vec3{0, 0, 0}, mgl32.Rotate3DY(mgl32.DegToRad(-90)).Mul3x1(mgl32.Vec3{1, 0, 0}), 2, mgl32.Vec3{0, 0, 2}},
 	}
 
 	for _, test := range tests {
