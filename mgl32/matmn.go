@@ -348,9 +348,9 @@ func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 		mul = NewMatrix(mul.m, mul.n)
 		copy(mul.dat, dst.dat)
 
-		// If mul==dst==mul, we need to change
+		// If mat==dst==mul, we need to change
 		// mat too or we have a bug
-		if mul == dst {
+		if mat == dst {
 			mat = mul
 		}
 
