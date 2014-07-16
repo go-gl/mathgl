@@ -7,17 +7,18 @@ import (
 	"github.com/go-gl/mathgl/mgl64"
 )
 
-// A matrix stack is a linear fully-persistent data structure of matrix multiplications
-// Each push to a MatStack multiplies the current top of the stack with thew new matrix
+// A transform stack is a linear fully-persistent data structure of matrix multiplications
+// Each push to a TransformStack multiplies the current top of the stack with thew new matrix
 // and appends it to the top. Each pop undoes the previous multiplication.
 //
-// This is extremely useful for scenegraphs, where you can push the transformation of the current
-// object for children to use, and pop the transformation before returning to the parent.
-type MatStack []mgl64.Mat4
+// This allows arbitrary unwinding of transformations, at the cost of a lot of memory. A notable feature
+// is the reseed and rebase, which allow invertible transformations to be rewritten as if a different transform
+// had been made in the middle.
+type TransformStack []mgl64.Mat4
 
 // Returns a matrix stack where the top element is the identity.
-func NewMatStack() *MatStack {
-	ms := make(MatStack, 1)
+func NewTransformStack() *TransformStack {
+	ms := make(TransformStack, 1)
 	ms[0] = mgl64.Ident4()
 
 	return &ms
@@ -25,14 +26,14 @@ func NewMatStack() *MatStack {
 
 // Multiplies the current top matrix by m, and pushes the result
 // on the stack.
-func (ms *MatStack) Push(m mgl64.Mat4) {
+func (ms *TransformStack) Push(m mgl64.Mat4) {
 	prev := (*ms)[len(*ms)-1]
 	(*ms) = append(*ms, prev.Mul4(m))
 }
 
 // Pops the current matrix off the top of the stack and returns it.
 // If the matrix stack only has one element left, this will return an error.
-func (ms *MatStack) Pop() (mgl64.Mat4, error) {
+func (ms *TransformStack) Pop() (mgl64.Mat4, error) {
 	if len(*ms) == 1 {
 		return mgl64.Mat4{}, errors.New("attempt to pop last element of the stack; Matrix Stack must have at least one element")
 	}
@@ -46,19 +47,19 @@ func (ms *MatStack) Pop() (mgl64.Mat4, error) {
 
 // Returns the value of the current top element of the stack, without
 // removing it.
-func (ms *MatStack) Peek() mgl64.Mat4 {
+func (ms *TransformStack) Peek() mgl64.Mat4 {
 	return (*ms)[len(*ms)-1]
 }
 
 // Returns the size of the matrix stack. This value will never be less
 // than 1.
-func (ms *MatStack) Len() int {
+func (ms *TransformStack) Len() int {
 	return len(*ms)
 }
 
 // This cuts down the matrix as if Pop had been called n times. If n would
 // bring the matrix down below 1 element, this does nothing and returns an error.
-func (ms *MatStack) Unwind(n int) error {
+func (ms *TransformStack) Unwind(n int) error {
 	if n > len(*ms)-1 {
 		return errors.New("Cannot unwind a matrix to below 1 value")
 	}
@@ -70,8 +71,8 @@ func (ms *MatStack) Unwind(n int) error {
 // Copy will create a new "branch" of the current matrix stack,
 // the copy will contain all elements of the current stack in a new stack. Changes to
 // one will never affect the other.
-func (ms *MatStack) Copy() *MatStack {
-	v := append(MatStack{}, (*ms)...)
+func (ms *TransformStack) Copy() *TransformStack {
+	v := append(TransformStack{}, (*ms)...)
 	return &v
 }
 
@@ -88,7 +89,7 @@ func (ms *MatStack) Copy() *MatStack {
 // If you have the old transformations retained, it is recommended
 // that you use Unwind followed by Push(change) and then further calling Push for each transformation. Rebase is
 // imprecise by nature, and sometimes impossible. It's also expensive due to the inverse calculation at each point.
-func (ms *MatStack) Reseed(n int, change mgl64.Mat4) error {
+func (ms *TransformStack) Reseed(n int, change mgl64.Mat4) error {
 	if n >= len(*ms) || n <= 0 {
 		return errors.New("Cannot rebase at the given point on the stack, it is out of bounds.")
 	}
@@ -98,7 +99,7 @@ func (ms *MatStack) Reseed(n int, change mgl64.Mat4) error {
 
 // Operates like reseed with no bounds checking; allows us to overwrite
 // the leading identity matrix with Rebase.
-func (ms *MatStack) reseed(n int, change mgl64.Mat4) error {
+func (ms *TransformStack) reseed(n int, change mgl64.Mat4) error {
 	backup := []mgl64.Mat4((*ms)[n:])
 	backup = append([]mgl64.Mat4{}, backup...) // copy into new slice
 
@@ -123,7 +124,7 @@ func (ms *MatStack) reseed(n int, change mgl64.Mat4) error {
 	return nil
 }
 
-func (ms *MatStack) undoRebase(n int, prev []mgl64.Mat4) {
+func (ms *TransformStack) undoRebase(n int, prev []mgl64.Mat4) {
 	for i := n; i < len(*ms); i++ {
 		(*ms)[i] = prev[i-n]
 	}
@@ -134,7 +135,7 @@ func (ms *MatStack) undoRebase(n int, prev []mgl64.Mat4) {
 //
 // This returns a brand new stack containing all of m followed by all transformations
 // at from and after on ms as if they has been done on m instead.
-func Rebase(ms *MatStack, from int, m *MatStack) (*MatStack, error) {
+func Rebase(ms *TransformStack, from int, m *TransformStack) (*TransformStack, error) {
 	if from <= 0 || from >= len(*ms) {
 		return nil, errors.New("Cannot rebase, index out of range")
 	}
