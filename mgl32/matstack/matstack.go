@@ -27,27 +27,29 @@ func (ms *MatStack) Pop() error {
 		errors.New("Cannot pop from mat stack, at minimum stack length of 1")
 	}
 	(*ms) = (*ms)[:len(*ms)-1]
+
+	return nil
 }
 
 // Right multiplies the current top of the matrix by the
 // argument.
-func (ms *MatStack) RightMul(m Mat4) {
+func (ms *MatStack) RightMul(m mgl32.Mat4) {
 	(*ms)[len(*ms)-1] = (*ms)[len(*ms)-1].Mul4(m)
 }
 
 // Left multiplies the current top of the matrix by the
 // argument.
-func (ms *MatStack) LeftMul(m Mat4) {
+func (ms *MatStack) LeftMul(m mgl32.Mat4) {
 	(*ms)[len(*ms)-1] = (*ms)[len(*ms)-1].Mul4(m)
 }
 
 // Returns the top element.
-func (ms *MatStack) Peek() Mat4 {
+func (ms *MatStack) Peek() mgl32.Mat4 {
 	return (*ms)[len(*ms)-1]
 }
 
 // Rewrites the top element of the stack with m
-func (ms *MatStack) Load(m Mat4) {
+func (ms *MatStack) Load(m mgl32.Mat4) {
 	(*ms)[len(*ms)] = m
 }
 
