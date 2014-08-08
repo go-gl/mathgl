@@ -9,7 +9,10 @@
 package mgl64
 
 import (
-// "math"
+	// "math"
+	"bytes"
+	"fmt"
+	"text/tabwriter"
 )
 
 type Mat2 [4]float64
@@ -1691,4 +1694,148 @@ func (m Mat4x3) Abs() Mat4x3 {
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat4) Abs() Mat4 {
 	return Mat4{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8]), Abs(m[9]), Abs(m[10]), Abs(m[11]), Abs(m[12]), Abs(m[13]), Abs(m[14]), Abs(m[15])}
+}
+
+// Pretty prints the matrix
+func (m Mat2) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 2; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat2x3) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 3; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat2x4) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 4; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat3x2) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 2; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat3) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 3; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat3x4) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 4; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat4x2) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 2; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat4x3) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 3; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
+}
+
+// Pretty prints the matrix
+func (m Mat4) String() string {
+	buf := new(bytes.Buffer)
+	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
+	for i := 0; i < 4; i++ {
+		for _, col := range m.Row(i) {
+			fmt.Fprintf(w, "%f\t", col)
+		}
+
+		fmt.Fprintln(w, "")
+	}
+	w.Flush()
+
+	return buf.String()
 }
