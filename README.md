@@ -33,7 +33,7 @@ From now on, no major API breaking changes will be made between  Go version rele
 Currently Deprecated Functions
 -------
 
-None
+QuatLookAtV is currently being considered for deletion, please see Issue #31 for detals.
 
 API-Breaking changes made for latest Go release
 ----
