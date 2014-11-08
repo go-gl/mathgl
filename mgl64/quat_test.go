@@ -354,6 +354,63 @@ func TestQuatLookAtV(t *testing.T) {
 	}
 }
 
+func TestCompareLookAt(t *testing.T) {
+	tests := []struct {
+		Description     string
+		Eye, Center, Up Vec3
+		Pos             Vec3
+	}{
+		{
+			"forward",
+			Vec3{0, 0, 0},
+			Vec3{0, 0, -1},
+			Vec3{0, 1, 0},
+			Vec3{1, 2, 3},
+		},
+		{
+			"heading 90 degree",
+			Vec3{0, 0, 0},
+			Vec3{1, 0, 0},
+			Vec3{0, 1, 0},
+			Vec3{1, 2, 3},
+		},
+		{
+			"heading 180 degree",
+			Vec3{0, 0, 0},
+			Vec3{0, 0, 1},
+			Vec3{0, 1, 0},
+			Vec3{1, 2, 3},
+		},
+		{
+			"attitude 90 degree",
+			Vec3{0, 0, 0},
+			Vec3{0, 0, -1},
+			Vec3{1, 0, 0},
+			Vec3{1, 2, 3},
+		},
+		{
+			"bank 90 degree",
+			Vec3{0, 0, 0},
+			Vec3{0, -1, 0},
+			Vec3{0, 0, -1},
+			Vec3{1, 2, 3},
+		},
+	}
+
+	threshold := float64(math.Pow(10, -2))
+	for _, c := range tests {
+		q := QuatLookAtV(c.Eye, c.Center, c.Up)
+		m := LookAtV(c.Eye, c.Center, c.Up)
+
+		r1 := q.Rotate(c.Pos)
+		r2 := m.Mul4x1(c.Pos.Vec4(0)).Vec3()
+
+		if !r1.ApproxEqualThreshold(r2, threshold) {
+			t.Errorf("%v failed: QuatLookAtV() != LookAtV() (got %v, %v)", c.Description, r1, r2)
+		}
+	}
+}
+
 func TestQuatMatConversion(t *testing.T) {
 	tests := []struct {
 		Angle float64
