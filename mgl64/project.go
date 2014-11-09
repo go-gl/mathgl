@@ -57,6 +57,7 @@ func LookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ float64) 
 	return M.Mul4(Translate3D(-eyeX, -eyeY, -eyeZ))
 }
 
+//  LookAtV generates a transform matrix from world space into the specific eye space
 func LookAtV(eye, center, up Vec3) Mat4 {
 	F := center.Sub(eye)
 
@@ -70,6 +71,24 @@ func LookAtV(eye, center, up Vec3) Mat4 {
 	M := Mat4{s[0], u[0], -f[0], 0, s[1], u[1], -f[1], 0, s[2], u[2], -f[2], 0, 0, 0, 0, 1}
 
 	return M.Mul4(Translate3D(float64(-eye[0]), float64(-eye[1]), float64(-eye[2])))
+}
+
+func LookAtNew(eye, center, up Vec3) Mat4 {
+	// OpenGL Mathematics
+	// https://github.com/g-truc/glm/blob/041276c93d2908b5fd11b640bb09efd36f3a55e3/glm/gtc/matrix_transform.inl#L385
+
+	// basically the same as LookAtV with Mul4/Translate3D done during Mat4 creation
+
+	f := center.Sub(eye).Normalize()
+	s := f.Cross(up).Normalize()
+	u := s.Cross(f)
+
+	return Mat4{
+		s[0], u[0], -f[0], 0,
+		s[1], u[1], -f[1], 0,
+		s[2], u[2], -f[2], 0,
+		-s.Dot(eye), -u.Dot(eye), -f.Dot(eye), 1,
+	}
 }
 
 // Transform a set of coordinates from object space (in obj) to window coordinates (with depth)

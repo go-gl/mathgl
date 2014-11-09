@@ -5,6 +5,7 @@
 package mgl64
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"testing"
@@ -354,6 +355,10 @@ func TestQuatLookAtV(t *testing.T) {
 	}
 }
 
+func (v Vec3) String() string {
+	return fmt.Sprintf("%T{%+.2f, %+.2f, %+.2f}", v, v[0], v[1], v[2])
+}
+
 func TestCompareLookAt(t *testing.T) {
 	tests := []struct {
 		Description     string
@@ -399,14 +404,50 @@ func TestCompareLookAt(t *testing.T) {
 
 	threshold := float64(math.Pow(10, -2))
 	for _, c := range tests {
-		q := QuatLookAtV(c.Eye, c.Center, c.Up)
+		t.Log("case:", c.Description)
+
 		m := LookAtV(c.Eye, c.Center, c.Up)
+		rm := m.Mul4x1(c.Pos.Vec4(0)).Vec3()
+		t.Log("matrix     :", rm)
 
-		r1 := q.Rotate(c.Pos)
-		r2 := m.Mul4x1(c.Pos.Vec4(0)).Vec3()
+		m2 := LookAtNew(c.Eye, c.Center, c.Up)
+		rm2 := m2.Mul4x1(c.Pos.Vec4(0)).Vec3()
+		t.Log("matrix 2   :", rm2)
 
-		if !r1.ApproxEqualThreshold(r2, threshold) {
-			t.Errorf("%v failed: QuatLookAtV() != LookAtV() (got %v, %v)", c.Description, r1, r2)
+		qv := QuatLookAtV(c.Eye, c.Center, c.Up)
+		rv := qv.Rotate(c.Pos)
+		t.Log("matrix conv:", rv)
+
+		qo := QuatLookAtOld(c.Eye, c.Center, c.Up)
+		ro := qo.Rotate(c.Pos)
+		t.Log("quat old   :", ro)
+
+		qn := QuatLookAtNew(c.Eye, c.Center, c.Up)
+		rn := qn.Rotate(c.Pos)
+		t.Log("quat new   :", rn)
+
+		qg := QuatLookAtOgre(c.Eye, c.Center, c.Up)
+		rg := qg.Rotate(c.Pos)
+		t.Log("quat ogre  :", rg)
+
+		if !rm2.ApproxEqualThreshold(rm, threshold) {
+			t.Errorf("%v failed: LookAtNew() != LookAtV()", c.Description)
+		}
+
+		if !rv.ApproxEqualThreshold(rm, threshold) {
+			t.Errorf("%v failed: QuatLookAtV() != LookAtV()", c.Description)
+		}
+
+		if !ro.ApproxEqualThreshold(rm, threshold) {
+			t.Errorf("%v failed: QuatLookAtOld() != LookAtV()", c.Description)
+		}
+
+		if !rn.ApproxEqualThreshold(rm, threshold) {
+			t.Errorf("%v failed: QuatLookAtNew() != LookAtV()", c.Description)
+		}
+
+		if !rg.ApproxEqualThreshold(rm, threshold) {
+			t.Errorf("%v failed: QuatLookAtOgre() != LookAtV()", c.Description)
 		}
 	}
 }
