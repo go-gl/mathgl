@@ -5,6 +5,7 @@
 package mgl64
 
 import (
+	"log"
 	"math"
 )
 
@@ -456,6 +457,7 @@ func QuatBetweenVectors(start, dest Vec3) Quat {
 
 	cosTheta := start.Dot(dest)
 	if cosTheta < -1.0+epsilon {
+		log.Println("opposite direction", start, dest)
 		// special case when vectors in opposite directions:
 		// there is no "ideal" rotation axis
 		// So guess one; any will do as long as it's perpendicular to start
@@ -488,8 +490,8 @@ func QuatLookAtOgre(eye, center, up Vec3) Quat {
 
 	m := mRealOrientation.Mat4()
 	//x := Vec3{m[0+0], m[0+4], m[0+8]}
-	y := Vec3{m[1], m[5], m[9]}  // up
-	z := Vec3{m[2], m[6], m[10]} // forward
+	y := Vec3{m[1], m[5], m[9]}  // up Vec3{0,1,0}
+	z := Vec3{m[2], m[6], m[10]} // forward Vec3{0,0,1}
 
 	var rotQuat Quat
 
