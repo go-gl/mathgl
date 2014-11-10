@@ -97,7 +97,7 @@ func doLookAtTests(f lookAtFunc, t *testing.T) {
 		},
 
 		"look right": {
-			// x+
+			// look x+
 			// rotate around y -45 deg
 			Vec3{0, 0, 0}, Vec3{1, 0, 0}, Vec3{0, 1, 0},
 			/*
@@ -115,7 +115,7 @@ func doLookAtTests(f lookAtFunc, t *testing.T) {
 		},
 
 		"look down": {
-			// y-
+			// look y-
 			// rotate around x -45 deg
 			// up toward z-
 			Vec3{0, 0, 0}, Vec3{0, -1, 0}, Vec3{0, 0, -1},
@@ -148,6 +148,25 @@ func doLookAtTests(f lookAtFunc, t *testing.T) {
 			[]Vec3{
 				cube[2], cube[3], cube[0], cube[1],
 				cube[6], cube[7], cube[4], cube[5],
+			},
+		},
+
+		"roll left": {
+			// look x-
+			// rotate around y 45 deg
+			// up toward viewer z+
+			Vec3{0, 0, 0}, Vec3{-1, 0, 0}, Vec3{0, 0, 1},
+			/*
+				3   +----+   2
+				    |\   |\
+				  0 | +----+   1
+				7   +-|--+ | 6
+				     \|   \|
+				  4   +----+   5
+			*/
+			[]Vec3{
+				cube[2], cube[1], cube[5], cube[6],
+				cube[3], cube[0], cube[4], cube[7],
 			},
 		},
 	}

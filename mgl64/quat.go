@@ -425,25 +425,29 @@ func QuatLookAtOld(eye, center, up Vec3) Quat {
 
 func QuatLookAtNew(eye, center, up Vec3) Quat {
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/#I_need_an_equivalent_of_gluLookAt__How_do_I_orient_an_object_towards_a_point__
+	log.Println(eye, center)
 
 	direction := center.Sub(eye).Normalize()
 
 	// Find the rotation between the front of the object (that we assume towards +Z,
 	// but this depends on your model) and the desired direction
-	rot1 := QuatBetweenVectors(Vec3{0, 0, 1}, direction)
+	rot1 := QuatBetweenVectors(Vec3{0, 0, -1}, direction)
+	log.Println("rot1:", rot1)
 
 	// Recompute up so that it's perpendicular to the direction
 	// You can skip that part if you really want to force up
-	right := direction.Cross(up)
-	up = right.Cross(direction)
+	//right := direction.Cross(up)
+	//up = right.Cross(direction)
 
 	// Because of the 1rst rotation, the up is probably completely screwed up.
 	// Find the rotation between the "up" of the rotated object, and the desired up
 	newUp := rot1.Rotate(Vec3{0, 1, 0})
+	log.Println("newup:", newUp)
 	rot2 := QuatBetweenVectors(newUp, up)
+	log.Println("rot2:", rot2)
 
 	targetOrientation := rot2.Mul(rot1) // remember, in reverse order.
-	return targetOrientation
+	return targetOrientation.Inverse()  // uhh... wtf?
 }
 
 // QuatBetweenVectors calculates the rotation between two vectors
@@ -461,10 +465,11 @@ func QuatBetweenVectors(start, dest Vec3) Quat {
 		// special case when vectors in opposite directions:
 		// there is no "ideal" rotation axis
 		// So guess one; any will do as long as it's perpendicular to start
-		rotationAxis := Vec3{0, 0, 1}.Cross(start)
+		rotationAxis := Vec3{1, 0, 0}.Cross(start)
 		if rotationAxis.Dot(rotationAxis) < epsilon {
+			log.Println("parallel")
 			// bad luck, they were parallel, try again!
-			rotationAxis = Vec3{1, 0, 0}.Cross(start)
+			rotationAxis = Vec3{0, 1, 0}.Cross(start)
 		}
 
 		return QuatRotate(math.Pi, rotationAxis.Normalize())
