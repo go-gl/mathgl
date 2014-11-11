@@ -5,7 +5,6 @@
 package mgl64
 
 import (
-	"log"
 	"math"
 )
 
@@ -194,6 +193,19 @@ func (q1 Quat) ApproxEqualFunc(q2 Quat, f func(float64, float64) bool) bool {
 	return f(q1.W, q2.W) && q1.V.ApproxFuncEqual(q2.V, f)
 }
 
+// Returns whether the quaternions represents the same orientation
+//
+// Different values can represent the same orientation (q == -q) because quaternions avoid singularities
+// and discontinuities involved with rotation in 3 dimensions by adding extra dimensions
+func (q1 Quat) OrientationEqual(q2 Quat) bool {
+	return q1.OrientationEqualThreshold(q2, Epsilon)
+}
+
+// Returns whether the quaternions represents the same orientation with a given tolerence
+func (q1 Quat) OrientationEqualThreshold(q2 Quat, epsilon float64) bool {
+	return Abs(q1.Normalize().Dot(q2.Normalize())) > 1-epsilon
+}
+
 // Slerp is *S*pherical *L*inear Int*erp*olation, a method of interpolating
 // between two quaternions. This always takes the straightest path on the sphere between
 // the two quaternions, and maintains constant velocity.
@@ -333,6 +345,7 @@ func AnglesToQuat(angle1, angle2, angle3 float64, order RotationOrder) Quat {
 	return ret
 }
 
+// Mat4ToQuat converts a pure rotation matrix into a quaternion
 func Mat4ToQuat(m Mat4) Quat {
 	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 
@@ -384,55 +397,18 @@ func Mat4ToQuat(m Mat4) Quat {
 	}
 }
 
+// QuatLookAtV creates a rotation from an eye vector to a center vector
+//
+// It assumes the front of the rotated object at Z- and up at Y+
 func QuatLookAtV(eye, center, up Vec3) Quat {
-	forward := center.Sub(eye).Normalize()
-	s := forward.Cross(up).Normalize()
-	u := s.Cross(forward)
-
-	m := Mat4{
-		s[0], u[0], -forward[0], 0,
-		s[1], u[1], -forward[1], 0,
-		s[2], u[2], -forward[2], 0,
-
-		s[0]*-eye[0] + s[1]*-eye[1] + s[2]*-eye[2],
-		u[0]*-eye[0] + u[1]*-eye[1] + u[2]*-eye[2],
-		-forward[0]*-eye[0] + -forward[1]*-eye[1] + -forward[2]*-eye[2],
-		1,
-	}
-
-	return Mat4ToQuat(m)
-}
-
-func QuatLookAtOld(eye, center, up Vec3) Quat {
-	forward := eye.Sub(center).Normalize()
-	f := Vec3{0, 0, 1}
-	dot := f.Dot(forward)
-
-	if Abs(dot-(-1.0)) < 0.0001 {
-		// vectors point in opposite direction
-		return QuatRotate(math.Pi, up)
-	}
-
-	if Abs(dot-(1.0)) < 0.0001 {
-		// vectors point in same direction
-		return Quat{1, Vec3{0, 0, 0}}
-	}
-
-	angle := math.Acos(dot)
-	axis := f.Cross(forward).Normalize()
-	return QuatRotate(angle, axis)
-}
-
-func QuatLookAtNew(eye, center, up Vec3) Quat {
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/#I_need_an_equivalent_of_gluLookAt__How_do_I_orient_an_object_towards_a_point__
-	log.Println(eye, center)
+	// https://bitbucket.org/sinbad/ogre/src/d2ef494c4a2f5d6e2f0f17d3bfb9fd936d5423bb/OgreMain/src/OgreCamera.cpp?at=default#cl-161
 
 	direction := center.Sub(eye).Normalize()
 
-	// Find the rotation between the front of the object (that we assume towards +Z,
+	// Find the rotation between the front of the object (that we assume towards Z-,
 	// but this depends on your model) and the desired direction
-	rot1 := QuatBetweenVectors(Vec3{0, 0, -1}, direction)
-	log.Println("rot1:", rot1)
+	rotDir := QuatBetweenVectors(Vec3{0, 0, -1}, direction)
 
 	// Recompute up so that it's perpendicular to the direction
 	// You can skip that part if you really want to force up
@@ -441,19 +417,18 @@ func QuatLookAtNew(eye, center, up Vec3) Quat {
 
 	// Because of the 1rst rotation, the up is probably completely screwed up.
 	// Find the rotation between the "up" of the rotated object, and the desired up
-	newUp := rot1.Rotate(Vec3{0, 1, 0})
-	log.Println("newup:", newUp)
-	rot2 := QuatBetweenVectors(newUp, up)
-	log.Println("rot2:", rot2)
+	upCur := rotDir.Rotate(Vec3{0, 1, 0})
+	rotUp := QuatBetweenVectors(upCur, up)
 
-	targetOrientation := rot2.Mul(rot1) // remember, in reverse order.
-	return targetOrientation.Inverse()  // uhh... wtf?
+	rotTarget := rotUp.Mul(rotDir) // remember, in reverse order.
+	return rotTarget.Inverse()     // camera rotation should be inversed?
 }
 
 // QuatBetweenVectors calculates the rotation between two vectors
 func QuatBetweenVectors(start, dest Vec3) Quat {
 	// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/#I_need_an_equivalent_of_gluLookAt__How_do_I_orient_an_object_towards_a_point__
 	// https://github.com/g-truc/glm/blob/0.9.5/glm/gtx/quaternion.inl#L225
+	// https://bitbucket.org/sinbad/ogre/src/d2ef494c4a2f5d6e2f0f17d3bfb9fd936d5423bb/OgreMain/include/OgreVector3.h?at=default#cl-654
 
 	start = start.Normalize()
 	dest = dest.Normalize()
@@ -461,91 +436,23 @@ func QuatBetweenVectors(start, dest Vec3) Quat {
 
 	cosTheta := start.Dot(dest)
 	if cosTheta < -1.0+epsilon {
-		log.Println("opposite direction", start, dest)
 		// special case when vectors in opposite directions:
 		// there is no "ideal" rotation axis
 		// So guess one; any will do as long as it's perpendicular to start
-		rotationAxis := Vec3{1, 0, 0}.Cross(start)
-		if rotationAxis.Dot(rotationAxis) < epsilon {
-			log.Println("parallel")
+		axis := Vec3{1, 0, 0}.Cross(start)
+		if axis.Dot(axis) < epsilon {
 			// bad luck, they were parallel, try again!
-			rotationAxis = Vec3{0, 1, 0}.Cross(start)
+			axis = Vec3{0, 1, 0}.Cross(start)
 		}
 
-		return QuatRotate(math.Pi, rotationAxis.Normalize())
+		return QuatRotate(math.Pi, axis.Normalize())
 	}
 
-	rotationAxis := start.Cross(dest)
+	axis := start.Cross(dest)
 	s := math.Sqrt((1.0 + cosTheta) * 2.0)
 
 	return Quat{
 		s * 0.5,
-		rotationAxis.Mul(1.0 / s),
+		axis.Mul(1.0 / s),
 	}
-}
-
-func QuatLookAtOgre(eye, center, up Vec3) Quat {
-	// https://bitbucket.org/sinbad/ogre/src/d2ef494c4a2f5d6e2f0f17d3bfb9fd936d5423bb/OgreMain/src/OgreCamera.cpp?at=default#cl-161
-
-	direction := center.Sub(eye)
-	zAdjustVec := direction.Mul(-1).Normalize()
-
-	// current orientation
-	mRealOrientation := QuatIdent()
-
-	m := mRealOrientation.Mat4()
-	//x := Vec3{m[0+0], m[0+4], m[0+8]}
-	y := Vec3{m[1], m[5], m[9]}  // up Vec3{0,1,0}
-	z := Vec3{m[2], m[6], m[10]} // forward Vec3{0,0,1}
-
-	var rotQuat Quat
-
-	if z.Add(zAdjustVec).Len() < 0.00005 {
-		// Oops, a 180 degree turn (infinite possible rotation axes)
-		// Default to yaw i.e. use current UP
-		rotQuat = QuatRotate(math.Pi, y)
-	} else {
-		// Derive shortest arc to new direction
-		rotQuat = getRotationTo(z, zAdjustVec)
-	}
-
-	return rotQuat.Mul(mRealOrientation)
-}
-
-func getRotationTo(start, dest Vec3) Quat {
-	// https://bitbucket.org/sinbad/ogre/src/d2ef494c4a2f5d6e2f0f17d3bfb9fd936d5423bb/OgreMain/include/OgreVector3.h?at=default#cl-654
-
-	v0 := start.Normalize()
-	v1 := dest.Normalize()
-
-	d := v0.Dot(v1)
-	// If dot == 1, vectors are the same
-	if d >= 1.0 {
-		return QuatIdent()
-	}
-
-	if d < (1e-6 - 1.0) {
-		// Generate an axis
-		axis := Vec3{1, 0, 0}.Cross(start)
-		if axis.Len() == 0 {
-			// pick another if colinear
-			axis = Vec3{0, 1, 0}.Cross(start)
-		}
-
-		axis = axis.Normalize()
-		return QuatRotate(math.Pi, axis)
-	}
-
-	s := math.Sqrt((1.0 + d) * 2.0)
-	invs := 1.0 / s
-	c := v0.Cross(v1)
-
-	return Quat{
-		s * 0.5,
-		Vec3{
-			c[0] * invs,
-			c[1] * invs,
-			c[2] * invs,
-		},
-	}.Normalize()
 }
