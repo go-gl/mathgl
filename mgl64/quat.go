@@ -421,7 +421,7 @@ func QuatLookAtV(eye, center, up Vec3) Quat {
 	rotUp := QuatBetweenVectors(upCur, up)
 
 	rotTarget := rotUp.Mul(rotDir) // remember, in reverse order.
-	return rotTarget.Inverse()     // camera rotation should be inversed?
+	return rotTarget.Inverse()     // camera rotation should be inversed!
 }
 
 // QuatBetweenVectors calculates the rotation between two vectors

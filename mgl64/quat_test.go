@@ -5,7 +5,6 @@
 package mgl64
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 	"testing"
@@ -353,10 +352,6 @@ func TestQuatLookAtV(t *testing.T) {
 			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
 		}
 	}
-}
-
-func (v Vec3) String() string {
-	return fmt.Sprintf("%T{%+.2f, %+.2f, %+.2f}", v, v[0], v[1], v[2])
 }
 
 func TestCompareLookAt(t *testing.T) {

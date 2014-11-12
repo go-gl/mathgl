@@ -295,7 +295,7 @@ func TestQuatRotate(t *testing.T) {
 
 	threshold := float32(math.Pow(10, -2))
 	for _, c := range tests {
-		if r := QuatRotate(c.Angle, c.Axis); !r.ApproxEqualThreshold(c.Expected, threshold) {
+		if r := QuatRotate(c.Angle, c.Axis); !r.OrientationEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: QuatRotate(%v, %v) != %v (got %v)", c.Description, c.Angle, c.Axis, c.Expected, r)
 		}
 	}
@@ -348,8 +348,141 @@ func TestQuatLookAtV(t *testing.T) {
 
 	threshold := float32(math.Pow(10, -2))
 	for _, c := range tests {
-		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
+		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !r.OrientationEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
+		}
+	}
+}
+
+func TestCompareLookAt(t *testing.T) {
+	type OrigExp [2]Vec3
+
+	tests := []struct {
+		Description     string
+		Eye, Center, Up Vec3
+		Pos             []OrigExp
+	}{
+		{
+			"forward, identity rotation",
+			// looking from viewer into screen z-, up y+
+			Vec3{0, 0, 0}, Vec3{0, 0, -1}, Vec3{0, 1, 0},
+			[]OrigExp{
+				{Vec3{1, 2, 3}, Vec3{1, 2, 3}},
+			},
+		},
+		{
+			"heading -90 degree, look right",
+			// look x+
+			// rotate around y -90 deg
+			Vec3{0, 0, 0}, Vec3{1, 0, 0}, Vec3{0, 1, 0},
+			[]OrigExp{
+				{Vec3{1, 2, 3}, Vec3{3, 2, -1}},
+
+				{Vec3{1, 1, -1}, Vec3{-1, 1, -1}},
+				{Vec3{1, 1, 1}, Vec3{1, 1, -1}},
+				{Vec3{1, -1, 1}, Vec3{1, -1, -1}},
+				{Vec3{1, -1, -1}, Vec3{-1, -1, -1}},
+
+				{Vec3{-1, 1, -1}, Vec3{-1, 1, 1}},
+				{Vec3{-1, 1, 1}, Vec3{1, 1, 1}},
+				{Vec3{-1, -1, 1}, Vec3{1, -1, 1}},
+				{Vec3{-1, -1, -1}, Vec3{-1, -1, 1}},
+			},
+		},
+		{
+			"heading 180 degree",
+			Vec3{0, 0, 0}, Vec3{0, 0, 1}, Vec3{0, 1, 0},
+			[]OrigExp{
+				{Vec3{1, 2, 3}, Vec3{-1, 2, -3}},
+			},
+		},
+		{
+			"attitude 90 degree",
+			Vec3{0, 0, 0}, Vec3{0, 0, -1}, Vec3{1, 0, 0},
+			[]OrigExp{
+				{Vec3{1, 2, 3}, Vec3{-2, 1, 3}},
+			},
+		},
+		{
+			"bank 90 degree, look down",
+			// look y-
+			// rotate around x -90 deg
+			// up toward z-
+			Vec3{0, 0, 0}, Vec3{0, -1, 0}, Vec3{0, 0, -1},
+			[]OrigExp{
+				{Vec3{1, 2, 3}, Vec3{1, -3, 2}},
+
+				{Vec3{1, 1, -1}, Vec3{1, 1, 1}},
+				{Vec3{1, 1, 1}, Vec3{1, -1, 1}},
+				{Vec3{1, -1, 1}, Vec3{1, -1, -1}},
+				{Vec3{1, -1, -1}, Vec3{1, 1, -1}},
+
+				{Vec3{-1, 1, -1}, Vec3{-1, 1, 1}},
+				{Vec3{-1, 1, 1}, Vec3{-1, -1, 1}},
+				{Vec3{-1, -1, 1}, Vec3{-1, -1, -1}},
+				{Vec3{-1, -1, -1}, Vec3{-1, 1, -1}},
+			},
+		},
+		{
+			"half roll",
+			// immelmann turn without the half roll
+			// looking from screen to viewer z+
+			// upside down, y-
+			Vec3{0, 0, 0}, Vec3{0, 0, 1}, Vec3{0, -1, 0},
+			[]OrigExp{
+				{Vec3{1, 1, -1}, Vec3{1, -1, 1}},
+				{Vec3{1, 1, 1}, Vec3{1, -1, -1}},
+				{Vec3{1, -1, 1}, Vec3{1, 1, -1}},
+				{Vec3{1, -1, -1}, Vec3{1, 1, 1}},
+
+				{Vec3{-1, 1, -1}, Vec3{-1, -1, 1}},
+				{Vec3{-1, 1, 1}, Vec3{-1, -1, -1}},
+				{Vec3{-1, -1, 1}, Vec3{-1, 1, -1}},
+				{Vec3{-1, -1, -1}, Vec3{-1, 1, 1}},
+			},
+		},
+		{
+			"roll left",
+			// look x-
+			// rotate around y 90 deg
+			// up toward viewer z+
+			Vec3{0, 0, 0}, Vec3{-1, 0, 0}, Vec3{0, 0, 1},
+			[]OrigExp{
+				{Vec3{1, 1, -1}, Vec3{1, -1, 1}},
+				{Vec3{1, 1, 1}, Vec3{1, 1, 1}},
+				{Vec3{1, -1, 1}, Vec3{-1, 1, 1}},
+				{Vec3{1, -1, -1}, Vec3{-1, -1, 1}},
+
+				{Vec3{-1, 1, -1}, Vec3{1, -1, -1}},
+				{Vec3{-1, 1, 1}, Vec3{1, 1, -1}},
+				{Vec3{-1, -1, 1}, Vec3{-1, 1, -1}},
+				{Vec3{-1, -1, -1}, Vec3{-1, -1, -1}},
+			},
+		},
+	}
+
+	threshold := float32(math.Pow(10, -2))
+	for _, c := range tests {
+		m := LookAtV(c.Eye, c.Center, c.Up)
+		q := QuatLookAtV(c.Eye, c.Center, c.Up)
+
+		for i, p := range c.Pos {
+			t.Log(c.Description, i)
+			o, e := p[0], p[1]
+			rm := m.Mul4x1(o.Vec4(0)).Vec3()
+			rq := q.Rotate(o)
+
+			if !rq.ApproxEqualThreshold(rm, threshold) {
+				t.Errorf("%v failed: QuatLookAtV() != LookAtV()", c.Description)
+			}
+
+			if !e.ApproxEqualThreshold(rm, threshold) {
+				t.Errorf("%v failed: (%v).Mul4x1(%v) != %v (got %v)", c.Description, m, o, e, rm)
+			}
+
+			if !e.ApproxEqualThreshold(rq, threshold) {
+				t.Errorf("%v failed: (%v).Rotate(%v) != %v (got %v)", c.Description, q, o, e, rq)
+			}
 		}
 	}
 }
@@ -421,6 +554,24 @@ func TestQuatEqual(t *testing.T) {
 	for _, c := range tests {
 		if r := c.A.ApproxEqualThreshold(c.B, 1e-4); r != c.Expected {
 			t.Errorf("Quat(%v).ApproxEqualThreshold(Quat(%v), 1e-4) != %v (got %v)", c.A, c.B, c.Expected, r)
+		}
+	}
+}
+
+func TestQuatOrientationEqual(t *testing.T) {
+	tests := []struct {
+		A, B     Quat
+		Expected bool
+	}{
+		{Quat{1, Vec3{0, 0, 0}}, Quat{1, Vec3{0, 0, 0}}, true},
+		{Quat{0, Vec3{0, 1, 0}}, Quat{0, Vec3{0, -1, 0}}, true},
+		{Quat{0, Vec3{0, 1, 0}}, Quat{1, Vec3{0, 0, 0}}, false},
+		{Quat{1, Vec3{2, 3, 0}}, Quat{-4, Vec3{5, 6, 0}}, false},
+	}
+
+	for _, c := range tests {
+		if r := c.A.OrientationEqualThreshold(c.B, 1e-4); r != c.Expected {
+			t.Errorf("Quat(%v).OrientationEqualThreshold(Quat(%v), 1e-4) != %v (got %v)", c.A, c.B, c.Expected, r)
 		}
 	}
 }
