@@ -59,11 +59,8 @@ import(
 
 `
 
-	for m := 2; m <= 4; m++ {
-		vecs += GenVecDef(m)
-	}
+	// Skip Vec2, Vec3, Vec4 types since they're in vectorStatic.go.
 
-	vecs += "\n"
 	for m := 2; m <= 4; m++ {
 		vecs += GenVecAdd(m)
 	}
@@ -123,23 +120,23 @@ import(
 
 func GenVecCross() string {
 	header := `// The vector cross product is an operation only defined on 3D vectors. It is equivalent to
-// Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}. 
-// Another interpretation is that it's the vector whose magnitude is |v1||v2|sin(theta) 
+// Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}.
+// Another interpretation is that it's the vector whose magnitude is |v1||v2|sin(theta)
 // where theta is the angle between v1 and v2.
 //
 // The cross product is most often used for finding surface normals. The cross product of vectors
 // will generate a vector that is perpendicular to the plane they form.
 //
-// Technically, a generalized cross product exists as an "(N-1)ary" operation 
+// Technically, a generalized cross product exists as an "(N-1)ary" operation
 // (that is, the 4D cross product requires 3 4D vectors). But the binary
-// 3D (and 7D) cross product is the most important. It can be considered 
+// 3D (and 7D) cross product is the most important. It can be considered
 // the area of a parallelogram with sides v1 and v2.
 //
-// Like the dot product, the cross product is roughly a measure of directionality. 
+// Like the dot product, the cross product is roughly a measure of directionality.
 // Two normalized perpendicular vectors will return a vector with a magnitude of
-// 1.0 or -1.0 and two parallel vectors will return a vector with magnitude 0.0. 
+// 1.0 or -1.0 and two parallel vectors will return a vector with magnitude 0.0.
 // The cross product is "anticommutative" meaning v1.Cross(v2) = -v2.Cross(v1),
-// this property can be useful to know when finding normals, 
+// this property can be useful to know when finding normals,
 // as taking the wrong cross product can lead to the opposite normal of the one you want.
 `
 	return header + "func (v1 Vec3) Cross(v2 Vec3) Vec3 {\n\treturn Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}\n}\n\n"
@@ -242,7 +239,7 @@ func GenVecDot(m int) (s string) {
 func GenVecLen(m int) (s string) {
 	s = `// Len returns the vector's length. Note that this is NOT the dimension of
 // the vector (len(v)), but the mathematical length. This is equivalent to the square
-// root of the sum of the squares of all elements. E.G. for a Vec2 it's 
+// root of the sum of the squares of all elements. E.G. for a Vec2 it's
 // math.Hypot(v[0], v[1]).
 `
 	if m != 2 {
@@ -413,6 +410,11 @@ import(
 
 	for m := 2; m <= 4; m++ {
 		for n := 2; n <= 4; n++ {
+			// Skip Mat3 and Mat4 since they're declared in matrixStatic.go.
+			if (m == n) && (m == 3 || m == 4) {
+				continue
+			}
+
 			mats += GenMatDef(m, n)
 		}
 	}
@@ -669,7 +671,7 @@ func GenTranspose(m, n int) (s string) {
 //
 //    [[a b]]    [[a c e]]
 //    [[c d]] =  [[b d f]]
-//    [[e f]]    
+//    [[e f]]
 `
 	s += fmt.Sprintf("func (m1 %s) Transpose() %s {\n\treturn %s{", GenMatName(m, n), GenMatName(n, m), GenMatName(n, m))
 
@@ -741,10 +743,10 @@ func GenInv(m int) string {
 // In this library, the math is precomputed, and uses no loops, though the multiplications, additions, determinant calculation, and scaling
 // are still done. This can still be (relatively) expensive for a 4x4.
 //
-// This function checks the determinant to see if the matrix is invertible. 
+// This function checks the determinant to see if the matrix is invertible.
 // If the determinant is 0.0, this function returns the zero matrix. However, due to floating point errors, it is
 // entirely plausible to get a false positive or negative.
-// In the future, an alternate function may be written which takes in a pre-computed determinant. 
+// In the future, an alternate function may be written which takes in a pre-computed determinant.
 `
 	s += fmt.Sprintf("func (m %s) Inv() %s {\n\t", GenMatName(m, m), GenMatName(m, m))
 	s += "det := m.Det()\n\t if FloatEqual(det,float32(0.0)) { \n\t\t return " + GenMatName(m, m) + "{}\n\t}\n\t"
