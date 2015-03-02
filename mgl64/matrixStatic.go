@@ -4,6 +4,11 @@
 
 package mgl64
 
+import "golang.org/x/image/math/f64"
+
+type Mat3 f64.Mat3
+type Mat4 f64.Mat4
+
 // Sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat2) SetCol(col int, v Vec2) {
 	m[col*2+0], m[col*2+1] = v[0], v[1]

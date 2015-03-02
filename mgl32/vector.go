@@ -12,10 +12,6 @@ import (
 	"math"
 )
 
-type Vec2 [2]float32
-type Vec3 [3]float32
-type Vec4 [4]float32
-
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
 // over every element of v1 and adding the corresponding element of v2 to it.
 func (v1 Vec2) Add(v2 Vec2) Vec2 {

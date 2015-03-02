@@ -4,6 +4,12 @@
 
 package mgl64
 
+import "golang.org/x/image/math/f64"
+
+type Vec2 f64.Vec2
+type Vec3 f64.Vec3
+type Vec4 f64.Vec4
+
 func (v Vec2) Vec3(z float64) Vec3 {
 	return Vec3{v[0], v[1], z}
 }

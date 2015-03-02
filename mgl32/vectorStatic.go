@@ -4,6 +4,12 @@
 
 package mgl32
 
+import "golang.org/x/image/math/f32"
+
+type Vec2 f32.Vec2
+type Vec3 f32.Vec3
+type Vec4 f32.Vec4
+
 func (v Vec2) Vec3(z float32) Vec3 {
 	return Vec3{v[0], v[1], z}
 }

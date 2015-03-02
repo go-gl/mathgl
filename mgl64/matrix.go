@@ -19,11 +19,9 @@ type Mat2 [4]float64
 type Mat2x3 [6]float64
 type Mat2x4 [8]float64
 type Mat3x2 [6]float64
-type Mat3 [9]float64
 type Mat3x4 [12]float64
 type Mat4x2 [8]float64
 type Mat4x3 [12]float64
-type Mat4 [16]float64
 
 // Ident<N> returns the NxN identity matrix.
 // The identity matrix is a square matrix with the value 1 on its
