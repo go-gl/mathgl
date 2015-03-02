@@ -116,7 +116,7 @@ func TestExtractMaxScale(t *testing.T) {
 	eq := FloatEqualFunc(1e-6)
 	for _, c := range tests {
 		if r := ExtractMaxScale(c.M); !eq(r, c.V) {
-			t.Errorf("ExtractMaxScale(%v) != %v (got %v, %v, %v)", c.M, c.V, r)
+			t.Errorf("ExtractMaxScale(%v) != %v (got %v)", c.M, c.V, r)
 		}
 	}
 }
