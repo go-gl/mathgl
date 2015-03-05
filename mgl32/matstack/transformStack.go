@@ -170,5 +170,5 @@ type NoInverseError struct {
 }
 
 func (nie NoInverseError) Error() string {
-	return fmt.Sprintf("cannot find inverse of matrix %v at location %d in matrix stack, aborting rebase/reseed")
+	return fmt.Sprintf("cannot find inverse of matrix %v at location %d in matrix stack, aborting rebase/reseed", nie.Mat, nie.Loc)
 }

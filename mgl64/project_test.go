@@ -25,7 +25,7 @@ func TestProject(t *testing.T) {
 
 	objr, err := UnProject(win, modelview, projection, initialX, initialY, width, height)
 	if err != nil {
-		t.Errorf("UnProject returned error:", err)
+		t.Errorf("UnProject returned error: %v", err)
 	}
 	if !objr.ApproxEqualThreshold(obj, 1e-4) {
 		t.Errorf("UnProject(%v) != %v (got %v)", win, obj, objr)
