@@ -16,8 +16,8 @@ func Ortho(left, right, bottom, top, near, far float32) Mat4 {
 }
 
 // Equivalent to Ortho with the near and far planes being -1 and 1, respectively
-func Ortho2D(left, right, top, bottom float32) Mat4 {
-	return Ortho(left, right, top, bottom, -1, 1)
+func Ortho2D(left, right, bottom, top float32) Mat4 {
+	return Ortho(left, right, bottom, top, -1, 1)
 }
 
 func Perspective(fovy, aspect, near, far float32) Mat4 {
