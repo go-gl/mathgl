@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:generate go run codegen.go -template vector.tpl -output vector.go
+
 package mgl32
 
 import "golang.org/x/image/math/f32"

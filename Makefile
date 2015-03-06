@@ -1,4 +1,5 @@
-all:	
+all:
+	go generate ./mgl32
 	mkdir -p mgl64
 	cp -R mgl32/* mgl64
 	gofmt -w -r "float32 -> float64" mgl64/*.go
