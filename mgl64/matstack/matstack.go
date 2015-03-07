@@ -50,10 +50,10 @@ func (ms *MatStack) Peek() mgl64.Mat4 {
 
 // Rewrites the top element of the stack with m
 func (ms *MatStack) Load(m mgl64.Mat4) {
-	(*ms)[len(*ms)] = m
+	(*ms)[len(*ms)-1] = m
 }
 
 // A shortcut for Load(mgl.Ident4())
 func (ms *MatStack) LoadIdent() {
-	(*ms)[len(*ms)] = mgl64.Ident4()
+	(*ms)[len(*ms)-1] = mgl64.Ident4()
 }
