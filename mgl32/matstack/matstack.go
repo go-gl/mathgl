@@ -40,7 +40,7 @@ func (ms *MatStack) RightMul(m mgl32.Mat4) {
 // Left multiplies the current top of the matrix by the
 // argument.
 func (ms *MatStack) LeftMul(m mgl32.Mat4) {
-	(*ms)[len(*ms)-1] = (*ms)[len(*ms)-1].Mul4(m)
+	(*ms)[len(*ms)-1] = m.Mul4((*ms)[len(*ms)-1])
 }
 
 // Returns the top element.
