@@ -29,6 +29,22 @@ func Abs(a float32) float32 {
 	return a
 }
 
+func Min(a, b float32) float32 {
+	if a < b {
+		return a
+	}
+
+	return b
+}
+
+func Max(a, b float32) float32 {
+	if a > b {
+		return a
+	}
+
+	return b
+}
+
 // FloatEqual is a safe utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
 //
@@ -135,4 +151,12 @@ func Round(v float32, precision int) float32 {
 		return float32(math.Floor(t+0.5) / math.Pow(10, p))
 	}
 	return float32(math.Ceil(t-0.5) / math.Pow(10, p))
+}
+
+func intMax(a, b int) int {
+	if a > b {
+		return a
+	}
+
+	return b
 }
