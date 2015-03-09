@@ -115,7 +115,7 @@ func (v1 <<$type>>) Mul(c float32) <<$type>> {
 // direction. If both vectors are normalized, the value will be -1 for opposite pointing,
 // one for same pointing, and 0 for perpendicular vectors.
 func (v1 <<$type>>) Dot(v2 <<$type>>) float32 {
-	return <<range $i := iter 0 $m>><<if gt $i 0>>+<<end>> v1[<<$i>>]*v2[<<$i>>] <<end>>
+	return <<range $i := iter 0 $m>><<sep "+" $i>> v1[<<$i>>]*v2[<<$i>>] <<end>>
 }
 
 // Len returns the vector's length. Note that this is NOT the dimension of
@@ -126,7 +126,7 @@ func (v1 <<$type>>) Len() float32 {
 	<<if eq $m 2 >>
 	return float32(math.Hypot(float64(v1[0]), float64(v1[1])))
 	<<else>>
-	return float32(math.Sqrt(float64(<<range $i := iter 0 $m>><<if gt $i 0>>+<<end>> v1[<<$i>>]*v1[<<$i>>] <<end>>)))
+	return float32(math.Sqrt(float64(<<repeat $m "v1[%d]*v1[%d]" "+">>)))
 	<<end>>
 }
 
@@ -200,7 +200,7 @@ func (v <<$type>>) <<elementname $i>>() float32 {
 // The outer product orients it so they're facing "outward": Vec2*Vec3
 // = Mat2x1*Mat1x3 = Mat2x3.
 func (v1 <<$type>>) OuterProd<<$n>>(v2 <<typename $n 1>>) <<typename $m $n>> {
-	return <<typename $m $n>>{<<range $i := iter 0 $n>> <<range $j := iter 0 $m>>v1[<<$j>>] * v2[<<$i>>], <<end>><<end>>}
+	return <<typename $m $n>>{<<range $i := matiter $m $n>>v1[<<$i.M>>] * v2[<<$i.N>>], <<end>>}
 }
 <<end>>
 

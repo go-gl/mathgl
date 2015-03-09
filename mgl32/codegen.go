@@ -5,16 +5,18 @@
 // +build ignore
 
 // codegen generates go code from templates. Intended to be
-// used with go generate; see the invocation in vectorStatic.go.
+// used with go generate; see the invocation in util.go.
 
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"text/template"
 )
 
@@ -23,9 +25,15 @@ type Context struct {
 	TemplateName string
 }
 
+type MatrixIter struct {
+	M     int // row
+	N     int // column
+	index int
+}
+
 func main() {
-	var tplPath = flag.String("template", "vector.tpl", "template name")
-	var oPath = flag.String("output", "vector.go", "file name to write")
+	var tplPath = flag.String("template", "vector.tpl", "template path")
+	var oPath = flag.String("output", "vector.go", "output path")
 
 	flag.Parse()
 	if flag.NArg() > 0 {
@@ -37,7 +45,12 @@ func main() {
 		"typename":    typenameHelper,
 		"elementname": elementNameHelper,
 		"iter":        iterHelper,
+		"matiter":     matrixIterHelper,
 		"enum":        enumHelper,
+		"sep":         separatorHelper,
+		"repeat":      repeatHelper,
+		"add":         addHelper,
+		"mul":         mulHelper,
 	})
 	tpl = template.Must(tpl.ParseFiles(*tplPath))
 	tplName := filepath.Base(*tplPath)
@@ -101,8 +114,68 @@ func iterHelper(start, end int) []int {
 	return iter
 }
 
+func matrixIterHelper(rows, cols int) []MatrixIter {
+	res := make([]MatrixIter, 0, rows*cols)
+
+	for n := 0; n < cols; n++ {
+		for m := 0; m < rows; m++ {
+			res = append(res, MatrixIter{
+				M:     m,
+				N:     n,
+				index: n*rows + m,
+			})
+		}
+	}
+
+	return res
+}
+
 // Template function that returns slice from its arguments. Indended to be used
 // in range loops.
 func enumHelper(args ...int) []int {
 	return args
+}
+
+// Template function to insert commas and '+' in range loops.
+func separatorHelper(sep string, iterCond int) string {
+	if iterCond > 0 {
+		return sep
+	}
+	return ""
+}
+
+// Template function to repeat string 'count' times. Inserting 'sep' between
+// repetitions. Also changes all occurrences of '%d' to repetition number.
+// For example, repeatHelper(3, "col%d", ",") will output "col0, col1, col2"
+func repeatHelper(count int, text string, sep string) string {
+	var res bytes.Buffer
+
+	for i := 0; i < count; i++ {
+		if i > 0 {
+			res.WriteString(sep)
+		}
+		res.WriteString(strings.Replace(text, "%d", fmt.Sprintf("%d", i), -1))
+	}
+
+	return res.String()
+}
+
+func addHelper(args ...int) int {
+	res := 0
+	for _, a := range args {
+		res += a
+	}
+	return res
+}
+
+func mulHelper(args ...int) int {
+	res := 1
+	for _, a := range args {
+		res *= a
+	}
+	return res
+}
+
+func (i MatrixIter) String() string {
+	return fmt.Sprintf("%d", i.index)
 }

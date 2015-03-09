@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 //go:generate go run codegen.go -template vector.tpl -output vector.go
+//go:generate go run codegen.go -template matrix.tpl -output matrix.go
 
 package mgl32
 
