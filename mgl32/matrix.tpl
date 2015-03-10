@@ -10,6 +10,7 @@ package mgl32
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/image/math/f32"
 	"text/tabwriter"
 )
 
@@ -17,14 +18,88 @@ type Mat2 [4]float32
 type Mat2x3 [6]float32
 type Mat2x4 [8]float32
 type Mat3x2 [6]float32
+type Mat3 f32.Mat3
 type Mat3x4 [12]float32
 type Mat4x2 [8]float32
 type Mat4x3 [12]float32
+type Mat4 f32.Mat4
+
+func (m Mat2) Mat3() Mat3 {
+	col0, col1 := m.Cols()
+	return Mat3FromCols(
+		col0.Vec3(0),
+		col1.Vec3(0),
+		Vec3{0, 0, 1},
+	)
+}
+
+func (m Mat2) Mat4() Mat4 {
+	col0, col1 := m.Cols()
+	return Mat4FromCols(
+		col0.Vec4(0, 0),
+		col1.Vec4(0, 0),
+		Vec4{0, 0, 1, 0},
+		Vec4{0, 0, 0, 1},
+	)
+}
+
+func (m Mat3) Mat2() Mat2 {
+	col0, col1, _ := m.Cols()
+	return Mat2FromCols(
+		col0.Vec2(),
+		col1.Vec2(),
+	)
+}
+
+func (m Mat3) Mat4() Mat4 {
+	col0, col1, col2 := m.Cols()
+	return Mat4FromCols(
+		col0.Vec4(0),
+		col1.Vec4(0),
+		col2.Vec4(0),
+		Vec4{0, 0, 0, 1},
+	)
+}
+
+func (m Mat4) Mat2() Mat2 {
+	col0, col1, _, _ := m.Cols()
+	return Mat2FromCols(
+		col0.Vec2(),
+		col1.Vec2(),
+	)
+}
+
+func (m Mat4) Mat3() Mat3 {
+	col0, col1, col2, _ := m.Cols()
+	return Mat3FromCols(
+		col0.Vec3(),
+		col1.Vec3(),
+		col2.Vec3(),
+	)
+}
 
 
 <</* Common functions for all matrices */>>
 <<range $m := enum 2 3 4>><<range $n := enum 2 3 4>>
 <<$type := typename $m $n>>
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *<<$type>>) SetCol(col int, v <<typename $m 1>>) {
+	<<range $i := iter 0 $m>><<sep "," $i>>m[col*<<$m>>+<<$i>>]<<end>> = <<repeat $m "v[%d]" ",">>
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *<<$type>>) SetRow(row int, v <<typename $n 1>>) {
+	<<range $i := iter 0 $n>><<sep "," $i>>m[row+<<mul $m $i>>]<<end>> = <<repeat $n "v[%d]" ",">>
+}
+
+<<if eq $m $n>>
+// Diag is a basic operation on a square matrix that simply
+// returns main diagonal (meaning all elements such that row==col).
+func (m <<$type>>) Diag() <<typename $m 1>> {
+	return <<typename $m 1>>{<<range $i := iter 0 $m>>m[<<mul $i $m | add $i>>],<<end>>}
+}
+<<end>>
 
 <<if eq $m $n>>
 // Ident<<$m>> returns the <<$m>>x<<$n>> identity matrix.

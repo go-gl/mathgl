@@ -10,6 +10,7 @@ package mgl32
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/image/math/f32"
 	"text/tabwriter"
 )
 
@@ -17,9 +18,81 @@ type Mat2 [4]float32
 type Mat2x3 [6]float32
 type Mat2x4 [8]float32
 type Mat3x2 [6]float32
+type Mat3 f32.Mat3
 type Mat3x4 [12]float32
 type Mat4x2 [8]float32
 type Mat4x3 [12]float32
+type Mat4 f32.Mat4
+
+func (m Mat2) Mat3() Mat3 {
+	col0, col1 := m.Cols()
+	return Mat3FromCols(
+		col0.Vec3(0),
+		col1.Vec3(0),
+		Vec3{0, 0, 1},
+	)
+}
+
+func (m Mat2) Mat4() Mat4 {
+	col0, col1 := m.Cols()
+	return Mat4FromCols(
+		col0.Vec4(0, 0),
+		col1.Vec4(0, 0),
+		Vec4{0, 0, 1, 0},
+		Vec4{0, 0, 0, 1},
+	)
+}
+
+func (m Mat3) Mat2() Mat2 {
+	col0, col1, _ := m.Cols()
+	return Mat2FromCols(
+		col0.Vec2(),
+		col1.Vec2(),
+	)
+}
+
+func (m Mat3) Mat4() Mat4 {
+	col0, col1, col2 := m.Cols()
+	return Mat4FromCols(
+		col0.Vec4(0),
+		col1.Vec4(0),
+		col2.Vec4(0),
+		Vec4{0, 0, 0, 1},
+	)
+}
+
+func (m Mat4) Mat2() Mat2 {
+	col0, col1, _, _ := m.Cols()
+	return Mat2FromCols(
+		col0.Vec2(),
+		col1.Vec2(),
+	)
+}
+
+func (m Mat4) Mat3() Mat3 {
+	col0, col1, col2, _ := m.Cols()
+	return Mat3FromCols(
+		col0.Vec3(),
+		col1.Vec3(),
+		col2.Vec3(),
+	)
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat2) SetCol(col int, v Vec2) {
+	m[col*2+0], m[col*2+1] = v[0], v[1]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat2) SetRow(row int, v Vec2) {
+	m[row+0], m[row+2] = v[0], v[1]
+}
+
+// Diag is a basic operation on a square matrix that simply
+// returns main diagonal (meaning all elements such that row==col).
+func (m Mat2) Diag() Vec2 {
+	return Vec2{m[0], m[3]}
+}
 
 // Ident2 returns the 2x2 identity matrix.
 // The identity matrix is a square matrix with the value 1 on its
@@ -286,6 +359,16 @@ func (m Mat2) String() string {
 	return buf.String()
 }
 
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x3) SetCol(col int, v Vec2) {
+	m[col*2+0], m[col*2+1] = v[0], v[1]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x3) SetRow(row int, v Vec3) {
+	m[row+0], m[row+2], m[row+4] = v[0], v[1], v[2]
+}
+
 // Mat2x3FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
@@ -494,6 +577,16 @@ func (m Mat2x3) String() string {
 	return buf.String()
 }
 
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x4) SetCol(col int, v Vec2) {
+	m[col*2+0], m[col*2+1] = v[0], v[1]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat2x4) SetRow(row int, v Vec4) {
+	m[row+0], m[row+2], m[row+4], m[row+6] = v[0], v[1], v[2], v[3]
+}
+
 // Mat2x4FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
@@ -700,6 +793,16 @@ func (m Mat2x4) String() string {
 	w.Flush()
 
 	return buf.String()
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x2) SetCol(col int, v Vec3) {
+	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x2) SetRow(row int, v Vec2) {
+	m[row+0], m[row+3] = v[0], v[1]
 }
 
 // Mat3x2FromRows builds a new matrix from row vectors.
@@ -918,6 +1021,22 @@ func (m Mat3x2) String() string {
 	w.Flush()
 
 	return buf.String()
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat3) SetCol(col int, v Vec3) {
+	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat3) SetRow(row int, v Vec3) {
+	m[row+0], m[row+3], m[row+6] = v[0], v[1], v[2]
+}
+
+// Diag is a basic operation on a square matrix that simply
+// returns main diagonal (meaning all elements such that row==col).
+func (m Mat3) Diag() Vec3 {
+	return Vec3{m[0], m[4], m[8]}
 }
 
 // Ident3 returns the 3x3 identity matrix.
@@ -1205,6 +1324,16 @@ func (m Mat3) String() string {
 	return buf.String()
 }
 
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x4) SetCol(col int, v Vec3) {
+	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat3x4) SetRow(row int, v Vec4) {
+	m[row+0], m[row+3], m[row+6], m[row+9] = v[0], v[1], v[2], v[3]
+}
+
 // Mat3x4FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
@@ -1421,6 +1550,16 @@ func (m Mat3x4) String() string {
 	w.Flush()
 
 	return buf.String()
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x2) SetCol(col int, v Vec4) {
+	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x2) SetRow(row int, v Vec2) {
+	m[row+0], m[row+4] = v[0], v[1]
 }
 
 // Mat4x2FromRows builds a new matrix from row vectors.
@@ -1651,6 +1790,16 @@ func (m Mat4x2) String() string {
 	return buf.String()
 }
 
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x3) SetCol(col int, v Vec4) {
+	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat4x3) SetRow(row int, v Vec3) {
+	m[row+0], m[row+4], m[row+8] = v[0], v[1], v[2]
+}
+
 // Mat4x3FromRows builds a new matrix from row vectors.
 // The resulting matrix will still be in column major order, but this can be
 // good for hand-building matrices.
@@ -1877,6 +2026,22 @@ func (m Mat4x3) String() string {
 	w.Flush()
 
 	return buf.String()
+}
+
+// Sets a Column within the Matrix, so it mutates the calling matrix.
+func (m *Mat4) SetCol(col int, v Vec4) {
+	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
+}
+
+// Sets a Row within the Matrix, so it mutates the calling matrix.
+func (m *Mat4) SetRow(row int, v Vec4) {
+	m[row+0], m[row+4], m[row+8], m[row+12] = v[0], v[1], v[2], v[3]
+}
+
+// Diag is a basic operation on a square matrix that simply
+// returns main diagonal (meaning all elements such that row==col).
+func (m Mat4) Diag() Vec4 {
+	return Vec4{m[0], m[5], m[10], m[15]}
 }
 
 // Ident4 returns the 4x4 identity matrix.
