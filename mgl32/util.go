@@ -4,6 +4,7 @@
 
 //go:generate go run codegen.go -template vector.tpl -output vector.go
 //go:generate go run codegen.go -template matrix.tpl -output matrix.go
+//go:generate go run codegen.go -mgl64
 
 package mgl32
 

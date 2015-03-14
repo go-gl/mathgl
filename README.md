@@ -23,7 +23,7 @@ Contributing
 
 Feel free to submit pull requests for features and bug fixes. Do note that, aside from documentation bugs, meta (travis.yml etc) fixes, example code, and *extremely* trivial changes (basic accessors) pull requests will not be accepted without tests corresponding to the new code. If it's a bug fix, the test should test the bug.
 
-Also note that since code generation is used in the files `matrix.go` and `vector.go`, no changes should be made to those files directly. Either changes should be made to `genprog/main.go` if you're brave enough to add to that mess, or (preferably), in a different file altogether. Right now there are two files called `vectorStatic.go` and `matrixStatic.go` for this purpose.
+Also note that since code generation is used in `matrix.go` and `vector.go`, no changes should be made to those files directly. Edit `matrix.tpl` or `vector.tpl` and run `go generate`.
 
 API Changes
 ===========
