@@ -23,7 +23,7 @@ Contributing
 
 Feel free to submit pull requests for features and bug fixes. Do note that, aside from documentation bugs, meta (travis.yml etc) fixes, example code, and *extremely* trivial changes (basic accessors) pull requests will not be accepted without tests corresponding to the new code. If it's a bug fix, the test should test the bug.
 
-Also note that since code generation is used in `matrix.go` and `vector.go`, no changes should be made to those files directly. Edit `matrix.tpl` or `vector.tpl` and run `go generate`.
+`mgl64` is generated directly from 32-bit version. To reflect your changes run `go generate github.com/go-gl/mathgl/mgl32` (or just `go generate` in `mgl32` directory). Also note that since code generation is used in `matrix.go` and `vector.go`, no changes should be made to those files directly. Edit `matrix.tmpl` or `vector.tmpl` and run go generate.
 
 API Changes
 ===========
