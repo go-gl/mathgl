@@ -42,7 +42,7 @@ func (ms *MatStack) RightMul(m mgl64.Mat4) {
 // Left multiplies the current top of the matrix by the
 // argument.
 func (ms *MatStack) LeftMul(m mgl64.Mat4) {
-	(*ms)[len(*ms)-1] = (*ms)[len(*ms)-1].Mul4(m)
+	(*ms)[len(*ms)-1] = m.Mul4((*ms)[len(*ms)-1])
 }
 
 // Returns the top element.
@@ -52,10 +52,10 @@ func (ms *MatStack) Peek() mgl64.Mat4 {
 
 // Rewrites the top element of the stack with m
 func (ms *MatStack) Load(m mgl64.Mat4) {
-	(*ms)[len(*ms)] = m
+	(*ms)[len(*ms)-1] = m
 }
 
 // A shortcut for Load(mgl.Ident4())
 func (ms *MatStack) LoadIdent() {
-	(*ms)[len(*ms)] = mgl64.Ident4()
+	(*ms)[len(*ms)-1] = mgl64.Ident4()
 }
