@@ -1,5 +1,3 @@
-// This file is generated from mgl32/matstack/matstack.go; DO NOT EDIT
-
 package matstack
 
 import (

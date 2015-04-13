@@ -1,12 +1,6 @@
-// This file is generated from mgl32/util.go; DO NOT EDIT
-
 // Copyright 2014 The go-gl Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-
-//go:generate go run codegen.go -template vector.tmpl -output vector.go
-//go:generate go run codegen.go -template matrix.tmpl -output matrix.go
-//go:generate go run codegen.go -mgl64
 
 package mgl64
 
@@ -54,7 +48,7 @@ func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
 
 var (
 	MinNormal = float64(1.1754943508222875e-38) // 1 / 2**(127 - 1)
-	MinValue  = float64(math.SmallestNonzeroFloat64)
+	MinValue  = float64(math.SmallestNonzeroFloat32)
 	MaxValue  = float64(math.MaxFloat64)
 
 	InfPos = float64(math.Inf(1))

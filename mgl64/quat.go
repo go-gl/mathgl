@@ -1,5 +1,3 @@
-// This file is generated from mgl32/quat.go; DO NOT EDIT
-
 // Copyright 2014 The go-gl Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -434,7 +432,7 @@ func QuatBetweenVectors(start, dest Vec3) Quat {
 
 	start = start.Normalize()
 	dest = dest.Normalize()
-	epsilon := float64(0.001)
+	epsilon := 0.001
 
 	cosTheta := start.Dot(dest)
 	if cosTheta < -1.0+epsilon {
@@ -451,7 +449,7 @@ func QuatBetweenVectors(start, dest Vec3) Quat {
 	}
 
 	axis := start.Cross(dest)
-	s := float64(math.Sqrt(float64(1.0+cosTheta) * 2.0))
+	s := math.Sqrt((1.0 + cosTheta) * 2.0)
 
 	return Quat{
 		s * 0.5,
