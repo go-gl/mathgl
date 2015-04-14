@@ -24,7 +24,7 @@ func (ms *MatStack) Push() {
 // there is an error.
 func (ms *MatStack) Pop() error {
 	if len(*ms) == 1 {
-		errors.New("Cannot pop from mat stack, at minimum stack length of 1")
+		return errors.New("Cannot pop from mat stack, at minimum stack length of 1")
 	}
 	(*ms) = (*ms)[:len(*ms)-1]
 
