@@ -98,11 +98,11 @@ func Clamp(a, low, high float64) float64 {
 	return a
 }
 
-// CampFunc generates a closure that always checks if the value
-// passed in is between two constant values.
-func ClampFunc(low, high float64) func(float64) {
-	return func(a float64) {
-		Clamp(a, low, high)
+// ClampFunc generates a closure that returns its parameter
+// clamped to the range [low,high].
+func ClampFunc(low, high float64) func(float64) float64 {
+	return func(a float64) float64 {
+		return Clamp(a, low, high)
 	}
 }
 
