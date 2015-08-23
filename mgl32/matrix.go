@@ -565,7 +565,7 @@ func (m Mat2x3) Abs() Mat2x3 {
 func (m Mat2x3) String() string {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 2; i++ {
 		for _, col := range m.Row(i) {
 			fmt.Fprintf(w, "%f\t", col)
 		}
@@ -783,7 +783,7 @@ func (m Mat2x4) Abs() Mat2x4 {
 func (m Mat2x4) String() string {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 2; i++ {
 		for _, col := range m.Row(i) {
 			fmt.Fprintf(w, "%f\t", col)
 		}
@@ -1011,7 +1011,7 @@ func (m Mat3x2) Abs() Mat3x2 {
 func (m Mat3x2) String() string {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 3; i++ {
 		for _, col := range m.Row(i) {
 			fmt.Fprintf(w, "%f\t", col)
 		}
@@ -1540,7 +1540,7 @@ func (m Mat3x4) Abs() Mat3x4 {
 func (m Mat3x4) String() string {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 3; i++ {
 		for _, col := range m.Row(i) {
 			fmt.Fprintf(w, "%f\t", col)
 		}
@@ -1778,7 +1778,7 @@ func (m Mat4x2) Abs() Mat4x2 {
 func (m Mat4x2) String() string {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 4; i++ {
 		for _, col := range m.Row(i) {
 			fmt.Fprintf(w, "%f\t", col)
 		}
@@ -2016,7 +2016,7 @@ func (m Mat4x3) Abs() Mat4x3 {
 func (m Mat4x3) String() string {
 	buf := new(bytes.Buffer)
 	w := tabwriter.NewWriter(buf, 4, 4, 1, ' ', tabwriter.AlignRight)
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 4; i++ {
 		for _, col := range m.Row(i) {
 			fmt.Fprintf(w, "%f\t", col)
 		}
