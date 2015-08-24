@@ -16,7 +16,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -118,11 +118,10 @@ func genMgl64(destPath string) {
 			return nil
 		}
 
-		in, err := os.Open(source)
+		in, err := ioutil.ReadFile(source)
 		if err != nil {
 			return err
 		}
-		defer in.Close()
 
 		out, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE|os.O_TRUNC,
 			info.Mode())
@@ -138,7 +137,9 @@ func genMgl64(destPath string) {
 			return err
 		}
 
-		if _, err = io.Copy(out, in); err != nil {
+		r := strings.NewReplacer("//go:generate ", "//#go:generate ") // We don't want go generate directives in mgl64 package.
+
+		if _, err = r.WriteString(out, string(in)); err != nil {
 			return err
 		}
 

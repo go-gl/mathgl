@@ -4,9 +4,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:generate go run codegen.go -template vector.tmpl -output vector.go
-//go:generate go run codegen.go -template matrix.tmpl -output matrix.go
-//go:generate go run codegen.go -mgl64
+//#go:generate go run codegen.go -template vector.tmpl -output vector.go
+//#go:generate go run codegen.go -template matrix.tmpl -output matrix.go
+//#go:generate go run codegen.go -mgl64
 
 package mgl64
 
