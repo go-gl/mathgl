@@ -413,9 +413,9 @@ func (mat *MatMxN) MulNx1(dst, v *VecN) *VecN {
 		defer v.destroy()
 	}
 
-	dst = dst.Resize(len(v.vec))
+	dst = dst.Resize(mat.m)
 
-	for r := range v.vec {
+	for r := 0; r < mat.m; r++ {
 		dst.vec[r] = 0
 
 		for c := 0; c < mat.n; c++ {

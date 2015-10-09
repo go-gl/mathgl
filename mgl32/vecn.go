@@ -64,6 +64,10 @@ func (vn VecN) Get(i int) float32 {
 	return vn.vec[i]
 }
 
+func (vn *VecN) Set(i int, val float32) {
+	vn.vec[i] = val
+}
+
 // Sends the allocated memory through the callback if it exists
 func (vn *VecN) destroy() {
 	if vn == nil || vn.vec == nil {
@@ -336,4 +340,19 @@ func (vn *VecN) ApproxEqualFunc(vn2 *VecN, comp func(float32, float32) bool) boo
 	}
 
 	return true
+}
+
+func (vn *VecN) Vec2() Vec2 {
+	raw := vn.Raw()
+	return Vec2{raw[0], raw[1]}
+}
+
+func (vn *VecN) Vec3() Vec3 {
+	raw := vn.Raw()
+	return Vec3{raw[0], raw[1], raw[2]}
+}
+
+func (vn *VecN) Vec4() Vec4 {
+	raw := vn.Raw()
+	return Vec4{raw[0], raw[1], raw[2], raw[3]}
 }
