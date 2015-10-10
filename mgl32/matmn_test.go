@@ -163,31 +163,6 @@ func TestMxNMulNx1(t *testing.T) {
 	}
 }
 
-func TestMxNMulNx1Rectangular(t *testing.T) {
-
-	m := NewMatrixFromData([]float32{
-		1, 0, 0,
-		0, 1, 0,
-		0, 0, 1,
-		1, 2, 3,
-		4, 5, 6,
-	}, 3, 5)
-
-	v := NewVecNFromData([]float32{
-		1, 2, 3, 4, 5,
-	})
-
-	expected := Vec3{
-		25, 35, 45,
-	}
-
-	result := m.MulNx1(nil, v).Vec3()
-
-	if expected != result {
-		t.Errorf("Multiplying MxN matrix and N-dim vector produces bad result: %v, expected: %v", result, expected)
-	}
-}
-
 func TestMxNTrace(t *testing.T) {
 	m := DiagN(nil, NewVecNFromData([]float32{1, 2, 3, 4, 5}))
 
