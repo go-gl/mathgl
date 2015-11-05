@@ -9,6 +9,7 @@
 package mgl32
 
 import (
+	math32 "github.com/luxengine/math"
 	"math"
 )
 
@@ -20,18 +21,6 @@ import (
 // This is, obviously, not mutex protected so be **absolutely sure** that no functions using Epsilon
 // are being executed when you change this.
 var Epsilon float32 = 1e-10
-
-// A direct copy of the math package's Abs. This is here for the mgl32
-// package, to prevent rampant type conversions during equality tests.
-func Abs(a float32) float32 {
-	if a < 0 {
-		return -a
-	} else if a == 0 {
-		return 0
-	}
-
-	return a
-}
 
 // FloatEqual is a safe utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
@@ -55,9 +44,9 @@ var (
 	MinValue  = float32(math.SmallestNonzeroFloat32)
 	MaxValue  = float32(math.MaxFloat32)
 
-	InfPos = float32(math.Inf(1))
-	InfNeg = float32(math.Inf(-1))
-	NaN    = float32(math.NaN())
+	InfPos = math32.Inf(1)
+	InfNeg = math32.Inf(-1)
+	NaN    = math32.NaN()
 )
 
 // FloatEqualThreshold is a utility function to compare floats.
@@ -71,13 +60,13 @@ func FloatEqualThreshold(a, b, epsilon float32) bool {
 		return true
 	}
 
-	diff := Abs(a - b)
+	diff := math32.Abs(a - b)
 	if a*b == 0 || diff < MinNormal { // If a or b are 0 or both are extremely close to it
 		return diff < epsilon*epsilon
 	}
 
 	// Else compare difference
-	return diff/(Abs(a)+Abs(b)) < epsilon
+	return diff/(math32.Abs(a)+math32.Abs(b)) < epsilon
 }
 
 // Clamp takes in a value and two thresholds. If the value is smaller than the low

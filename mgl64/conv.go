@@ -16,8 +16,8 @@ import (
 // All angles are in radians.
 func CartesianToSpherical(coord Vec3) (r, theta, phi float64) {
 	r = coord.Len()
-	theta = float64(math.Acos(float64(coord[2] / r)))
-	phi = float64(math.Atan2(float64(coord[1]), float64(coord[0])))
+	theta = math.Acos(coord[2] / r)
+	phi = math.Atan2(coord[1], coord[0])
 
 	return
 }
@@ -27,9 +27,9 @@ func CartesianToSpherical(coord Vec3) (r, theta, phi float64) {
 //
 // All angles are in radians.
 func CartesianToCylindical(coord Vec3) (rho, phi, z float64) {
-	rho = float64(math.Hypot(float64(coord[0]), float64(coord[1])))
+	rho = math.Hypot(coord[0], coord[1])
 
-	phi = float64(math.Atan2(float64(coord[1]), float64(coord[0])))
+	phi = math.Atan2(coord[1], coord[0])
 
 	z = coord[2]
 
@@ -41,10 +41,10 @@ func CartesianToCylindical(coord Vec3) (rho, phi, z float64) {
 //
 // Angles are in radians.
 func SphericalToCartesian(r, theta, phi float64) Vec3 {
-	st, ct := math.Sincos(float64(theta))
-	sp, cp := math.Sincos(float64(phi))
+	st, ct := math.Sincos(theta)
+	sp, cp := math.Sincos(phi)
 
-	return Vec3{r * float64(st*cp), r * float64(st*sp), r * float64(ct)}
+	return Vec3{r * st * cp, r * st * sp, r * ct}
 }
 
 // Converts spherical coordinates with radius r, inclination theta,
@@ -53,7 +53,7 @@ func SphericalToCartesian(r, theta, phi float64) Vec3 {
 //
 // Angles are in radians
 func SphericalToCylindrical(r, theta, phi float64) (rho, phi2, z float64) {
-	s, c := math.Sincos(float64(theta))
+	s, c := math.Sincos(theta)
 
 	rho = r * float64(s)
 	z = r * float64(c)
@@ -68,9 +68,9 @@ func SphericalToCylindrical(r, theta, phi float64) (rho, phi2, z float64) {
 //
 // Angles are in radians
 func CylindircalToSpherical(rho, phi, z float64) (r, theta, phi2 float64) {
-	r = float64(math.Hypot(float64(rho), float64(z)))
+	r = math.Hypot(rho, z)
 	phi2 = phi
-	theta = float64(math.Atan2(float64(rho), float64(z)))
+	theta = math.Atan2(rho, z)
 
 	return
 }
@@ -80,17 +80,17 @@ func CylindircalToSpherical(rho, phi, z float64) (r, theta, phi2 float64) {
 //
 // Angles are in radians.
 func CylindricalToCartesian(rho, phi, z float64) Vec3 {
-	s, c := math.Sincos(float64(phi))
+	s, c := math.Sincos(phi)
 
-	return Vec3{rho * float64(c), rho * float64(s), z}
+	return Vec3{rho * c, rho * s, z}
 }
 
 // Converts degrees to radians
 func DegToRad(angle float64) float64 {
-	return angle * float64(math.Pi) / 180
+	return angle * math.Pi / 180
 }
 
 // Converts radians to degrees
 func RadToDeg(angle float64) float64 {
-	return angle * 180 / float64(math.Pi)
+	return angle * 180 / math.Pi
 }

@@ -12,6 +12,7 @@ package mgl64
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"text/tabwriter"
 
 	"golang.org/x/image/math/f64"
@@ -343,7 +344,7 @@ func (m Mat2) Trace() float64 {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat2) Abs() Mat2 {
-	return Mat2{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3])}
+	return Mat2{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3])}
 }
 
 // Pretty prints the matrix
@@ -561,7 +562,7 @@ func (m Mat2x3) Cols() (col0, col1, col2 Vec2) {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat2x3) Abs() Mat2x3 {
-	return Mat2x3{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5])}
+	return Mat2x3{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5])}
 }
 
 // Pretty prints the matrix
@@ -779,7 +780,7 @@ func (m Mat2x4) Cols() (col0, col1, col2, col3 Vec2) {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat2x4) Abs() Mat2x4 {
-	return Mat2x4{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7])}
+	return Mat2x4{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5]), math.Abs(m[6]), math.Abs(m[7])}
 }
 
 // Pretty prints the matrix
@@ -1007,7 +1008,7 @@ func (m Mat3x2) Cols() (col0, col1 Vec3) {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat3x2) Abs() Mat3x2 {
-	return Mat3x2{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5])}
+	return Mat3x2{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5])}
 }
 
 // Pretty prints the matrix
@@ -1308,7 +1309,7 @@ func (m Mat3) Trace() float64 {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat3) Abs() Mat3 {
-	return Mat3{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8])}
+	return Mat3{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5]), math.Abs(m[6]), math.Abs(m[7]), math.Abs(m[8])}
 }
 
 // Pretty prints the matrix
@@ -1536,7 +1537,7 @@ func (m Mat3x4) Cols() (col0, col1, col2, col3 Vec3) {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat3x4) Abs() Mat3x4 {
-	return Mat3x4{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8]), Abs(m[9]), Abs(m[10]), Abs(m[11])}
+	return Mat3x4{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5]), math.Abs(m[6]), math.Abs(m[7]), math.Abs(m[8]), math.Abs(m[9]), math.Abs(m[10]), math.Abs(m[11])}
 }
 
 // Pretty prints the matrix
@@ -1774,7 +1775,7 @@ func (m Mat4x2) Cols() (col0, col1 Vec4) {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat4x2) Abs() Mat4x2 {
-	return Mat4x2{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7])}
+	return Mat4x2{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5]), math.Abs(m[6]), math.Abs(m[7])}
 }
 
 // Pretty prints the matrix
@@ -2012,7 +2013,7 @@ func (m Mat4x3) Cols() (col0, col1, col2 Vec4) {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat4x3) Abs() Mat4x3 {
-	return Mat4x3{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8]), Abs(m[9]), Abs(m[10]), Abs(m[11])}
+	return Mat4x3{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5]), math.Abs(m[6]), math.Abs(m[7]), math.Abs(m[8]), math.Abs(m[9]), math.Abs(m[10]), math.Abs(m[11])}
 }
 
 // Pretty prints the matrix
@@ -2330,7 +2331,7 @@ func (m Mat4) Trace() float64 {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m Mat4) Abs() Mat4 {
-	return Mat4{Abs(m[0]), Abs(m[1]), Abs(m[2]), Abs(m[3]), Abs(m[4]), Abs(m[5]), Abs(m[6]), Abs(m[7]), Abs(m[8]), Abs(m[9]), Abs(m[10]), Abs(m[11]), Abs(m[12]), Abs(m[13]), Abs(m[14]), Abs(m[15])}
+	return Mat4{math.Abs(m[0]), math.Abs(m[1]), math.Abs(m[2]), math.Abs(m[3]), math.Abs(m[4]), math.Abs(m[5]), math.Abs(m[6]), math.Abs(m[7]), math.Abs(m[8]), math.Abs(m[9]), math.Abs(m[10]), math.Abs(m[11]), math.Abs(m[12]), math.Abs(m[13]), math.Abs(m[14]), math.Abs(m[15])}
 }
 
 // Pretty prints the matrix

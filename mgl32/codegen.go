@@ -16,6 +16,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -42,6 +43,9 @@ var mgl64RewriteRules = []string{
 	"a.Float32 -> a.Float64",
 	"math.MaxFloat32 -> math.MaxFloat64",
 	"math.SmallestNonzeroFloat32 -> math.SmallestNonzeroFloat64",
+	"math32.Inf -> math.Inf",
+	"math32.Inf -> math.Inf",
+	"math32.NaN -> math.NaN",
 }
 
 func main() {
@@ -137,11 +141,15 @@ func genMgl64(destPath string) {
 			return err
 		}
 
-		r := strings.NewReplacer("//go:generate ", "//#go:generate ") // We don't want go generate directives in mgl64 package.
+		m64 := strings.Replace(string(in), "github.com/luxengine/math", "math", -1)
+		m64 = strings.Replace(m64, "//go:generate ", "//#go:generate ", -1)
+		b := bytes.NewBuffer(([]byte)(m64))
 
-		if _, err = r.WriteString(out, string(in)); err != nil {
+		if _, err = io.Copy(out, b); err != nil {
 			return err
 		}
+
+		out.Close()
 
 		return rungofmt(dest, true, mgl64RewriteRules)
 	}

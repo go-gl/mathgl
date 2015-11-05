@@ -5,7 +5,7 @@
 package mgl32
 
 import (
-	"math"
+	"github.com/luxengine/math"
 )
 
 // A vector of N elements backed by a slice
@@ -216,7 +216,7 @@ func intAbs(a int) int {
 // will return NaN.
 func (vn *VecN) Dot(other *VecN) float32 {
 	if vn == nil || other == nil || len(vn.vec) != len(other.vec) {
-		return float32(math.NaN())
+		return math.NaN()
 	}
 
 	var result float32 = 0.0
@@ -234,13 +234,13 @@ func (vn *VecN) Dot(other *VecN) float32 {
 // If vn is nil, this returns NaN
 func (vn *VecN) Len() float32 {
 	if vn == nil {
-		return float32(math.NaN())
+		return math.NaN()
 	}
 	if len(vn.vec) == 0 {
 		return 0
 	}
 
-	return float32(math.Sqrt(float64(vn.Dot(vn))))
+	return math.Sqrt(vn.Dot(vn))
 }
 
 // Normalizes the vector and stores the result in dst, which
