@@ -130,6 +130,9 @@ func TestTransformCoordinate(t *testing.T) {
 	}{
 		{Vec3{1, 1, 1}, Ident4(), Vec3{1, 1, 1}},
 		{Vec3{1, 1, 1}, Translate3D(0, 1, 1).Mul4(Scale3D(2, 2, 2)), Vec3{2, 3, 3}},
+		{Vec3{1, 1, -1}, Perspective(DegToRad(90), 4/3, 0, 100), Vec3{1, 1, 1}},
+		{Vec3{0, 0, -100}, Perspective(DegToRad(45), 4/3, 0, 100), Vec3{0, 0, 1}},
+		{Vec3{2, 2, -2}, Perspective(DegToRad(45), 4/3, 0, 100), Vec3{2.4142, 2.4142, 1}}, // sqrt(1^2+1^2)+1
 	}
 
 	for _, test := range tests {
