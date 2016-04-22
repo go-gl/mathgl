@@ -9,7 +9,7 @@ package mgl32
 
 import (
 	"golang.org/x/image/math/f32"
-	"math"
+	"github.com/luxengine/math"
 )
 
 type Vec2 f32.Vec2
@@ -124,9 +124,9 @@ func (v1 <<$type>>) Dot(v2 <<$type>>) float32 {
 // math.Hypot(v[0], v[1]).
 func (v1 <<$type>>) Len() float32 {
 	<<if eq $m 2 >>
-	return float32(math.Hypot(float64(v1[0]), float64(v1[1])))
+	return math.Hypot(v1[0], v1[1])
 	<<else>>
-	return float32(math.Sqrt(float64(<<repeat $m "v1[%d]*v1[%d]" "+">>)))
+	return math.Sqrt(<<repeat $m "v1[%d]*v1[%d]" "+">>)
 	<<end>>
 }
 

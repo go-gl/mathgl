@@ -12,6 +12,7 @@ package mgl64
 
 import (
 	"math"
+	math32 "math"
 )
 
 // Epsilon is some tiny value that determines how precisely equal we want our floats to be
@@ -22,18 +23,6 @@ import (
 // This is, obviously, not mutex protected so be **absolutely sure** that no functions using Epsilon
 // are being executed when you change this.
 var Epsilon float64 = 1e-10
-
-// A direct copy of the math package's Abs. This is here for the mgl32
-// package, to prevent rampant type conversions during equality tests.
-func Abs(a float64) float64 {
-	if a < 0 {
-		return -a
-	} else if a == 0 {
-		return 0
-	}
-
-	return a
-}
 
 // FloatEqual is a safe utility function to compare floats.
 // It's Taken from http://floating-point-gui.de/errors/comparison/
@@ -57,9 +46,9 @@ var (
 	MinValue  = float64(math.SmallestNonzeroFloat64)
 	MaxValue  = float64(math.MaxFloat64)
 
-	InfPos = float64(math.Inf(1))
-	InfNeg = float64(math.Inf(-1))
-	NaN    = float64(math.NaN())
+	InfPos = math.Inf(1)
+	InfNeg = math.Inf(-1)
+	NaN    = math.NaN()
 )
 
 // FloatEqualThreshold is a utility function to compare floats.
@@ -73,13 +62,13 @@ func FloatEqualThreshold(a, b, epsilon float64) bool {
 		return true
 	}
 
-	diff := Abs(a - b)
+	diff := math32.Abs(a - b)
 	if a*b == 0 || diff < MinNormal { // If a or b are 0 or both are extremely close to it
 		return diff < epsilon*epsilon
 	}
 
 	// Else compare difference
-	return diff/(Abs(a)+Abs(b)) < epsilon
+	return diff/(math32.Abs(a)+math32.Abs(b)) < epsilon
 }
 
 // Clamp takes in a value and two thresholds. If the value is smaller than the low

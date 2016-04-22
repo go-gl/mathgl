@@ -5,7 +5,7 @@
 package mgl32
 
 import (
-	"math"
+	"github.com/luxengine/math"
 	"testing"
 )
 

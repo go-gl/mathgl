@@ -208,7 +208,7 @@ func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
 // is nil, or not square, the result will be NaN.
 func (mat *MatMxN) Trace() float64 {
 	if mat == nil || mat.m != mat.n {
-		return float64(math.NaN())
+		return math.NaN()
 	}
 
 	var out float64

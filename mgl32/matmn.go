@@ -5,7 +5,7 @@
 package mgl32
 
 import (
-	"math"
+	"github.com/luxengine/math"
 )
 
 // An arbitrary mxn matrix backed by a slice of floats.
@@ -206,7 +206,7 @@ func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
 // is nil, or not square, the result will be NaN.
 func (mat *MatMxN) Trace() float32 {
 	if mat == nil || mat.m != mat.n {
-		return float32(math.NaN())
+		return math.NaN()
 	}
 
 	var out float32

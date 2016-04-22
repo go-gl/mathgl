@@ -61,8 +61,8 @@ func TestQuatRotateOffAxis(t *testing.T) {
 	vector := Vec3{0, 1, 0}
 	rotatedVector := i1.Rotate(vector)
 
-	s, c := math.Sincos(float64(angleRads))
-	answer := Vec3{0, float64(c), float64(s)}
+	s, c := math.Sincos(angleRads)
+	answer := Vec3{0, c, s}
 
 	for i := range rotatedVector {
 		if !FloatEqualThreshold(rotatedVector[i], answer[i], 1e-4) {
@@ -118,13 +118,13 @@ func TestAnglesToQuatZYX(t *testing.T) {
 func TestQuatMatRotateY(t *testing.T) {
 	t.Parallel()
 
-	q := QuatRotate(float64(math.Pi), Vec3{0, 1, 0})
+	q := QuatRotate(math.Pi, Vec3{0, 1, 0})
 	q = q.Normalize()
 	v := Vec3{1, 0, 0}
 
 	result := q.Rotate(v)
 
-	expected := Rotate3DY(float64(math.Pi)).Mul3x1(v)
+	expected := Rotate3DY(math.Pi).Mul3x1(v)
 	t.Logf("Computed from rotation matrix: %v", expected)
 	if !result.ApproxEqualThreshold(expected, 1e-4) {
 		t.Errorf("Quaternion rotating vector doesn't match 3D matrix method. Got: %v, Expected: %v", result, expected)
@@ -253,7 +253,7 @@ func TestMat4ToQuat(t *testing.T) {
 		},
 	}
 
-	threshold := float64(math.Pow(10, -2))
+	threshold := math.Pow(10, -2)
 	for _, c := range tests {
 		if r := Mat4ToQuat(c.Rotation); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: Mat4ToQuat(%v) != %v (got %v)", c.Description, c.Rotation, c.Expected, r)
@@ -295,7 +295,7 @@ func TestQuatRotate(t *testing.T) {
 		},
 	}
 
-	threshold := float64(math.Pow(10, -2))
+	threshold := math.Pow(10, -2)
 	for _, c := range tests {
 		if r := QuatRotate(c.Angle, c.Axis); !r.OrientationEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: QuatRotate(%v, %v) != %v (got %v)", c.Description, c.Angle, c.Axis, c.Expected, r)
@@ -348,7 +348,7 @@ func TestQuatLookAtV(t *testing.T) {
 		},
 	}
 
-	threshold := float64(math.Pow(10, -2))
+	threshold := math.Pow(10, -2)
 	for _, c := range tests {
 		if r := QuatLookAtV(c.Eye, c.Center, c.Up); !r.OrientationEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: QuatLookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)
@@ -463,7 +463,7 @@ func TestCompareLookAt(t *testing.T) {
 		},
 	}
 
-	threshold := float64(math.Pow(10, -2))
+	threshold := math.Pow(10, -2)
 	for _, c := range tests {
 		m := LookAtV(c.Eye, c.Center, c.Up)
 		q := QuatLookAtV(c.Eye, c.Center, c.Up)
@@ -512,7 +512,7 @@ func TestQuatMatConversion(t *testing.T) {
 		q1 := Mat4ToQuat(m1)
 		q2 := QuatRotate(c.Angle, c.Axis)
 
-		if !FloatEqualThreshold(Abs(q1.Dot(q2)), 1, 1e-4) {
+		if !FloatEqualThreshold(math.Abs(q1.Dot(q2)), 1, 1e-4) {
 			t.Errorf("Quaternions for %v %v do not match:\n%v\n%v", RadToDeg(c.Angle), c.Axis, q1, q2)
 		}
 	}
@@ -638,8 +638,8 @@ func TestQuatLen(t *testing.T) {
 		{Quat{0, Vec3{1, 0, 0}}, 1},
 		{Quat{0, Vec3{0.0000000000001, 0, 0}}, 0},
 		{Quat{0, Vec3{MaxValue, 1, 0}}, InfPos},
-		{Quat{4, Vec3{1, 2, 3}}, float64(math.Sqrt(1*1 + 2*2 + 3*3 + 4*4))},
-		{Quat{0, Vec3{3.1, 4.2, 1.3}}, float64(math.Sqrt(3.1*3.1 + 4.2*4.2 + 1.3*1.3))},
+		{Quat{4, Vec3{1, 2, 3}}, math.Sqrt(1*1 + 2*2 + 3*3 + 4*4)},
+		{Quat{0, Vec3{3.1, 4.2, 1.3}}, math.Sqrt(3.1*3.1 + 4.2*4.2 + 1.3*1.3)},
 	}
 
 	for _, c := range tests {

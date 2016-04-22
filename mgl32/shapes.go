@@ -6,7 +6,7 @@ package mgl32
 
 import (
 	"fmt"
-	"math"
+	"github.com/luxengine/math"
 )
 
 // Generates a circle centered at (0,0) with a given radius.
@@ -24,15 +24,15 @@ import (
 //
 // This uses discrete triangles, not a triangle fan
 func Circle(radiusX, radiusY float32, numSlices int) []Vec2 {
-	twoPi := float32(2.0 * math.Pi)
+	const twoPi = 2.0 * math.Pi
 
 	circlePoints := make([]Vec2, 0, numSlices*3)
 	center := Vec2{0.0, 0.0}
 	previous := Vec2{radiusX, 0.0}
 
 	for theta := twoPi / float32(numSlices); !FloatEqual(theta, twoPi); theta = Clamp(theta+twoPi/float32(numSlices), 0.0, twoPi) {
-		sin, cos := math.Sincos(float64(theta))
-		curr := Vec2{float32(cos) * radiusX, float32(sin) * radiusY}
+		sin, cos := math.Sincos(theta)
+		curr := Vec2{cos * radiusX, sin * radiusY}
 
 		circlePoints = append(circlePoints, center, previous, curr)
 		previous = curr
@@ -107,10 +107,10 @@ func BezierCurve2D(t float32, cPoints []Vec2) Vec2 {
 	}
 
 	n := len(cPoints) - 1
-	point := cPoints[0].Mul(float32(math.Pow(float64(1.0-t), float64(n))))
+	point := cPoints[0].Mul(math.Pow(1.0-t, float32(n)))
 
 	for i := 1; i <= n; i++ {
-		point = point.Add(cPoints[i].Mul(float32(float64(choose(n, i)) * math.Pow(float64(1-t), float64(n-i)) * math.Pow(float64(t), float64(i))))) // P += P_i * nCi * (1-t)^(n-i) * t^i
+		point = point.Add(cPoints[i].Mul(float32(choose(n, i)) * math.Pow(1-t, float32(n-i)) * math.Pow(t, float32(i)))) // P += P_i * nCi * (1-t)^(n-i) * t^i
 	}
 
 	return point
@@ -123,10 +123,10 @@ func BezierCurve3D(t float32, cPoints []Vec3) Vec3 {
 	}
 
 	n := len(cPoints) - 1
-	point := cPoints[0].Mul(float32(math.Pow(float64(1.0-t), float64(n))))
+	point := cPoints[0].Mul(math.Pow(1.0-t, float32(n)))
 
 	for i := 1; i <= n; i++ {
-		point = point.Add(cPoints[i].Mul(float32(float64(choose(n, i)) * math.Pow(float64(1-t), float64(n-i)) * math.Pow(float64(t), float64(i))))) // P += P_i * nCi * (1-t)^(n-i) * t^i
+		point = point.Add(cPoints[i].Mul(float32(choose(n, i)) * math.Pow(1-t, float32(n-i)) * math.Pow(t, float32(i)))) // P += P_i * nCi * (1-t)^(n-i) * t^i
 	}
 
 	return point
@@ -197,7 +197,7 @@ func BezierSurface(u, v float32, cPoints [][]Vec3) Vec3 {
 	n := len(cPoints) - 1
 	m := len(cPoints[0]) - 1
 
-	point := cPoints[0][0].Mul(float32(math.Pow(float64(1.0-u), float64(n)) * math.Pow(float64(1.0-v), float64(m))))
+	point := cPoints[0][0].Mul(math.Pow(1.0-u, float32(n)) * math.Pow(1.0-v, float32(m)))
 
 	for i := 0; i <= n; i++ {
 		for j := 0; j <= m; j++ {
@@ -205,7 +205,7 @@ func BezierSurface(u, v float32, cPoints [][]Vec3) Vec3 {
 				continue
 			}
 
-			point = point.Add(cPoints[i][j].Mul(float32(float64(choose(n, i)) * math.Pow(float64(u), float64(i)) * math.Pow(float64(1.0-u), float64(n-i)) * float64(choose(m, j)) * math.Pow(float64(v), float64(j)) * math.Pow(float64(1.0-v), float64(m-j)))))
+			point = point.Add(cPoints[i][j].Mul(float32(choose(n, i)) * math.Pow(u, float32(i)) * math.Pow(1.0-u, float32(n-i)) * float32(choose(m, j)) * math.Pow(v, float32(j)) * math.Pow(1.0-v, float32(m-j))))
 		}
 	}
 

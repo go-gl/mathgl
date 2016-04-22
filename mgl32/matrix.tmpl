@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"golang.org/x/image/math/f32"
 	"text/tabwriter"
+	"github.com/luxengine/math"
 )
 
 type Mat2 [4]float32
@@ -348,7 +349,7 @@ func (m <<$type>>) Trace() float32 {
 
 // Abs returns the element-wise absolute value of this matrix
 func (m <<$type>>) Abs() <<$type>> {
-	return <<$type>>{<<repeat (mul $m $n) "Abs(m[%d])" ",">>}
+	return <<$type>>{<<repeat (mul $m $n) "math.Abs(m[%d])" ",">>}
 }
 
 // Pretty prints the matrix

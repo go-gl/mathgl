@@ -122,7 +122,7 @@ func (v1 Vec2) Dot(v2 Vec2) float64 {
 // math.Hypot(v[0], v[1]).
 func (v1 Vec2) Len() float64 {
 
-	return float64(math.Hypot(float64(v1[0]), float64(v1[1])))
+	return math.Hypot(v1[0], v1[1])
 
 }
 
@@ -275,7 +275,7 @@ func (v1 Vec3) Dot(v2 Vec3) float64 {
 // math.Hypot(v[0], v[1]).
 func (v1 Vec3) Len() float64 {
 
-	return float64(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])))
+	return math.Sqrt(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])
 
 }
 
@@ -436,7 +436,7 @@ func (v1 Vec4) Dot(v2 Vec4) float64 {
 // math.Hypot(v[0], v[1]).
 func (v1 Vec4) Len() float64 {
 
-	return float64(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3])))
+	return math.Sqrt(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3])
 
 }
 

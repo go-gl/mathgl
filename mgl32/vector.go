@@ -8,8 +8,8 @@
 package mgl32
 
 import (
+	"github.com/luxengine/math"
 	"golang.org/x/image/math/f32"
-	"math"
 )
 
 type Vec2 f32.Vec2
@@ -119,7 +119,7 @@ func (v1 Vec2) Dot(v2 Vec2) float32 {
 // math.Hypot(v[0], v[1]).
 func (v1 Vec2) Len() float32 {
 
-	return float32(math.Hypot(float64(v1[0]), float64(v1[1])))
+	return math.Hypot(v1[0], v1[1])
 
 }
 
@@ -272,7 +272,7 @@ func (v1 Vec3) Dot(v2 Vec3) float32 {
 // math.Hypot(v[0], v[1]).
 func (v1 Vec3) Len() float32 {
 
-	return float32(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])))
+	return math.Sqrt(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])
 
 }
 
@@ -433,7 +433,7 @@ func (v1 Vec4) Dot(v2 Vec4) float32 {
 // math.Hypot(v[0], v[1]).
 func (v1 Vec4) Len() float32 {
 
-	return float32(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3])))
+	return math.Sqrt(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3])
 
 }
 

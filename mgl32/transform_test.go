@@ -5,7 +5,7 @@
 package mgl32
 
 import (
-	"math"
+	"github.com/luxengine/math"
 	"testing"
 )
 
@@ -63,7 +63,7 @@ func TestHomogRotate3D(t *testing.T) {
 		},
 	}
 
-	threshold := float32(math.Pow(10, -2))
+	threshold := math.Pow(10, -2)
 	for _, c := range tests {
 		if r := HomogRotate3D(c.Angle, c.Axis); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: HomogRotate3D(%v, %v) != %v (got %v)", c.Description, c.Angle, c.Axis, c.Expected, r)

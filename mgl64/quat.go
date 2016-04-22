@@ -56,7 +56,7 @@ func QuatIdent() Quat {
 func QuatRotate(angle float64, axis Vec3) Quat {
 	// angle = (float32(math.Pi) * angle) / 180.0
 
-	c, s := float64(math.Cos(float64(angle/2))), float64(math.Sin(float64(angle/2)))
+	c, s := math.Cos(angle/2), math.Sin(angle/2)
 
 	return Quat{c, axis.Mul(s)}
 }
@@ -109,7 +109,7 @@ func (q1 Quat) Conjugate() Quat {
 // Returns the Length of the quaternion, also known as its Norm. This is the same thing as
 // the Len of a Vec4
 func (q1 Quat) Len() float64 {
-	return float64(math.Sqrt(float64(q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2])))
+	return math.Sqrt(q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2])
 }
 
 // Norm() is an alias for Len() since both are very common terms.
@@ -205,7 +205,7 @@ func (q1 Quat) OrientationEqual(q2 Quat) bool {
 
 // Returns whether the quaternions represents the same orientation with a given tolerence
 func (q1 Quat) OrientationEqualThreshold(q2 Quat, epsilon float64) bool {
-	return Abs(q1.Normalize().Dot(q2.Normalize())) > 1-epsilon
+	return math.Abs(q1.Normalize().Dot(q2.Normalize())) > 1-epsilon
 }
 
 // Slerp is *S*pherical *L*inear Int*erp*olation, a method of interpolating
@@ -225,8 +225,8 @@ func QuatSlerp(q1, q2 Quat, amount float64) Quat {
 	// This is here for precision errors, I'm perfectly aware that *technically* the dot is bound [-1,1], but since Acos will freak out if it's not (even if it's just a liiiiitle bit over due to normal error) we need to clamp it
 	dot = Clamp(dot, -1, 1)
 
-	theta := float64(math.Acos(float64(dot))) * amount
-	c, s := float64(math.Cos(float64(theta))), float64(math.Sin(float64(theta)))
+	theta := math.Acos(dot) * amount
+	c, s := math.Cos(theta), math.Sin(theta)
 	rel := q2.Sub(q1.Scale(dot)).Normalize()
 
 	return q1.Scale(c).Add(rel.Scale(s))
@@ -263,83 +263,83 @@ func AnglesToQuat(angle1, angle2, angle3 float64, order RotationOrder) Quat {
 	s := [3]float64{}
 	c := [3]float64{}
 
-	s[0], c[0] = math.Sincos(float64(angle1 / 2))
-	s[1], c[1] = math.Sincos(float64(angle2 / 2))
-	s[2], c[2] = math.Sincos(float64(angle3 / 2))
+	s[0], c[0] = math.Sincos(angle1 / 2)
+	s[1], c[1] = math.Sincos(angle2 / 2)
+	s[2], c[2] = math.Sincos(angle3 / 2)
 
 	ret := Quat{}
 	switch order {
 	case ZYX:
-		ret.W = float64(c[0]*c[1]*c[2] + s[0]*s[1]*s[2])
-		ret.V = Vec3{float64(c[0]*c[1]*s[2] - s[0]*s[1]*c[2]),
-			float64(c[0]*s[1]*c[2] + s[0]*c[1]*s[2]),
-			float64(s[0]*c[1]*c[2] - c[0]*s[1]*s[2]),
+		ret.W = c[0]*c[1]*c[2] + s[0]*s[1]*s[2]
+		ret.V = Vec3{c[0]*c[1]*s[2] - s[0]*s[1]*c[2],
+			c[0]*s[1]*c[2] + s[0]*c[1]*s[2],
+			s[0]*c[1]*c[2] - c[0]*s[1]*s[2],
 		}
 	case ZYZ:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
-		ret.V = Vec3{float64(c[0]*s[1]*s[2] - s[0]*s[1]*c[2]),
-			float64(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
-			float64(s[0]*c[1]*c[2] + c[0]*c[1]*s[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*c[1]*s[2]
+		ret.V = Vec3{c[0]*s[1]*s[2] - s[0]*s[1]*c[2],
+			c[0]*s[1]*c[2] + s[0]*s[1]*s[2],
+			s[0]*c[1]*c[2] + c[0]*c[1]*s[2],
 		}
 	case ZXY:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*s[1]*s[2])
-		ret.V = Vec3{float64(c[0]*s[1]*c[2] - s[0]*c[1]*s[2]),
-			float64(c[0]*c[1]*s[2] + s[0]*s[1]*c[2]),
-			float64(c[0]*s[1]*s[2] + s[0]*c[1]*c[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*s[1]*s[2]
+		ret.V = Vec3{c[0]*s[1]*c[2] - s[0]*c[1]*s[2],
+			c[0]*c[1]*s[2] + s[0]*s[1]*c[2],
+			c[0]*s[1]*s[2] + s[0]*c[1]*c[2],
 		}
 	case ZXZ:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
-		ret.V = Vec3{float64(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
-			float64(s[0]*s[1]*c[2] - c[0]*s[1]*s[2]),
-			float64(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*c[1]*s[2]
+		ret.V = Vec3{c[0]*s[1]*c[2] + s[0]*s[1]*s[2],
+			s[0]*s[1]*c[2] - c[0]*s[1]*s[2],
+			c[0]*c[1]*s[2] + s[0]*c[1]*c[2],
 		}
 	case YXZ:
-		ret.W = float64(c[0]*c[1]*c[2] + s[0]*s[1]*s[2])
-		ret.V = Vec3{float64(c[0]*s[1]*c[2] + s[0]*c[1]*s[2]),
-			float64(s[0]*c[1]*c[2] - c[0]*s[1]*s[2]),
-			float64(c[0]*c[1]*s[2] - s[0]*s[1]*c[2]),
+		ret.W = c[0]*c[1]*c[2] + s[0]*s[1]*s[2]
+		ret.V = Vec3{c[0]*s[1]*c[2] + s[0]*c[1]*s[2],
+			s[0]*c[1]*c[2] - c[0]*s[1]*s[2],
+			c[0]*c[1]*s[2] - s[0]*s[1]*c[2],
 		}
 	case YXY:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
-		ret.V = Vec3{float64(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
-			float64(s[0]*c[1]*c[2] + c[0]*c[1]*s[2]),
-			float64(c[0]*s[1]*s[2] - s[0]*s[1]*c[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*c[1]*s[2]
+		ret.V = Vec3{c[0]*s[1]*c[2] + s[0]*s[1]*s[2],
+			s[0]*c[1]*c[2] + c[0]*c[1]*s[2],
+			c[0]*s[1]*s[2] - s[0]*s[1]*c[2],
 		}
 	case YZX:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*s[1]*s[2])
-		ret.V = Vec3{float64(c[0]*c[1]*s[2] + s[0]*s[1]*c[2]),
-			float64(c[0]*s[1]*s[2] + s[0]*c[1]*c[2]),
-			float64(c[0]*s[1]*c[2] - s[0]*c[1]*s[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*s[1]*s[2]
+		ret.V = Vec3{c[0]*c[1]*s[2] + s[0]*s[1]*c[2],
+			c[0]*s[1]*s[2] + s[0]*c[1]*c[2],
+			c[0]*s[1]*c[2] - s[0]*c[1]*s[2],
 		}
 	case YZY:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
-		ret.V = Vec3{float64(s[0]*s[1]*c[2] - c[0]*s[1]*s[2]),
-			float64(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
-			float64(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*c[1]*s[2]
+		ret.V = Vec3{s[0]*s[1]*c[2] - c[0]*s[1]*s[2],
+			c[0]*c[1]*s[2] + s[0]*c[1]*c[2],
+			c[0]*s[1]*c[2] + s[0]*s[1]*s[2],
 		}
 	case XYZ:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*s[1]*s[2])
-		ret.V = Vec3{float64(c[0]*s[1]*s[2] + s[0]*c[1]*c[2]),
-			float64(c[0]*s[1]*c[2] - s[0]*c[1]*s[2]),
-			float64(c[0]*c[1]*s[2] + s[0]*s[1]*c[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*s[1]*s[2]
+		ret.V = Vec3{c[0]*s[1]*s[2] + s[0]*c[1]*c[2],
+			c[0]*s[1]*c[2] - s[0]*c[1]*s[2],
+			c[0]*c[1]*s[2] + s[0]*s[1]*c[2],
 		}
 	case XYX:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
-		ret.V = Vec3{float64(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
-			float64(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
-			float64(s[0]*s[1]*c[2] - c[0]*s[1]*s[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*c[1]*s[2]
+		ret.V = Vec3{c[0]*c[1]*s[2] + s[0]*c[1]*c[2],
+			c[0]*s[1]*c[2] + s[0]*s[1]*s[2],
+			s[0]*s[1]*c[2] - c[0]*s[1]*s[2],
 		}
 	case XZY:
-		ret.W = float64(c[0]*c[1]*c[2] + s[0]*s[1]*s[2])
-		ret.V = Vec3{float64(s[0]*c[1]*c[2] - c[0]*s[1]*s[2]),
-			float64(c[0]*c[1]*s[2] - s[0]*s[1]*c[2]),
-			float64(c[0]*s[1]*c[2] + s[0]*c[1]*s[2]),
+		ret.W = c[0]*c[1]*c[2] + s[0]*s[1]*s[2]
+		ret.V = Vec3{s[0]*c[1]*c[2] - c[0]*s[1]*s[2],
+			c[0]*c[1]*s[2] - s[0]*s[1]*c[2],
+			c[0]*s[1]*c[2] + s[0]*c[1]*s[2],
 		}
 	case XZX:
-		ret.W = float64(c[0]*c[1]*c[2] - s[0]*c[1]*s[2])
-		ret.V = Vec3{float64(c[0]*c[1]*s[2] + s[0]*c[1]*c[2]),
-			float64(c[0]*s[1]*s[2] - s[0]*s[1]*c[2]),
-			float64(c[0]*s[1]*c[2] + s[0]*s[1]*s[2]),
+		ret.W = c[0]*c[1]*c[2] - s[0]*c[1]*s[2]
+		ret.V = Vec3{c[0]*c[1]*s[2] + s[0]*c[1]*c[2],
+			c[0]*s[1]*s[2] - s[0]*s[1]*c[2],
+			c[0]*s[1]*c[2] + s[0]*s[1]*s[2],
 		}
 	default:
 		panic("Unsupported rotation order")
@@ -352,7 +352,7 @@ func Mat4ToQuat(m Mat4) Quat {
 	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 
 	if tr := m[0] + m[5] + m[10]; tr > 0 {
-		s := float64(0.5 / math.Sqrt(float64(tr+1.0)))
+		s := 0.5 / math.Sqrt(tr+1.0)
 		return Quat{
 			0.25 / s,
 			Vec3{
@@ -364,7 +364,7 @@ func Mat4ToQuat(m Mat4) Quat {
 	}
 
 	if (m[0] > m[5]) && (m[0] > m[10]) {
-		s := float64(2.0 * math.Sqrt(float64(1.0+m[0]-m[5]-m[10])))
+		s := 2.0 * math.Sqrt(1.0+m[0]-m[5]-m[10])
 		return Quat{
 			(m[6] - m[9]) / s,
 			Vec3{
@@ -376,7 +376,7 @@ func Mat4ToQuat(m Mat4) Quat {
 	}
 
 	if m[5] > m[10] {
-		s := float64(2.0 * math.Sqrt(float64(1.0+m[5]-m[0]-m[10])))
+		s := 2.0 * math.Sqrt(1.0+m[5]-m[0]-m[10])
 		return Quat{
 			(m[8] - m[2]) / s,
 			Vec3{
@@ -388,7 +388,7 @@ func Mat4ToQuat(m Mat4) Quat {
 
 	}
 
-	s := float64(2.0 * math.Sqrt(float64(1.0+m[10]-m[0]-m[5])))
+	s := 2.0 * math.Sqrt(1.0+m[10]-m[0]-m[5])
 	return Quat{
 		(m[1] - m[4]) / s,
 		Vec3{
@@ -451,7 +451,7 @@ func QuatBetweenVectors(start, dest Vec3) Quat {
 	}
 
 	axis := start.Cross(dest)
-	s := float64(math.Sqrt(float64(1.0+cosTheta) * 2.0))
+	s := math.Sqrt((1.0 + cosTheta) * 2.0)
 
 	return Quat{
 		s * 0.5,

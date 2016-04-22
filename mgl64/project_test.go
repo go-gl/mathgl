@@ -107,7 +107,7 @@ func TestLookAtV(t *testing.T) {
 		},
 	}
 
-	threshold := float64(math.Pow(10, -2))
+	threshold := math.Pow(10, -2)
 	for _, c := range tests {
 		if r := LookAtV(c.Eye, c.Center, c.Up); !r.ApproxEqualThreshold(c.Expected, threshold) {
 			t.Errorf("%v failed: LookAtV(%v, %v, %v) != %v (got %v)", c.Description, c.Eye, c.Center, c.Up, c.Expected, r)

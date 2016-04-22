@@ -24,16 +24,16 @@ func Ortho2D(left, right, bottom, top float64) Mat4 {
 
 func Perspective(fovy, aspect, near, far float64) Mat4 {
 	// fovy = (fovy * math.Pi) / 180.0 // convert from degrees to radians
-	nmf, f := near-far, float64(1./math.Tan(float64(fovy)/2.0))
+	nmf, f := near-far, float64(1./math.Tan(fovy/2.0))
 
-	return Mat4{float64(f / aspect), 0, 0, 0, 0, float64(f), 0, 0, 0, 0, float64((near + far) / nmf), -1, 0, 0, float64((2. * far * near) / nmf), 0}
+	return Mat4{f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (near + far) / nmf, -1, 0, 0, (2. * far * near) / nmf, 0}
 }
 
 func Frustum(left, right, bottom, top, near, far float64) Mat4 {
 	rml, tmb, fmn := (right - left), (top - bottom), (far - near)
 	A, B, C, D := (right+left)/rml, (top+bottom)/tmb, -(far+near)/fmn, -(2*far*near)/fmn
 
-	return Mat4{float64((2. * near) / rml), 0, 0, 0, 0, float64((2. * near) / tmb), 0, 0, float64(A), float64(B), float64(C), -1, 0, 0, float64(D), 0}
+	return Mat4{(2. * near) / rml, 0, 0, 0, 0, (2. * near) / tmb, 0, 0, A, B, C, -1, 0, 0, D, 0}
 }
 
 func LookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ float64) Mat4 {
