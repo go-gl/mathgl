@@ -203,14 +203,6 @@ func intMin(a, b int) int {
 	return b
 }
 
-func intAbs(a int) int {
-	if a < 0 {
-		return -a
-	}
-
-	return a
-}
-
 // Computes the dot product of two VecNs, if
 // the two vectors are not of the same length -- this
 // will return NaN.

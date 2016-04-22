@@ -258,8 +258,8 @@ func QuatNlerp(q1, q2 Quat, amount float32) Quat {
 // Based off the code for the Matlab function "angle2quat", though this implementation
 // only supports 3 single angles as opposed to multiple angles.
 func AnglesToQuat(angle1, angle2, angle3 float32, order RotationOrder) Quat {
-	s := [3]float64{}
-	c := [3]float64{}
+	var s [3]float64
+	var c [3]float64
 
 	s[0], c[0] = math.Sincos(float64(angle1 / 2))
 	s[1], c[1] = math.Sincos(float64(angle2 / 2))

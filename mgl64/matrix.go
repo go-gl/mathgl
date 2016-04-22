@@ -110,7 +110,7 @@ func Ident2() Mat2 {
 //
 // Another way to think about it is that the identity is this function where the every vector element is 1.
 func Diag2(v Vec2) Mat2 {
-	m := Mat2{}
+	var m Mat2
 	m[0], m[3] = v[0], v[1]
 	return m
 }
@@ -218,9 +218,7 @@ func (m1 Mat2) Transpose() Mat2 {
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
 func (m Mat2) Det() float64 {
-
 	return m[0]*m[2] - m[1]*m[3]
-
 }
 
 // Inv computes the inverse of a square matrix. An inverse is a square matrix such that when multiplied by the
@@ -1055,7 +1053,7 @@ func Ident3() Mat3 {
 //
 // Another way to think about it is that the identity is this function where the every vector element is 1.
 func Diag3(v Vec3) Mat3 {
-	m := Mat3{}
+	var m Mat3
 	m[0], m[4], m[8] = v[0], v[1], v[2]
 	return m
 }
@@ -1173,9 +1171,7 @@ func (m1 Mat3) Transpose() Mat3 {
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
 func (m Mat3) Det() float64 {
-
 	return m[0]*m[4]*m[8] + m[3]*m[7]*m[2] + m[6]*m[1]*m[5] - m[6]*m[4]*m[2] - m[3]*m[1]*m[8] - m[0]*m[7]*m[5]
-
 }
 
 // Inv computes the inverse of a square matrix. An inverse is a square matrix such that when multiplied by the
@@ -2060,7 +2056,7 @@ func Ident4() Mat4 {
 //
 // Another way to think about it is that the identity is this function where the every vector element is 1.
 func Diag4(v Vec4) Mat4 {
-	m := Mat4{}
+	var m Mat4
 	m[0], m[5], m[10], m[15] = v[0], v[1], v[2], v[3]
 	return m
 }
@@ -2188,9 +2184,7 @@ func (m1 Mat4) Transpose() Mat4 {
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
 func (m Mat4) Det() float64 {
-
 	return m[0]*m[5]*m[10]*m[15] - m[0]*m[5]*m[11]*m[14] - m[0]*m[6]*m[9]*m[15] + m[0]*m[6]*m[11]*m[13] + m[0]*m[7]*m[9]*m[14] - m[0]*m[7]*m[10]*m[13] - m[1]*m[4]*m[10]*m[15] + m[1]*m[4]*m[11]*m[14] + m[1]*m[6]*m[8]*m[15] - m[1]*m[6]*m[11]*m[12] - m[1]*m[7]*m[8]*m[14] + m[1]*m[7]*m[10]*m[12] + m[2]*m[4]*m[9]*m[15] - m[2]*m[4]*m[11]*m[13] - m[2]*m[5]*m[8]*m[15] + m[2]*m[5]*m[11]*m[12] + m[2]*m[7]*m[8]*m[13] - m[2]*m[7]*m[9]*m[12] - m[3]*m[4]*m[9]*m[14] + m[3]*m[4]*m[10]*m[13] + m[3]*m[5]*m[8]*m[14] - m[3]*m[5]*m[10]*m[12] - m[3]*m[6]*m[8]*m[13] + m[3]*m[6]*m[9]*m[12]
-
 }
 
 // Inv computes the inverse of a square matrix. An inverse is a square matrix such that when multiplied by the

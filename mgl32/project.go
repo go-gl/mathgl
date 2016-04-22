@@ -75,7 +75,7 @@ func Project(obj Vec3, modelview, projection Mat4, initialX, initialY, width, he
 // (It's still unlikely to be perfect due to precision errors, but it will be closer)
 func UnProject(win Vec3, modelview, projection Mat4, initialX, initialY, width, height int) (obj Vec3, err error) {
 	inv := projection.Mul4(modelview).Inv()
-	blank := Mat4{}
+	var blank Mat4
 	if inv == blank {
 		return Vec3{}, errors.New("Could not find matrix inverse (projection times modelview is probably non-singular)")
 	}

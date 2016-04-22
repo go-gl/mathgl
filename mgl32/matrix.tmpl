@@ -117,7 +117,7 @@ func Ident<<$m>>() <<$type>> {
 //
 // Another way to think about it is that the identity is this function where the every vector element is 1.
 func Diag<<$m>>(v <<typename $m 1>>) <<$type>> {
-	m := <<$type>>{}
+	var m <<$type>>
 	<<range $i := iter 0 $m>><<sep "," $i>>m[<<mul $i $m | add $i>>]<<end>> = <<repeat $m "v[%d]" ",">>
 	return m
 }
@@ -183,13 +183,13 @@ func (m1 <<$type>>) Transpose() <<typename $n $m>> {
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
 func (m <<$type>>) Det() float32 {
-	<<if eq $m 2>>
+	<<if eq $m 2 ->>
 	return m[0]*m[2] - m[1]*m[3]
-	<<else if eq $m 3>>
+	<<else if eq $m 3 ->>
 	return m[0]*m[4]*m[8] + m[3]*m[7]*m[2] + m[6]*m[1]*m[5] - m[6]*m[4]*m[2] - m[3]*m[1]*m[8] - m[0]*m[7]*m[5]
-	<<else if eq $m 4>>
+	<<else if eq $m 4 ->>
 	return m[0]*m[5]*m[10]*m[15] - m[0]*m[5]*m[11]*m[14] - m[0]*m[6]*m[9]*m[15] + m[0]*m[6]*m[11]*m[13] + m[0]*m[7]*m[9]*m[14] - m[0]*m[7]*m[10]*m[13] - m[1]*m[4]*m[10]*m[15] + m[1]*m[4]*m[11]*m[14] + m[1]*m[6]*m[8]*m[15] - m[1]*m[6]*m[11]*m[12] - m[1]*m[7]*m[8]*m[14] + m[1]*m[7]*m[10]*m[12] + m[2]*m[4]*m[9]*m[15] - m[2]*m[4]*m[11]*m[13] - m[2]*m[5]*m[8]*m[15] + m[2]*m[5]*m[11]*m[12] + m[2]*m[7]*m[8]*m[13] - m[2]*m[7]*m[9]*m[12] - m[3]*m[4]*m[9]*m[14] + m[3]*m[4]*m[10]*m[13] + m[3]*m[5]*m[8]*m[14] - m[3]*m[5]*m[10]*m[12] - m[3]*m[6]*m[8]*m[13] + m[3]*m[6]*m[9]*m[12]
-	<<end>>
+	<<end ->>
 }
 <<end>>
 
