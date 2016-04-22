@@ -141,7 +141,7 @@ func (q1 Quat) Normalize() Quat {
 //
 // This method computes the square norm by directly adding the sum
 // of the squares of all terms instead of actually squaring q1.Len(),
-// both for performance and percision.
+// both for performance and precision.
 func (q1 Quat) Inverse() Quat {
 	return q1.Conjugate().Scale(1 / q1.Dot(q1))
 }
