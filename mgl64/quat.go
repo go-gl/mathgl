@@ -222,7 +222,7 @@ func QuatSlerp(q1, q2 Quat, amount float64) Quat {
 		return QuatNlerp(q1, q2, amount)
 	}
 
-	// This is here for precision errors, I'm perfectly aware the *technically* the dot is bound [-1,1], but since Acos will freak out if it's not (even if it's just a liiiiitle bit over due to normal error) we need to clamp it
+	// This is here for precision errors, I'm perfectly aware that *technically* the dot is bound [-1,1], but since Acos will freak out if it's not (even if it's just a liiiiitle bit over due to normal error) we need to clamp it
 	dot = Clamp(dot, -1, 1)
 
 	theta := float64(math.Acos(float64(dot))) * amount
