@@ -1,5 +1,4 @@
-MathGL [![Build Status](https://travis-ci.org/go-gl/mathgl.png?branch=master)](https://travis-ci.org/go-gl/mathgl)
-======
+# MathGL [![Build Status](https://travis-ci.org/go-gl/mathgl.svg?branch=master)](https://travis-ci.org/go-gl/mathgl) [![GoDoc](https://godoc.org/github.com/go-gl/mathgl?status.svg)](https://godoc.org/github.com/go-gl/mathgl)
 
 This is a Go matrix and vector math library specialized for Open GL graphics capabilities.
 
@@ -14,7 +13,7 @@ The old repository, before the split between the 32-bit and 64-bit subpackages, 
 Examples can be found in [github.com/go-gl/examples](https://github.com/go-gl/examples).
 
 Why am I not getting what I see on github!?
-=======
+===========================================
 
 You're probably using a combination of `go get` and an old Go version. The `go get` utility is programmed to look for tags matching the current Go version. Right now there's a tag for Go1.2.2 for instance, so if you haven't upgraded to Go1.3, `go get` will grab an older API. See the [API Changes](https://github.com/go-gl/mathgl#api-changes) section for details on the version tagging.
 
@@ -28,14 +27,14 @@ Feel free to submit pull requests for features and bug fixes. Do note that, asid
 API Changes
 ===========
 
-From now on, no major API breaking changes will be made between  Go version releases. That means any time any "x" in Go1.x.x increases. Exceptions are made, of course, for bug fixes. If a bug fix necessitates changing semantics of calling software, it will be changed. (An example is the recent update of Transpose which was mistakenly using row major rules). Deprecated functions may also be nuked at major version released. Before any API breaking changes near major releases, the most recent non-breaking commit will be tagged with the previous Go version number (e.g. Go1.2.2). If no such tag exists, one can assume nothing has been broken.
+From now on, no major API breaking changes will be made between Go version releases. That means any time any "x" in Go1.x.x increases. Exceptions are made, of course, for bug fixes. If a bug fix necessitates changing semantics of calling software, it will be changed. (An example is the recent update of Transpose which was mistakenly using row major rules). Deprecated functions may also be nuked at major version released. Before any API breaking changes near major releases, the most recent non-breaking commit will be tagged with the previous Go version number (e.g. Go1.2.2). If no such tag exists, one can assume nothing has been broken.
 
 Currently Deprecated Functions
--------
+------------------------------
 
 QuatLookAtV is currently being considered for deletion with Go 1.4, please see Issue #31 for detals.
 
 API-Breaking changes made for latest Go release
-----
+-----------------------------------------------
 
 Removal of EulerToQuat; use AnglesToQuat with the order ZYX instead.
