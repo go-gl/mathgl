@@ -121,7 +121,7 @@ func TestRebase(t *testing.T) {
 	}
 }
 
-func ExampleReseed() {
+func ExampleTransformStack_Reseed() {
 	stack := NewTransformStack()
 
 	scale := mgl32.Scale3D(2, 2, 2)
