@@ -520,9 +520,9 @@ func TestQuatMatConversion(t *testing.T) {
 
 func TestQuatGetter(t *testing.T) {
 	tests := []Quat{
-		Quat{0, Vec3{0, 0, 0}},
-		Quat{1, Vec3{2, 3, 4}},
-		Quat{-4, Vec3{-3, -2, -1}},
+		{0, Vec3{0, 0, 0}},
+		{1, Vec3{2, 3, 4}},
+		{-4, Vec3{-3, -2, -1}},
 	}
 
 	for _, q := range tests {

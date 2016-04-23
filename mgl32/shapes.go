@@ -52,13 +52,13 @@ func Circle(radiusX, radiusY float32, numSlices int) []Vec2 {
 // w,h=w+1,h-1 in the call to this function. (The w+1,h-1 step maps the coordinates to start at 0.0 rather than -1.0)
 func Rect(width, height float32) []Vec2 {
 	return []Vec2{
-		Vec2{0.0, 0.0},
-		Vec2{0.0, -height},
-		Vec2{width, -height},
+		{0.0, 0.0},
+		{0.0, -height},
+		{width, -height},
 
-		Vec2{0.0, 0.0},
-		Vec2{width, -height},
-		Vec2{width, 0.0},
+		{0.0, 0.0},
+		{width, -height},
+		{width, 0.0},
 	}
 }
 
