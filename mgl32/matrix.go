@@ -215,7 +215,7 @@ func (m1 Mat2) Transpose() Mat2 {
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
 func (m Mat2) Det() float32 {
-	return m[0]*m[2] - m[1]*m[3]
+	return m[0]*m[3] - m[1]*m[2]
 }
 
 // Inv computes the inverse of a square matrix. An inverse is a square matrix such that when multiplied by the
