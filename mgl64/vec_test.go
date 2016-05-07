@@ -26,7 +26,7 @@ func Test2DVecAdd(t *testing.T) {
 
 	v4 := v2.Add(v1)
 
-	if !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[0], v4[0]) {
+	if !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[1], v4[1]) {
 		t.Errorf("Addition is somehow not commutative")
 	}
 
@@ -44,7 +44,7 @@ func Test3DVecAdd(t *testing.T) {
 
 	v4 := v2.Add(v1)
 
-	if !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[2], v4[2]) {
+	if !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[1], v4[1]) || !FloatEqual(v3[2], v4[2]) {
 		t.Errorf("Addition is somehow not commutative")
 	}
 
@@ -62,7 +62,7 @@ func Test4DVecAdd(t *testing.T) {
 
 	v4 := v2.Add(v1)
 
-	if !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[2], v4[2]) || !FloatEqual(v3[3], v4[3]) {
+	if !FloatEqual(v3[0], v4[0]) || !FloatEqual(v3[1], v4[1]) || !FloatEqual(v3[2], v4[2]) || !FloatEqual(v3[3], v4[3]) {
 		t.Errorf("Addition is somehow not commutative")
 	}
 
