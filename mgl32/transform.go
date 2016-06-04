@@ -200,7 +200,7 @@ func Mat4Normal(m Mat4) Mat3 {
 func TransformCoordinate(v Vec3, m Mat4) Vec3 {
 	t := v.Vec4(1)
 	t = m.Mul4x1(t)
-	t.Mul(1 / t[3])
+	t = t.Mul(1 / t[3])
 
 	return t.Vec3()
 }
