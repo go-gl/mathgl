@@ -64,6 +64,7 @@ func Project(obj Vec3, modelview, projection Mat4, initialX, initialY, width, he
 	obj4 := obj.Vec4(1)
 
 	vpp := projection.Mul4(modelview).Mul4x1(obj4)
+	vpp = vpp.Mul(1 / vpp.W())
 	win[0] = float64(initialX) + (float64(width)*(vpp[0]+1))/2
 	win[1] = float64(initialY) + (float64(height)*(vpp[1]+1))/2
 	win[2] = (vpp[2] + 1) / 2
