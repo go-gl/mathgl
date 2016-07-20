@@ -34,6 +34,36 @@ func TestProject(t *testing.T) {
 	}
 }
 
+// Test from
+// http://stackoverflow.com/questions/38471708/opengl-glm-project-method-giving-unexpected-results
+func TestProjectNonOneW(t *testing.T) {
+	t.Parallel()
+
+	obj := Vec3{5, 0, 0}
+
+	projection := Perspective(
+		DegToRad(45), // Field of view (45 degrees).
+		800.0/600.0,  // Aspect ratio.
+		0.1,          // Near Z at 0.1.
+		10)           // Far Z at 10.
+	camera := LookAtV(
+		Vec3{0, 0.1, 10}, // Camera out on Z and slightly above.
+		Vec3{0, 0, 0},    // Looking at the origin.
+		Vec3{0, 1, 0})    // Up is positive Y.
+	model := Ident4()               // Simple model matrix, to avoid confusion.
+	modelView := camera.Mul4(model) // The model-view matrix (== camera, here).
+
+	win := Project(obj, modelView, projection, 0, 0, 800, 600)
+
+	t.Logf("Test:   (%v, %v, %v)", win[0], win[1], win[2])
+
+	answer := Vec3{762.114, 300, 1} // verified with glm
+
+	if !win.ApproxEqualThreshold(answer, 1e-4) {
+		t.Errorf("Project does not properly do perspective division, differs from expected by %v", win.Sub(answer).Len())
+	}
+}
+
 func TestUnprojectSingular(t *testing.T) {
 	if _, err := UnProject(Vec3{}, Mat4{}, Mat4{}, 0, 0, 2048, 1152); err == nil {
 		t.Errorf("Did not get error from UnProject on singular matrix")
