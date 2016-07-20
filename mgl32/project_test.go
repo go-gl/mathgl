@@ -32,8 +32,7 @@ func TestProject(t *testing.T) {
 	}
 }
 
-
-// Test from 
+// Test from
 // http://stackoverflow.com/questions/38471708/opengl-glm-project-method-giving-unexpected-results
 func TestProjectNonOneW(t *testing.T) {
 	t.Parallel()
@@ -41,19 +40,18 @@ func TestProjectNonOneW(t *testing.T) {
 	obj := Vec3{5, 0, 0}
 
 	projection := Perspective(
-    DegToRad(45), // Field of view (45 degrees).
-    800.0 / 600.0,      // Aspect ratio.
-    0.1,                // Near Z at 0.1.
-    10)                 // Far Z at 10.
+		DegToRad(45), // Field of view (45 degrees).
+		800.0/600.0,  // Aspect ratio.
+		0.1,          // Near Z at 0.1.
+		10)           // Far Z at 10.
 	camera := LookAtV(
-	    Vec3{0, 0.1, 10}, // Camera out on Z and slightly above.
-	    Vec3{0, 0, 0},    // Looking at the origin.
-	    Vec3{0, 1, 0})    // Up is positive Y.
-	model := Ident4()     // Simple model matrix, to avoid confusion.
+		Vec3{0, 0.1, 10}, // Camera out on Z and slightly above.
+		Vec3{0, 0, 0},    // Looking at the origin.
+		Vec3{0, 1, 0})    // Up is positive Y.
+	model := Ident4()               // Simple model matrix, to avoid confusion.
 	modelView := camera.Mul4(model) // The model-view matrix (== camera, here).
 
 	win := Project(obj, modelView, projection, 0, 0, 800, 600)
-
 
 	t.Logf("Test:   (%v, %v, %v)", win[0], win[1], win[2])
 
