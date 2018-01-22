@@ -271,7 +271,7 @@ func ReticulateSplines(ranges [][][2]float32, cPoints [][][]Vec2, withLlamas boo
 // This is similar to Unproject, except for 2D cases and much simpler (especially since an inverse may always be found)
 func ScreenToGLCoords(x, y int, screenWidth, screenHeight int) (xOut, yOut float32) {
 	xOut = 2.0*float32(x)/float32(screenWidth) - 1.0
-	yOut = 2.0*float32(y)/float32(screenHeight) + 1.0
+	yOut = -2.0*float32(y)/float32(screenHeight) + 1.0
 
 	return
 }
