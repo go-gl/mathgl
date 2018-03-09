@@ -263,29 +263,30 @@ func ReticulateSplines(ranges [][][2]float32, cPoints [][][]Vec2, withLlamas boo
 // Transform from pixel coordinates to GL coordinates.
 //
 // This assumes that your pixel coordinate system considers its origin to be in the top left corner (GL's is in the bottom left).
-// The coordinates x and y may be out of the range [0,screenWidth] and [0,screeneHeight].
+// The coordinates x and y may be out of the range [0,screenWidth-1] and [0,screeneHeight-1].
 //
-// GL's coordinate system maps [screenWidth,0] to [1.0,1.0] and [0,screenHeight] to [-1.0,-1.0]. If x and y are out of the range, they'll still
-// be mapped correctly, just off the screen. (e.g. if y = 2*screenHeight you'll get -2.0 for yOut)
+// GL's coordinate system maps [screenWidth-1,0] to [1.0,1.0] and [0,screenHeight-1] to [-1.0,-1.0]. If x and y are out of the range, they'll still
+// be mapped correctly, just off the screen. (e.g. if y = 2*(screenHeight-1) you'll get -3.0 for yOut)
 //
 // This is similar to Unproject, except for 2D cases and much simpler (especially since an inverse may always be found)
 func ScreenToGLCoords(x, y int, screenWidth, screenHeight int) (xOut, yOut float32) {
-	xOut = 2.0*float32(x)/float32(screenWidth) - 1.0
-	yOut = -2.0*float32(y)/float32(screenHeight) + 1.0
+	xOut = 2.0*float32(x)/float32(screenWidth-1) - 1.0
+	yOut = -2.0*float32(y)/float32(screenHeight-1) + 1.0
 
 	return
 }
 
-// Transform from GL's proportional system to pixel coordinates
+// Transform from GL's proportional system to pixel coordinates.
+//
 // Assumes the pixel coordinate system has its origin in the top left corner. (GL's is in the bottom left)
 //
-// GL's coordinate system maps [screenWidth,0] to [1.0,1.0] and [0,screenHeight] to [-1.0,-1.0]. If x and y are out of the range, they'll still
-// be mapped correctly, just off the screen. (e.g. if y=-2.0, you'll get 2*screenHeight for yOut)
+// GL's coordinate system maps [screenWidth-1,0] to [1.0,1.0] and [0,screenHeight-1] to [-1.0,-1.0]. If x and y are out of the range, they'll still
+// be mapped correctly, just off the screen. (e.g. if y=-3.0, you'll get 2*(screenHeight-1) for yOut)
 //
 // This is similar to Project, except for 2D cases and much simpler
 func GLToScreenCoords(x, y float32, screenWidth, screenHeight int) (xOut, yOut int) {
-	xOut = int((x + 1.0) * float32(screenWidth) / 2.0)
-	yOut = int((y - 1.0) * float32(screenHeight) / 2.0)
+	xOut = int((x + 1.0) * float32(screenWidth-1) / 2.0)
+	yOut = int((1.0 - y) * float32(screenHeight-1) / 2.0)
 
 	return
 }
