@@ -10,7 +10,7 @@ This package is split into two sub-packages. The package `mgl32` deals with 32-b
 
 The old repository, before the split between the 32-bit and 64-bit subpackages, is kept at github.com/Jragonmiris/mathgl (the old repository path), but is no longer maintained.
 
-Examples can be found in [github.com/go-gl/examples](https://github.com/go-gl/examples).
+Examples can be found in [github.com/go-gl/example](https://github.com/go-gl/example).
 
 Why am I not getting what I see on github!?
 ===========================================
