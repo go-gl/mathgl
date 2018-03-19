@@ -63,6 +63,26 @@ func TestHomogRotate3D(t *testing.T) {
 				0, 0, 0, 1,
 			},
 		},
+		{
+			"heading and attitude 90 degree",
+			DegToRad(90), Vec3{0, 1, 1}.Normalize(),
+			Mat4{
+				0, 0.707107, -0.707107, 0,
+				-0.707107, 0.5, 0.5, 0,
+				0.707107, 0.5, 0.5, 0,
+				0, 0, 0, 1,
+			},
+		},
+		{
+			"bank, heading and attitude 180 degree",
+			DegToRad(180), Vec3{1, 1, 1}.Normalize(),
+			Mat4{
+				-1 / 3.0, 2 / 3.0, 2 / 3.0, 0,
+				2 / 3.0, -1 / 3.0, 2 / 3.0, 0,
+				2 / 3.0, 2 / 3.0, -1 / 3.0, 0,
+				0, 0, 0, 1,
+			},
+		},
 	}
 
 	threshold := float64(math.Pow(10, -2))
