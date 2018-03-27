@@ -147,7 +147,7 @@ func ShearZ3D(shearX, shearY float32) Mat4 {
 	return Mat4{1, 0, 0, 0, 0, 1, 0, 0, float32(shearX), float32(shearY), 1, 0, 0, 0, 0, 1}
 }
 
-// HomogRotate3D creates a 3D rotation Matrix that rotates by (radian) angle about some arbitrary axis given by a Vector.
+// HomogRotate3D creates a 3D rotation Matrix that rotates by (radian) angle about some arbitrary axis given by a normalized Vector.
 // It produces a homogeneous matrix (4x4)
 //
 // Where c is cos(angle) and s is sin(angle), and x, y, and z are the first, second, and third elements of the axis vector (respectively):
