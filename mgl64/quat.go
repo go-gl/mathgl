@@ -347,6 +347,121 @@ func AnglesToQuat(angle1, angle2, angle3 float64, order RotationOrder) Quat {
 	return ret
 }
 
+// Convert quaternion to Euler angles
+// Based off matlab code from: https://github.com/mjcarroll/mech7710-final/blob/master/automowfilter/quat2angle.m
+
+func QuatToAngles(q Quat, order RotationOrder) (float64, float64, float64) {
+	angle1 := float64(0.0)
+	angle2 := float64(0.0)
+	angle3 := float64(0.0)
+	q = q.Normalize()
+
+	switch order {
+	case ZYX:
+		r11 := 2.0 * (q.V[0]*q.V[1] + q.W*q.V[2])
+		r12 := q.W*q.W + q.V[0]*q.V[0] - q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r21 := -2.0 * (q.V[0]*q.V[2] - q.W*q.V[1])
+		r31 := 2.0 * (q.V[1]*q.V[2] + q.W*q.V[0])
+		r32 := q.W*q.W - q.V[0]*q.V[0] - q.V[1]*q.V[1] + q.V[2]*q.V[2]
+		angle1, angle2, angle3 = threeAxisRot(r11, r12, r21, r31, r32)
+	case ZYZ:
+		r11 := 2.0 * (q.V[1]*q.V[2] - q.W*q.V[0])
+		r12 := 2.0 * (q.V[0]*q.V[2] + q.W*q.V[1])
+		r21 := q.W*q.W - q.V[0]*q.V[0] - q.V[1]*q.V[1] + q.V[2]*q.V[2]
+		r31 := 2.0 * (q.V[1]*q.V[2] + q.W*q.V[0])
+		r32 := -2.0 * (q.V[0]*q.V[2] - q.W*q.V[1])
+		angle1, angle2, angle3 = twoAxisRot(r11, r12, r21, r31, r32)
+	case ZXY:
+		r11 := -2.0 * (q.V[0]*q.V[1] - q.W*q.V[2])
+		r12 := q.W*q.W - q.V[0]*q.V[0] + q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r21 := 2.0 * (q.V[1]*q.V[2] + q.W*q.V[0])
+		r31 := -2.0 * (q.V[0]*q.V[2] - q.W*q.V[1])
+		r32 := q.W*q.W - q.V[0]*q.V[0] - q.V[1]*q.V[1] + q.V[2]*q.V[2]
+		angle1, angle2, angle3 = threeAxisRot(r11, r12, r21, r31, r32)
+	case ZXZ:
+		r11 := 2.0 * (q.V[0]*q.V[2] + q.W*q.V[1])
+		r12 := -2.0 * (q.V[1]*q.V[2] - q.W*q.V[0])
+		r21 := q.W*q.W - q.V[0]*q.V[0] - q.V[1]*q.V[1] + q.V[2]*q.V[2]
+		r31 := 2.0 * (q.V[0]*q.V[2] - q.W*q.V[1])
+		r32 := 2.0 * (q.V[1]*q.V[2] + q.W*q.V[0])
+		angle1, angle2, angle3 = twoAxisRot(r11, r12, r21, r31, r32)
+	case YXZ:
+		r11 := 2.0 * (q.V[0]*q.V[2] + q.W*q.V[1])
+		r12 := q.W*q.W - q.V[0]*q.V[0] - q.V[1]*q.V[1] + q.V[2]*q.V[2]
+		r21 := -2.0 * (q.V[1]*q.V[2] - q.W*q.V[0])
+		r31 := 2.0 * (q.V[0]*q.V[1] + q.W*q.V[2])
+		r32 := q.W*q.W - q.V[0]*q.V[0] + q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		angle1, angle2, angle3 = threeAxisRot(r11, r12, r21, r31, r32)
+	case YXY:
+		r11 := 2.0 * (q.V[0]*q.V[1] - q.W*q.V[2])
+		r12 := 2.0 * (q.V[1]*q.V[2] + q.W*q.V[0])
+		r21 := q.W*q.W - q.V[0]*q.V[0] + q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r31 := 2.0 * (q.V[0]*q.V[1] + q.W*q.V[2])
+		r32 := -2.0 * (q.V[1]*q.V[2] - q.W*q.V[0])
+		angle1, angle2, angle3 = twoAxisRot(r11, r12, r21, r31, r32)
+	case YZX:
+		r11 := -2.0 * (q.V[0]*q.V[2] - q.W*q.V[1])
+		r12 := q.W*q.W + q.V[0]*q.V[0] - q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r21 := 2.0 * (q.V[0]*q.V[1] + q.W*q.V[2])
+		r31 := -2.0 * (q.V[1]*q.V[2] - q.W*q.V[0])
+		r32 := q.W*q.W - q.V[0]*q.V[0] + q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		angle1, angle2, angle3 = threeAxisRot(r11, r12, r21, r31, r32)
+	case YZY:
+		r11 := 2.0 * (q.V[1]*q.V[2] + q.W*q.V[0])
+		r12 := -2.0 * (q.V[0]*q.V[1] - q.W*q.V[2])
+		r21 := q.W*q.W - q.V[0]*q.V[0] + q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r31 := 2.0 * (q.V[1]*q.V[2] - q.W*q.V[0])
+		r32 := 2.0 * (q.V[0]*q.V[1] + q.W*q.V[2])
+		angle1, angle2, angle3 = twoAxisRot(r11, r12, r21, r31, r32)
+	case XYZ:
+		r11 := -2.0 * (q.V[1]*q.V[2] - q.W*q.V[0])
+		r12 := q.W*q.W - q.V[0]*q.V[0] - q.V[1]*q.V[1] + q.V[2]*q.V[2]
+		r21 := 2.0 * (q.V[0]*q.V[2] + q.W*q.V[1])
+		r31 := -2.0 * (q.V[0]*q.V[1] - q.W*q.V[2])
+		r32 := q.W*q.W + q.V[0]*q.V[0] - q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		angle1, angle2, angle3 = threeAxisRot(r11, r12, r21, r31, r32)
+	case XYX:
+		r11 := 2.0 * (q.V[0]*q.V[1] + q.W*q.V[2])
+		r12 := -2.0 * (q.V[0]*q.V[2] - q.W*q.V[1])
+		r21 := q.W*q.W + q.V[0]*q.V[0] - q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r31 := 2.0 * (q.V[0]*q.V[1] - q.W*q.V[2])
+		r32 := 2.0 * (q.V[0]*q.V[2] + q.W*q.V[1])
+		angle1, angle2, angle3 = twoAxisRot(r11, r12, r21, r31, r32)
+	case XZY:
+		r11 := 2.0 * (q.V[1]*q.V[2] + q.W*q.V[0])
+		r12 := q.W*q.W - q.V[0]*q.V[0] + q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r21 := -2.0 * (q.V[0]*q.V[1] - q.W*q.V[2])
+		r31 := 2.0 * (q.V[0]*q.V[2] + q.W*q.V[1])
+		r32 := q.W*q.W + q.V[0]*q.V[0] - q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		angle1, angle2, angle3 = threeAxisRot(r11, r12, r21, r31, r32)
+	case XZX:
+		r11 := 2.0 * (q.V[0]*q.V[2] - q.W*q.V[1])
+		r12 := 2.0 * (q.V[0]*q.V[1] + q.W*q.V[2])
+		r21 := q.W*q.W + q.V[0]*q.V[0] - q.V[1]*q.V[1] - q.V[2]*q.V[2]
+		r31 := 2.0 * (q.V[0]*q.V[2] + q.W*q.V[1])
+		r32 := -2.0 * (q.V[0]*q.V[1] - q.W*q.V[2])
+		angle1, angle2, angle3 = twoAxisRot(r11, r12, r21, r31, r32)
+	default:
+		panic("Unsupported rotation order")
+	}
+	return angle1, angle2, angle3
+}
+
+// Find angles for rotations about X, Y, and Z axes
+func threeAxisRot(r11, r12, r21, r31, r32 float64) (float64, float64, float64) {
+	r1 := math.Atan2(float64(r31), float64(r32))
+	r2 := math.Asin(float64(r21))
+	r3 := math.Atan2(float64(r11), float64(r12))
+	return float64(r1), float64(r2), float64(r3)
+}
+
+func twoAxisRot(r11, r12, r21, r31, r32 float64) (float64, float64, float64) {
+	r1 := math.Atan2(float64(r11), float64(r12))
+	r2 := math.Acos(float64(r21))
+	r3 := math.Atan2(float64(r31), float64(r32))
+	return float64(r1), float64(r2), float64(r3)
+}
+
 // Mat4ToQuat converts a pure rotation matrix into a quaternion
 func Mat4ToQuat(m Mat4) Quat {
 	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
