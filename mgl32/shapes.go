@@ -291,6 +291,7 @@ func GLToScreenCoords(x, y float32, screenWidth, screenHeight int) (xOut, yOut i
 	return
 }
 
+// choose calculates the binomial coefficient C(n,k) aka nCk
 func choose(n, k int) int {
 	if k == 0 {
 		return 1
