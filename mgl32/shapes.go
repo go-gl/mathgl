@@ -291,16 +291,16 @@ func GLToScreenCoords(x, y float32, screenWidth, screenHeight int) (xOut, yOut i
 	return
 }
 
-func choose(n, k int) (result int) {
+func choose(n, k int) int {
 	if k == 0 {
 		return 1
 	} else if n == 0 {
 		return 0
 	}
-	result = (n - (k - 1))
+	result := float32(n - (k - 1))
 	for i := 2; i <= k; i++ {
-		result *= (n - (k - i)) / i
+		result *= float32(n-(k-i)) / float32(i)
 	}
 
-	return result
+	return int(result)
 }

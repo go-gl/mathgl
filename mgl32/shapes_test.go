@@ -52,3 +52,35 @@ func TestGLToScreenCoords(t *testing.T) {
 		t.Errorf("y = %d, expected 0", y)
 	}
 }
+
+func Test_choose(t *testing.T) {
+	type args struct {
+		n int
+		k []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		// TODO: Add test cases.
+		{
+			name: "C(2,k)",
+			args: args{n: 2, k: []int{0, 1, 2}},
+			want: []int{1, 2, 1},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := []int{}
+			fail := false
+			for i, k := range tt.args.k {
+				got = append(got, choose(tt.args.n, k))
+				fail = got[i] != tt.want[i]
+			}
+			if fail {
+				t.Errorf("choose() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
