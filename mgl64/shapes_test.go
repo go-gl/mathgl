@@ -90,16 +90,16 @@ func Test_choose(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := []int{}
-			fail := false
-			for k := 0; k < tt.n; k++ {
-				got = append(got, choose(tt.n, k))
-				fail = got[k] != tt.want[k]
-			}
-			if fail {
-				t.Errorf("choose() = %v, want %v", got, tt.want)
-			}
-		})
+		// t.Run(tt.name, func(t *testing.T) {
+		got := []int{}
+		fail := false
+		for k := 0; k < tt.n; k++ {
+			got = append(got, choose(tt.n, k))
+			fail = got[k] != tt.want[k]
+		}
+		if fail {
+			t.Errorf("choose() = %v, want %v", got, tt.want)
+		}
+		// })
 	}
 }
