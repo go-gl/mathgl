@@ -451,7 +451,7 @@ func (v1 Vec4) Mul(c float32) Vec4 {
 
 // MulVec performs a element wise multiplication between two vectors
 func (v1 Vec4) MulVec(v2 Vec4) Vec4 {
-	return Vec3{v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2], v1[3] * v2[3]}
+	return Vec4{v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2], v1[3] * v2[3]}
 }
 
 // DivVec performs a element wise division between two vectors
