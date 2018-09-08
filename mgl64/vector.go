@@ -99,6 +99,16 @@ func (v1 Vec2) Mul(c float64) Vec2 {
 	return Vec2{v1[0] * c, v1[1] * c}
 }
 
+// MulVec performs a element wise multiplication between two vectors
+func (v1 Vec2) MulVec(v2 Vec2) Vec2 {
+	return Vec2{v1[0] * v2[0], v1[1] * v2[1]}
+}
+
+// DivVec performs a element wise division between two vectors
+func (v1 Vec2) DivVec(v2 Vec2) Vec2 {
+	return Vec2{v1[0] / v2[0], v1[1] / v2[1]}
+}
+
 // Dot returns the dot product of this vector with another. There are multiple ways
 // to describe this value. One is the multiplication of their lengths and cos(theta) where
 // theta is the angle between the vectors: v1.v2 = |v1||v2|cos(theta).
@@ -124,6 +134,11 @@ func (v1 Vec2) Len() float64 {
 
 	return float64(math.Hypot(float64(v1[0]), float64(v1[1])))
 
+}
+
+// Angle returns the angle of the vector in radians
+func (v1 Vec2) Angle() float64 {
+	return Atan2(v1[1], v1[0])
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
@@ -250,6 +265,16 @@ func (v1 Vec3) Sub(v2 Vec3) Vec3 {
 // c. This is equivalent to iterating over every vector element and multiplying by c.
 func (v1 Vec3) Mul(c float64) Vec3 {
 	return Vec3{v1[0] * c, v1[1] * c, v1[2] * c}
+}
+
+// MulVec performs a element wise multiplication between two vectors
+func (v1 Vec3) MulVec(v2 Vec3) Vec3 {
+	return Vec3{v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]}
+}
+
+// DivVec performs a element wise division between two vectors
+func (v1 Vec3) DivVec(v2 Vec3) Vec3 {
+	return Vec3{v1[0] / v2[0], v1[1] / v2[1], v1[2] / v2[2]}
 }
 
 // Dot returns the dot product of this vector with another. There are multiple ways
@@ -411,6 +436,16 @@ func (v1 Vec4) Sub(v2 Vec4) Vec4 {
 // c. This is equivalent to iterating over every vector element and multiplying by c.
 func (v1 Vec4) Mul(c float64) Vec4 {
 	return Vec4{v1[0] * c, v1[1] * c, v1[2] * c, v1[3] * c}
+}
+
+// MulVec performs a element wise multiplication between two vectors
+func (v1 Vec4) MulVec(v2 Vec4) Vec4 {
+	return Vec3{v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2], v1[3] * v2[3]}
+}
+
+// DivVec performs a element wise division between two vectors
+func (v1 Vec4) DivVec(v2 Vec4) Vec4 {
+	return Vec4{v1[0] / v2[0], v1[1] / v2[1], v1[2] / v2[2], v1[3] / v2[3]}
 }
 
 // Dot returns the dot product of this vector with another. There are multiple ways
