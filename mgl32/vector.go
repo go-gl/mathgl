@@ -97,6 +97,12 @@ func (v1 Vec2) Mul(c float32) Vec2 {
 	return Vec2{v1[0] * c, v1[1] * c}
 }
 
+// Div performs a scalar division between the vector and some constant value
+// c. This is equivalent to iterating over every vector element and dividing by c.
+func (v1 Vec2) Div(c float32) Vec2 {
+	return Vec2{v1[0] / c, v1[1] / c}
+}
+
 // MulVec performs a element wise multiplication between two vectors
 func (v1 Vec2) MulVec(v2 Vec2) Vec2 {
 	return Vec2{v1[0] * v2[0], v1[1] * v2[1]}
@@ -268,6 +274,12 @@ func (v1 Vec3) Sub(v2 Vec3) Vec3 {
 // c. This is equivalent to iterating over every vector element and multiplying by c.
 func (v1 Vec3) Mul(c float32) Vec3 {
 	return Vec3{v1[0] * c, v1[1] * c, v1[2] * c}
+}
+
+// Div performs a scalar division between the vector and some constant value
+// c. This is equivalent to iterating over every vector element and dividing by c.
+func (v1 Vec3) Div(c float32) Vec3 {
+	return Vec3{v1[0] / c, v1[1] / c, v1[2] / c}
 }
 
 // MulVec performs a element wise multiplication between two vectors
@@ -447,6 +459,12 @@ func (v1 Vec4) Sub(v2 Vec4) Vec4 {
 // c. This is equivalent to iterating over every vector element and multiplying by c.
 func (v1 Vec4) Mul(c float32) Vec4 {
 	return Vec4{v1[0] * c, v1[1] * c, v1[2] * c, v1[3] * c}
+}
+
+// Div performs a scalar division between the vector and some constant value
+// c. This is equivalent to iterating over every vector element and dividing by c.
+func (v1 Vec4) Div(c float32) Vec4 {
+	return Vec4{v1[0] / c, v1[1] / c, v1[2] / c, v1[3] / c}
 }
 
 // MulVec performs a element wise multiplication between two vectors
