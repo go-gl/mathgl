@@ -10,9 +10,9 @@
 package mgl64
 
 import (
-	"math"
-
 	"golang.org/x/image/math/f64"
+	"math"
+	"strconv"
 )
 
 type Vec2 f64.Vec2
