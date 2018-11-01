@@ -130,8 +130,8 @@ func (v1 <<$type>>) Len() float32 {
 	<<end>>
 }
 
-// SqrLen returns the vector's square length. This is equivalent to the sum of the squares of all elements.
-func (v1 <<$type>>) SqrLen() float32 {
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 <<$type>>) LenSqr() float32 {
 	return <<repeat $m "v1[%d]*v1[%d]" "+">>
 }
 

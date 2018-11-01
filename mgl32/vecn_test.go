@@ -123,18 +123,22 @@ func TestVecNOuterProd(t *testing.T) {
 	}
 }
 
-func TestVecNSqrLen(t *testing.T) {
-	tests := map[*VecN]float32{
-		nil:                                   float32(math.NaN()),
-		NewVecN(0):                            0,
-		NewVecNFromData([]float32{3}):         9,
-		NewVecNFromData([]float32{3, -7}):     58,
-		NewVecNFromData([]float32{3, -7, 11}): 179,
-		NewVecNFromData([]float32{3, -7, 11, 56, -73}): 8644,
+func TestVecNLenSqr(t *testing.T) {
+	v1 := Vec3{3, -5, 9}
+	v2 := Vec4{10, 11, 3, -7}
+
+	v1n := NewVecNFromData(v1[:])
+	v2n := NewVecNFromData(v2[:])
+
+	tests := map[*VecN]float64{
+		nil:        math.NaN(),
+		NewVecN(0): 0,
+		v1n:        115,
+		v2n:        279,
 	}
 	for input, want := range tests {
-		result := input.SqrLen()
-		if result != want && (math.IsNaN(float64(result)) != math.IsNaN(float64(want))) {
+		result := input.LenSqr()
+		if float64(result) != want && (math.IsNaN(float64(result)) != math.IsNaN(want)) {
 			t.Errorf("VecN square length is incorred. Got: %v; Expected: %v", result, want)
 		}
 	}

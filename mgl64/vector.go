@@ -126,8 +126,8 @@ func (v1 Vec2) Len() float64 {
 
 }
 
-// SqrLen returns the vector's square length. This is equivalent to the sum of the squares of all elements.
-func (v1 Vec2) SqrLen() float64 {
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec2) LenSqr() float64 {
 	return v1[0]*v1[0] + v1[1]*v1[1]
 }
 
@@ -284,8 +284,8 @@ func (v1 Vec3) Len() float64 {
 
 }
 
-// SqrLen returns the vector's square length. This is equivalent to the sum of the squares of all elements.
-func (v1 Vec3) SqrLen() float64 {
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec3) LenSqr() float64 {
 	return v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2]
 }
 
@@ -450,8 +450,8 @@ func (v1 Vec4) Len() float64 {
 
 }
 
-// SqrLen returns the vector's square length. This is equivalent to the sum of the squares of all elements.
-func (v1 Vec4) SqrLen() float64 {
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec4) LenSqr() float64 {
 	return v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3]
 }
 

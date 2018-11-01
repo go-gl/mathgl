@@ -182,7 +182,7 @@ func TestVecLen(t *testing.T) {
 	mustEqual(Vec4{2, 3, 5, 7}.Len(), 9.3273790530888, "Vec4.Len()")
 }
 
-func TestVecSqrLen(t *testing.T) {
+func TestVecLenSqr(t *testing.T) {
 	mustEqual := func(result float32, expected float32, name string) {
 		if !FloatEqual(result, expected) {
 			t.Errorf("%v failed. Got: %v. Expected %v.",
@@ -190,9 +190,9 @@ func TestVecSqrLen(t *testing.T) {
 		}
 	}
 
-	mustEqual(Vec2{3, 4}.SqrLen(), 25, "Vec2.SqrLen()")
-	mustEqual(Vec3{2, -5, 4}.SqrLen(), 45, "Vec3.SqrLen()")
-	mustEqual(Vec4{2, 3, 5, 7}.SqrLen(), 87, "Vec4.SqrLen()")
+	mustEqual(Vec2{3, 4}.LenSqr(), 25, "Vec2.LenSqr()")
+	mustEqual(Vec3{2, -5, 4}.LenSqr(), 45, "Vec3.LenSqr()")
+	mustEqual(Vec4{2, 3, 5, 7}.LenSqr(), 87, "Vec4.LenSqr()")
 }
 
 func Test2DVecNormalize(t *testing.T) {
