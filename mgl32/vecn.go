@@ -235,6 +235,18 @@ func (vn *VecN) Len() float32 {
 	return float32(math.Sqrt(float64(vn.Dot(vn))))
 }
 
+// SqrLen returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (vn *VecN) SqrLen() float32 {
+	if vn == nil {
+		return float32(math.NaN())
+	}
+	if len(vn.vec) == 0 {
+		return 0
+	}
+
+	return vn.Dot(vn)
+}
+
 // Normalizes the vector and stores the result in dst, which
 // will be returned. Dst will be appropraitely resized to the
 // size of vn.
