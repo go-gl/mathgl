@@ -135,9 +135,12 @@ func (v1 Vec2) Dot(v2 Vec2) float32 {
 // root of the sum of the squares of all elements. E.G. for a Vec2 it's
 // math.Hypot(v[0], v[1]).
 func (v1 Vec2) Len() float32 {
+	return float32(math.Sqrt(float64(v1.Len2())))
+}
 
-	return float32(math.Hypot(float64(v1[0]), float64(v1[1])))
-
+// Len returns the squared length of the vector
+func (v1 Vec2) Len2() float32 {
+	return float32(float64(v1[0]*v1[0] + v1[1]*v1[1]))
 }
 
 // Angle returns the angle of the vector in radians
@@ -323,9 +326,12 @@ func (v1 Vec3) Dot(v2 Vec3) float32 {
 // root of the sum of the squares of all elements. E.G. for a Vec2 it's
 // math.Hypot(v[0], v[1]).
 func (v1 Vec3) Len() float32 {
+	return float32(math.Sqrt(float64(v1.Len2())))
+}
 
-	return float32(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])))
-
+// Len returns the squared length of the vector
+func (v1 Vec3) Len2() float32 {
+	return float32(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2]))
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
@@ -522,9 +528,12 @@ func (v1 Vec4) Dot(v2 Vec4) float32 {
 // root of the sum of the squares of all elements. E.G. for a Vec2 it's
 // math.Hypot(v[0], v[1]).
 func (v1 Vec4) Len() float32 {
+	return float32(math.Sqrt(float64(v1.Len2())))
+}
 
-	return float32(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3])))
-
+// Len returns the squared length of the vector
+func (v1 Vec4) Len2() float32 {
+	return float32(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3]))
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
