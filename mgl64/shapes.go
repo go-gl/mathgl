@@ -96,7 +96,7 @@ func CubicBezierCurve3D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec3
 	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
 }
 
-// Returns the point at point t along an n-control point Bezier curve
+// BezierCurve2D returns the point at point t along an n-control point Bezier curve
 //
 // t must be in the range 0.0 and 1.0 or this function will panic. Consider [0.0,1.0] to be similar to a percentage,
 // 0.0 is first control point, and the point at 1.0 is the last control point. Any point in between is how far along the path you are between 0 and 1.
@@ -214,7 +214,7 @@ func BezierSurface(u, v float64, cPoints [][]Vec3) Vec3 {
 	return point
 }
 
-// Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
+// BezierSplineInterpolate2D Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
 // though the spline may be disjoint. The bezier curves are not required to be in any particular order.
 //
 // If t is out of the range of all given curves, this function will panic
@@ -232,7 +232,7 @@ func BezierSplineInterpolate2D(t float64, ranges [][2]float64, cPoints [][]Vec2)
 	panic("t is out of the range of all bezier curves in this spline")
 }
 
-// Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
+// BezierSplineInterpolate3D Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
 // though the spline may be disjoint. The bezier curves are not required to be in any particular order.
 //
 // If t is out of the range of all given curves, this function will panic

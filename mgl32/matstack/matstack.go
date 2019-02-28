@@ -20,7 +20,7 @@ func (ms *MatStack) Push() {
 	(*ms) = append(*ms, (*ms)[len(*ms)-1])
 }
 
-// Removes the first element of the matrix from the stack, if there is only one element left
+// Pop removes the first element of the matrix from the stack, if there is only one element left
 // there is an error.
 func (ms *MatStack) Pop() error {
 	if len(*ms) == 1 {
@@ -43,7 +43,7 @@ func (ms *MatStack) LeftMul(m mgl32.Mat4) {
 	(*ms)[len(*ms)-1] = m.Mul4((*ms)[len(*ms)-1])
 }
 
-// Returns the top element.
+// Peek returns the top element.
 func (ms *MatStack) Peek() mgl32.Mat4 {
 	return (*ms)[len(*ms)-1]
 }

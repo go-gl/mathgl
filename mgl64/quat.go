@@ -76,7 +76,7 @@ func (q Quat) Z() float64 {
 	return q.V[2]
 }
 
-// Adds two quaternions. It's no more complicated than
+// Add adds two quaternions. It's no more complicated than
 // adding their W and V components.
 func (q1 Quat) Add(q2 Quat) Quat {
 	return Quat{q1.W + q2.W, q1.V.Add(q2.V)}
@@ -100,13 +100,13 @@ func (q1 Quat) Scale(c float64) Quat {
 	return Quat{q1.W * c, Vec3{q1.V[0] * c, q1.V[1] * c, q1.V[2] * c}}
 }
 
-// Returns the conjugate of a quaternion. Equivalent to
+// Conjugate returns the conjugate of a quaternion. Equivalent to
 // Quat{q1.W, q1.V.Mul(-1)}
 func (q1 Quat) Conjugate() Quat {
 	return Quat{q1.W, q1.V.Mul(-1)}
 }
 
-// Returns the Length of the quaternion, also known as its Norm. This is the same thing as
+// Len returns the Length of the quaternion, also known as its Norm. This is the same thing as
 // the Len of a Vec4
 func (q1 Quat) Len() float64 {
 	return float64(math.Sqrt(float64(q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2])))
@@ -161,7 +161,7 @@ func (q1 Quat) Rotate(v Vec3) Vec3 {
 	return v.Add(cross.Mul(2 * q1.W)).Add(q1.V.Mul(2).Cross(cross))
 }
 
-// Returns the homogeneous 3D rotation matrix corresponding to the quaternion.
+// Mat4 returns the homogeneous 3D rotation matrix corresponding to the quaternion.
 func (q1 Quat) Mat4() Mat4 {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
 	return Mat4{
@@ -177,25 +177,25 @@ func (q1 Quat) Dot(q2 Quat) float64 {
 	return q1.W*q2.W + q1.V[0]*q2.V[0] + q1.V[1]*q2.V[1] + q1.V[2]*q2.V[2]
 }
 
-// Returns whether the quaternions are approximately equal, as if
+// ApproxEqual returns whether the quaternions are approximately equal, as if
 // FloatEqual was called on each matching element
 func (q1 Quat) ApproxEqual(q2 Quat) bool {
 	return FloatEqual(q1.W, q2.W) && q1.V.ApproxEqual(q2.V)
 }
 
-// Returns whether the quaternions are approximately equal with a given tolerence, as if
+// ApproxEqualThreshold returns whether the quaternions are approximately equal with a given tolerence, as if
 // FloatEqualThreshold was called on each matching element with the given epsilon
 func (q1 Quat) ApproxEqualThreshold(q2 Quat, epsilon float64) bool {
 	return FloatEqualThreshold(q1.W, q2.W, epsilon) && q1.V.ApproxEqualThreshold(q2.V, epsilon)
 }
 
-// Returns whether the quaternions are approximately equal using the given comparison function, as if
+// ApproxEqualFunc returns whether the quaternions are approximately equal using the given comparison function, as if
 // the function had been called on each individual element
 func (q1 Quat) ApproxEqualFunc(q2 Quat, f func(float64, float64) bool) bool {
 	return f(q1.W, q2.W) && q1.V.ApproxFuncEqual(q2.V, f)
 }
 
-// Returns whether the quaternions represents the same orientation
+// OrientationEqual returns whether the quaternions represents the same orientation
 //
 // Different values can represent the same orientation (q == -q) because quaternions avoid singularities
 // and discontinuities involved with rotation in 3 dimensions by adding extra dimensions
@@ -203,7 +203,7 @@ func (q1 Quat) OrientationEqual(q2 Quat) bool {
 	return q1.OrientationEqualThreshold(q2, Epsilon)
 }
 
-// Returns whether the quaternions represents the same orientation with a given tolerence
+// OrientationEqualThreshold returns whether the quaternions represents the same orientation with a given tolerence
 func (q1 Quat) OrientationEqualThreshold(q2 Quat, epsilon float64) bool {
 	return Abs(q1.Normalize().Dot(q2.Normalize())) > 1-epsilon
 }

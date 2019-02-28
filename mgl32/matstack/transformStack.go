@@ -16,7 +16,7 @@ import (
 // had been made in the middle.
 type TransformStack []mgl32.Mat4
 
-// Returns a matrix stack where the top element is the identity.
+// NewTransformStack returns a matrix stack where the top element is the identity.
 func NewTransformStack() *TransformStack {
 	ms := make(TransformStack, 1)
 	ms[0] = mgl32.Ident4()
@@ -45,13 +45,13 @@ func (ms *TransformStack) Pop() (mgl32.Mat4, error) {
 	return retVal, nil
 }
 
-// Returns the value of the current top element of the stack, without
+// Peek returns the value of the current top element of the stack, without
 // removing it.
 func (ms *TransformStack) Peek() mgl32.Mat4 {
 	return (*ms)[len(*ms)-1]
 }
 
-// Returns the size of the matrix stack. This value will never be less
+// Len returns the size of the matrix stack. This value will never be less
 // than 1.
 func (ms *TransformStack) Len() int {
 	return len(*ms)

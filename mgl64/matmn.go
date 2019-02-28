@@ -38,7 +38,7 @@ func NewMatrix(m, n int) (mat *MatMxN) {
 	}
 }
 
-// Returns a matrix with data specified by the data in src
+// NewMatrixFromData returns a matrix with data specified by the data in src
 //
 // For instance, to create a 3x3 MatMN from a Mat3
 //
@@ -204,7 +204,7 @@ func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
 	}
 }
 
-// Returns the trace of a square matrix (sum of all diagonal elements). If the matrix
+// Trace returns the trace of a square matrix (sum of all diagonal elements). If the matrix
 // is nil, or not square, the result will be NaN.
 func (mat *MatMxN) Trace() float64 {
 	if mat == nil || mat.m != mat.n {
@@ -219,7 +219,7 @@ func (mat *MatMxN) Trace() float64 {
 	return out
 }
 
-// Takes the transpose of mat and puts it in dst.
+// Transpose takes the transpose of mat and puts it in dst.
 //
 // If dst is not of the correct dimensions, it will be Reshaped,
 // if dst and mat are the same, a temporary matrix of the correct size will
@@ -261,7 +261,7 @@ func (mat *MatMxN) Transpose(dst *MatMxN) (t *MatMxN) {
 	return dst
 }
 
-// Returns the raw slice backing this matrix
+// Raw returns the raw slice backing this matrix
 func (mat *MatMxN) Raw() []float64 {
 	if mat == nil {
 		return nil
@@ -270,23 +270,23 @@ func (mat *MatMxN) Raw() []float64 {
 	return mat.dat
 }
 
-// Returns the number of rows in this matrix
+// NumRows returns the number of rows in this matrix
 func (mat *MatMxN) NumRows() int {
 	return mat.m
 }
 
-// Returns the number of columns in this matrix
+// NumCols returns the number of columns in this matrix
 func (mat *MatMxN) NumCols() int {
 	return mat.n
 }
 
-// Returns the number of rows and columns in this matrix
+// NumRowCols returns the number of rows and columns in this matrix
 // as a single operation
 func (mat *MatMxN) NumRowCols() (rows, cols int) {
 	return mat.m, mat.n
 }
 
-// Returns the element at the given row and column.
+// At returns the element at the given row and column.
 // This is garbage in/garbage out and does no bounds
 // checking. If the computation happens to lead to an invalid
 // element, it will be returned; or it may panic.

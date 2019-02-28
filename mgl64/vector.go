@@ -151,7 +151,7 @@ func (v1 Vec2) ApproxEqual(v2 Vec2) bool {
 	return true
 }
 
-// ApproxThresholdEq takes in a threshold for comparing two floats, and uses it to do an
+// ApproxEqualThreshold takes in a threshold for comparing two floats, and uses it to do an
 // element-wise comparison of the vector to another.
 func (v1 Vec2) ApproxEqualThreshold(v2 Vec2, threshold float64) bool {
 	for i := range v1 {
@@ -162,7 +162,7 @@ func (v1 Vec2) ApproxEqualThreshold(v2 Vec2, threshold float64) bool {
 	return true
 }
 
-// ApproxFuncEq takes in a func that compares two floats, and uses it to do an element-wise
+// ApproxFuncEqual takes in a func that compares two floats, and uses it to do an element-wise
 // comparison of the vector to another. This is intended to be used with FloatEqualFunc
 func (v1 Vec2) ApproxFuncEqual(v2 Vec2, eq func(float64, float64) bool) bool {
 	for i := range v1 {
@@ -189,7 +189,7 @@ func (v Vec2) Y() float64 {
 	return v[1]
 }
 
-// Does the vector outer product
+// OuterProd2 Does the vector outer product
 // of two vectors. The outer product produces an
 // 2x2 matrix. E.G. a Vec2 * Vec2 = Mat2.
 //
@@ -204,7 +204,7 @@ func (v1 Vec2) OuterProd2(v2 Vec2) Mat2 {
 	return Mat2{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1]}
 }
 
-// Does the vector outer product
+// OuterProd3 Does the vector outer product
 // of two vectors. The outer product produces an
 // 2x3 matrix. E.G. a Vec2 * Vec3 = Mat2x3.
 //
@@ -219,7 +219,7 @@ func (v1 Vec2) OuterProd3(v2 Vec3) Mat2x3 {
 	return Mat2x3{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[0] * v2[2], v1[1] * v2[2]}
 }
 
-// Does the vector outer product
+// OuterProd4 Does the vector outer product
 // of two vectors. The outer product produces an
 // 2x4 matrix. E.G. a Vec2 * Vec4 = Mat2x4.
 //
@@ -304,7 +304,7 @@ func (v1 Vec3) ApproxEqual(v2 Vec3) bool {
 	return true
 }
 
-// ApproxThresholdEq takes in a threshold for comparing two floats, and uses it to do an
+// ApproxEqualThreshold takes in a threshold for comparing two floats, and uses it to do an
 // element-wise comparison of the vector to another.
 func (v1 Vec3) ApproxEqualThreshold(v2 Vec3, threshold float64) bool {
 	for i := range v1 {
@@ -315,7 +315,7 @@ func (v1 Vec3) ApproxEqualThreshold(v2 Vec3, threshold float64) bool {
 	return true
 }
 
-// ApproxFuncEq takes in a func that compares two floats, and uses it to do an element-wise
+// ApproxFuncEqual takes in a func that compares two floats, and uses it to do an element-wise
 // comparison of the vector to another. This is intended to be used with FloatEqualFunc
 func (v1 Vec3) ApproxFuncEqual(v2 Vec3, eq func(float64, float64) bool) bool {
 	for i := range v1 {
@@ -350,7 +350,7 @@ func (v Vec3) Z() float64 {
 	return v[2]
 }
 
-// Does the vector outer product
+// OuterProd2 Does the vector outer product
 // of two vectors. The outer product produces an
 // 3x2 matrix. E.G. a Vec3 * Vec2 = Mat3x2.
 //
@@ -365,7 +365,7 @@ func (v1 Vec3) OuterProd2(v2 Vec2) Mat3x2 {
 	return Mat3x2{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1]}
 }
 
-// Does the vector outer product
+// OuterProd3 Does the vector outer product
 // of two vectors. The outer product produces an
 // 3x3 matrix. E.G. a Vec3 * Vec3 = Mat3.
 //
@@ -380,7 +380,7 @@ func (v1 Vec3) OuterProd3(v2 Vec3) Mat3 {
 	return Mat3{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2]}
 }
 
-// Does the vector outer product
+// OuterProd4 Does the vector outer product
 // of two vectors. The outer product produces an
 // 3x4 matrix. E.G. a Vec3 * Vec4 = Mat3x4.
 //
@@ -465,7 +465,7 @@ func (v1 Vec4) ApproxEqual(v2 Vec4) bool {
 	return true
 }
 
-// ApproxThresholdEq takes in a threshold for comparing two floats, and uses it to do an
+// ApproxEqualThreshold takes in a threshold for comparing two floats, and uses it to do an
 // element-wise comparison of the vector to another.
 func (v1 Vec4) ApproxEqualThreshold(v2 Vec4, threshold float64) bool {
 	for i := range v1 {
@@ -476,7 +476,7 @@ func (v1 Vec4) ApproxEqualThreshold(v2 Vec4, threshold float64) bool {
 	return true
 }
 
-// ApproxFuncEq takes in a func that compares two floats, and uses it to do an element-wise
+// ApproxFuncEqual takes in a func that compares two floats, and uses it to do an element-wise
 // comparison of the vector to another. This is intended to be used with FloatEqualFunc
 func (v1 Vec4) ApproxFuncEqual(v2 Vec4, eq func(float64, float64) bool) bool {
 	for i := range v1 {
@@ -519,7 +519,7 @@ func (v Vec4) W() float64 {
 	return v[3]
 }
 
-// Does the vector outer product
+// OuterProd2 Does the vector outer product
 // of two vectors. The outer product produces an
 // 4x2 matrix. E.G. a Vec4 * Vec2 = Mat4x2.
 //
@@ -534,7 +534,7 @@ func (v1 Vec4) OuterProd2(v2 Vec2) Mat4x2 {
 	return Mat4x2{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1]}
 }
 
-// Does the vector outer product
+// OuterProd3 Does the vector outer product
 // of two vectors. The outer product produces an
 // 4x3 matrix. E.G. a Vec4 * Vec3 = Mat4x3.
 //
@@ -549,7 +549,7 @@ func (v1 Vec4) OuterProd3(v2 Vec3) Mat4x3 {
 	return Mat4x3{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[3] * v2[2]}
 }
 
-// Does the vector outer product
+// OuterProd4 Does the vector outer product
 // of two vectors. The outer product produces an
 // 4x4 matrix. E.G. a Vec4 * Vec4 = Mat4.
 //

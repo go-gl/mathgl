@@ -266,7 +266,7 @@ func (m1 Mat2) ApproxEqualThreshold(m2 Mat2, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat2) ApproxFuncEqual(m2 Mat2, eq func(float64, float64) bool) bool {
@@ -490,7 +490,7 @@ func (m1 Mat2x3) ApproxEqualThreshold(m2 Mat2x3, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat2x3) ApproxFuncEqual(m2 Mat2x3, eq func(float64, float64) bool) bool {
@@ -708,7 +708,7 @@ func (m1 Mat2x4) ApproxEqualThreshold(m2 Mat2x4, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat2x4) ApproxFuncEqual(m2 Mat2x4, eq func(float64, float64) bool) bool {
@@ -936,7 +936,7 @@ func (m1 Mat3x2) ApproxEqualThreshold(m2 Mat3x2, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat3x2) ApproxFuncEqual(m2 Mat3x2, eq func(float64, float64) bool) bool {
@@ -1229,7 +1229,7 @@ func (m1 Mat3) ApproxEqualThreshold(m2 Mat3, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat3) ApproxFuncEqual(m2 Mat3, eq func(float64, float64) bool) bool {
@@ -1463,7 +1463,7 @@ func (m1 Mat3x4) ApproxEqualThreshold(m2 Mat3x4, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat3x4) ApproxFuncEqual(m2 Mat3x4, eq func(float64, float64) bool) bool {
@@ -1701,7 +1701,7 @@ func (m1 Mat4x2) ApproxEqualThreshold(m2 Mat4x2, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat4x2) ApproxFuncEqual(m2 Mat4x2, eq func(float64, float64) bool) bool {
@@ -1939,7 +1939,7 @@ func (m1 Mat4x3) ApproxEqualThreshold(m2 Mat4x3, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat4x3) ApproxFuncEqual(m2 Mat4x3, eq func(float64, float64) bool) bool {
@@ -2249,7 +2249,7 @@ func (m1 Mat4) ApproxEqualThreshold(m2 Mat4, threshold float64) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat4) ApproxFuncEqual(m2 Mat4, eq func(float64, float64) bool) bool {

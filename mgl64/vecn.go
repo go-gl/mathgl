@@ -51,7 +51,7 @@ func NewVecN(n int) *VecN {
 	}
 }
 
-// Returns the raw slice backing the VecN
+// Raw returns the raw slice backing the VecN
 //
 // This may be sent back to the memory pool at any time
 // and you aren't advised to rely on this value
@@ -59,7 +59,7 @@ func (vn VecN) Raw() []float64 {
 	return vn.vec
 }
 
-// Gets the element at index i from the vector.
+// Get gets the element at index i from the vector.
 // This does not bounds check, and will panic if i is
 // out of range.
 func (vn VecN) Get(i int) float64 {
@@ -115,14 +115,14 @@ func (vn *VecN) SetBackingSlice(newSlice []float64) {
 	vn.vec = newSlice
 }
 
-// Return the len of the vector's underlying slice.
+// Size returns the len of the vector's underlying slice.
 // This is not titled Len because it conflicts the package's
 // convention of calling the Norm the Len.
 func (vn *VecN) Size() int {
 	return len(vn.vec)
 }
 
-// Returns the cap of the vector's underlying slice.
+// Cap returns the cap of the vector's underlying slice.
 func (vn *VecN) Cap() int {
 	return cap(vn.vec)
 }
@@ -136,7 +136,7 @@ func (vn *VecN) Zero(n int) {
 	}
 }
 
-// Adds vn and addend, storing the result in dst.
+// Add adds vn and addend, storing the result in dst.
 // If dst does not have sufficient size it will be resized
 // Dst may be one of the other arguments. If dst is nil, it will be allocated.
 // The value returned is dst, for easier method chaining
@@ -178,7 +178,7 @@ func (vn *VecN) Sub(dst *VecN, addend *VecN) *VecN {
 	return dst
 }
 
-// Takes the binary cross product of vn and other, and stores it in dst.
+// Cross takes the binary cross product of vn and other, and stores it in dst.
 // If either vn or other are not of size 3 this function will panic
 //
 // If dst is not of sufficient size, or is nil, a new slice is allocated.

@@ -109,7 +109,7 @@ func ClampFunc(low, high float64) func(float64) float64 {
 /* The IsClamped functions use strict equality (meaning: not the FloatEqual function)
 there shouldn't be any major issues with this since clamp is often used to fix minor errors*/
 
-// Checks if a is clamped between low and high as if
+// IsClamped checks if a is clamped between low and high as if
 // Clamp(a, low, high) had been called.
 //
 // In most cases it's probably better to just call Clamp
