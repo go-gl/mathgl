@@ -9,16 +9,19 @@ import (
 	"github.com/go-gl/mathgl/mgl64"
 )
 
-// A transform stack is a linear fully-persistent data structure of matrix multiplications
-// Each push to a TransformStack multiplies the current top of the stack with thew new matrix
-// and appends it to the top. Each pop undoes the previous multiplication.
+// TransformStack is a linear fully-persistent data structure of matrix
+// multiplications Each push to a TransformStack multiplies the current top of
+// the stack with thew new matrix and appends it to the top. Each pop undoes the
+// previous multiplication.
 //
-// This allows arbitrary unwinding of transformations, at the cost of a lot of memory. A notable feature
-// is the reseed and rebase, which allow invertible transformations to be rewritten as if a different transform
-// had been made in the middle.
+// This allows arbitrary unwinding of transformations, at the cost of a lot of
+// memory. A notable feature is the reseed and rebase, which allow invertible
+// transformations to be rewritten as if a different transform had been made in
+// the middle.
 type TransformStack []mgl64.Mat4
 
-// Returns a matrix stack where the top element is the identity.
+// NewTransformStack returns a matrix stack where the top element is the
+// identity.
 func NewTransformStack() *TransformStack {
 	ms := make(TransformStack, 1)
 	ms[0] = mgl64.Ident4()
@@ -26,15 +29,15 @@ func NewTransformStack() *TransformStack {
 	return &ms
 }
 
-// Multiplies the current top matrix by m, and pushes the result
-// on the stack.
+// Push multiplies the current top matrix by m, and pushes the result on the
+// stack.
 func (ms *TransformStack) Push(m mgl64.Mat4) {
 	prev := (*ms)[len(*ms)-1]
 	(*ms) = append(*ms, prev.Mul4(m))
 }
 
-// Pops the current matrix off the top of the stack and returns it.
-// If the matrix stack only has one element left, this will return an error.
+// Pop the current matrix off the top of the stack and returns it. If the matrix
+// stack only has one element left, this will return an error.
 func (ms *TransformStack) Pop() (mgl64.Mat4, error) {
 	if len(*ms) == 1 {
 		return mgl64.Mat4{}, errors.New("attempt to pop last element of the stack; Matrix Stack must have at least one element")
@@ -47,20 +50,21 @@ func (ms *TransformStack) Pop() (mgl64.Mat4, error) {
 	return retVal, nil
 }
 
-// Returns the value of the current top element of the stack, without
+// Peek returns the value of the current top element of the stack, without
 // removing it.
 func (ms *TransformStack) Peek() mgl64.Mat4 {
 	return (*ms)[len(*ms)-1]
 }
 
-// Returns the size of the matrix stack. This value will never be less
+// Len returns the size of the matrix stack. This value will never be less
 // than 1.
 func (ms *TransformStack) Len() int {
 	return len(*ms)
 }
 
-// This cuts down the matrix as if Pop had been called n times. If n would
-// bring the matrix down below 1 element, this does nothing and returns an error.
+// Unwind cuts down the matrix as if Pop had been called n times. If n would
+// bring the matrix down below 1 element, this does nothing and returns an
+// error.
 func (ms *TransformStack) Unwind(n int) error {
 	if n > len(*ms)-1 {
 		return errors.New("Cannot unwind a matrix to below 1 value")
@@ -70,9 +74,9 @@ func (ms *TransformStack) Unwind(n int) error {
 	return nil
 }
 
-// Copy will create a new "branch" of the current matrix stack,
-// the copy will contain all elements of the current stack in a new stack. Changes to
-// one will never affect the other.
+// Copy will create a new "branch" of the current matrix stack, the copy will
+// contain all elements of the current stack in a new stack. Changes to one will
+// never affect the other.
 func (ms *TransformStack) Copy() *TransformStack {
 	v := append(TransformStack{}, (*ms)...)
 	return &v

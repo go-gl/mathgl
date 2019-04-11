@@ -11,7 +11,7 @@ import (
 	"math"
 )
 
-// Generates a circle centered at (0,0) with a given radius.
+// Circle generates a circle centered at (0,0) with a given radius.
 // The radii are assumed to be in GL's coordinate sizing.
 //
 // Technically this draws an ellipse with two axes that match with the X and Y axes, the reason it has a radiusX and radiusY is because GL's coordinate system
@@ -45,7 +45,7 @@ func Circle(radiusX, radiusY float64, numSlices int) []Vec2 {
 	return circlePoints
 }
 
-// Generates a 2-triangle rectangle for use with GL_TRIANGLES. The width and height should use GL's proportions (that is, where a width of 1.0
+// Rect generates a 2-triangle rectangle for use with GL_TRIANGLES. The width and height should use GL's proportions (that is, where a width of 1.0
 // is equivalent to half of the width of the render target); however, the y-coordinates grow downwards, not upwards. That is, it
 // assumes you want the origin of the rectangle with the top-left corner at (0.0,0.0).
 //
@@ -64,6 +64,7 @@ func Rect(width, height float64) []Vec2 {
 	}
 }
 
+// QuadraticBezierCurve2D interpolates the point t on the given bezier curve.
 func QuadraticBezierCurve2D(t float64, cPoint1, cPoint2, cPoint3 Vec2) Vec2 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
@@ -72,6 +73,7 @@ func QuadraticBezierCurve2D(t float64, cPoint1, cPoint2, cPoint3 Vec2) Vec2 {
 	return cPoint1.Mul((1.0 - t) * (1.0 - t)).Add(cPoint2.Mul(2 * (1 - t) * t)).Add(cPoint3.Mul(t * t))
 }
 
+// QuadraticBezierCurve3D interpolates the point t on the given bezier curve.
 func QuadraticBezierCurve3D(t float64, cPoint1, cPoint2, cPoint3 Vec3) Vec3 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
@@ -80,6 +82,7 @@ func QuadraticBezierCurve3D(t float64, cPoint1, cPoint2, cPoint3 Vec3) Vec3 {
 	return cPoint1.Mul((1.0 - t) * (1.0 - t)).Add(cPoint2.Mul(2 * (1 - t) * t)).Add(cPoint3.Mul(t * t))
 }
 
+// CubicBezierCurve2D interpolates the point t on the given bezier curve.
 func CubicBezierCurve2D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec2) Vec2 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
@@ -88,6 +91,7 @@ func CubicBezierCurve2D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec2) Vec2
 	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
 }
 
+// CubicBezierCurve3D interpolates the point t on the given bezier curve.
 func CubicBezierCurve3D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec3 {
 	if t < 0.0 || t > 1.0 {
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
@@ -96,7 +100,7 @@ func CubicBezierCurve3D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec3
 	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
 }
 
-// Returns the point at point t along an n-control point Bezier curve
+// BezierCurve2D returns the point at point t along an n-control point Bezier curve
 //
 // t must be in the range 0.0 and 1.0 or this function will panic. Consider [0.0,1.0] to be similar to a percentage,
 // 0.0 is first control point, and the point at 1.0 is the last control point. Any point in between is how far along the path you are between 0 and 1.
@@ -118,7 +122,7 @@ func BezierCurve2D(t float64, cPoints []Vec2) Vec2 {
 	return point
 }
 
-// Same as the 2D version, except the line is in 3D space
+// BezierCurve3D same as the 2D version, except the line is in 3D space
 func BezierCurve3D(t float64, cPoints []Vec3) Vec3 {
 	if t < 0.0 || t > 1.0 {
 		panic("Input to bezier has t not in range [0,1]. If you think this is a precision error, use mathgl.Clamp[f|d] before calling this function")
@@ -134,13 +138,16 @@ func BezierCurve3D(t float64, cPoints []Vec3) Vec3 {
 	return point
 }
 
-// Generates a bezier curve with controlPoints cPoints. The numPoints argument
-// determines how many "samples" it makes along the line. For instance, a
-// call to this with numPoints 2 will have exactly two points: the start and end points
-// For any points above 2 it will divide it into numPoints-1 chunks (which means it will generate numPoints-2 vertices other than the beginning and end).
-// So for 3 points it will divide it in half, 4 points into thirds, and so on.
+// MakeBezierCurve2D generates a bezier curve with controlPoints cPoints. The
+// numPoints argument determines how many "samples" it makes along the line. For
+// instance, a call to this with numPoints 2 will have exactly two points: the
+// start and end points For any points above 2 it will divide it into
+// numPoints-1 chunks (which means it will generate numPoints-2 vertices other
+// than the beginning and end). So for 3 points it will divide it in half, 4
+// points into thirds, and so on.
 //
-// This is likely to get rather expensive for anything over perhaps a cubic curve.
+// This is likely to get rather expensive for anything over perhaps a cubic
+// curve.
 func MakeBezierCurve2D(numPoints int, cPoints []Vec2) (line []Vec2) {
 	line = make([]Vec2, numPoints)
 	if numPoints == 0 {
@@ -163,7 +170,7 @@ func MakeBezierCurve2D(numPoints int, cPoints []Vec2) (line []Vec2) {
 	return
 }
 
-// Same as the 2D version, except with the line in 3D space
+// MakeBezierCurve3D same as the 2D version, except with the line in 3D space.
 func MakeBezierCurve3D(numPoints int, cPoints []Vec3) (line []Vec3) {
 	line = make([]Vec3, numPoints)
 	if numPoints == 0 {
@@ -186,11 +193,12 @@ func MakeBezierCurve3D(numPoints int, cPoints []Vec3) (line []Vec3) {
 	return
 }
 
-// Creates a 2-dimensional Bezier surface of arbitrary degree in 3D Space
-// Like the curve functions, if u or v are not in the range [0.0,1.0] the function will panic, use Clamp[f|d]
-// to ensure it is correct.
+// BezierSurface creates a 2-dimensional Bezier surface of arbitrary degree in
+// 3D Space Like the curve functions, if u or v are not in the range [0.0,1.0]
+// the function will panic, use Clamp[f|d] to ensure it is correct.
 //
-// The control point matrix must not be jagged, or this will end up panicking from an index out of bounds exception
+// The control point matrix must not be jagged, or this will end up panicking
+// from an index out of bounds exception
 func BezierSurface(u, v float64, cPoints [][]Vec3) Vec3 {
 	if u < 0.0 || u > 1.0 || v < 1.0 || v > 1.0 {
 		panic("u or v not in range [0.0,1.0] in BezierSurface")
@@ -214,8 +222,9 @@ func BezierSurface(u, v float64, cPoints [][]Vec3) Vec3 {
 	return point
 }
 
-// Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
-// though the spline may be disjoint. The bezier curves are not required to be in any particular order.
+// BezierSplineInterpolate2D does interpolation over a spline of several bezier
+// curves. Each bezier curve must have a finite range, though the spline may be
+// disjoint. The bezier curves are not required to be in any particular order.
 //
 // If t is out of the range of all given curves, this function will panic
 func BezierSplineInterpolate2D(t float64, ranges [][2]float64, cPoints [][]Vec2) Vec2 {
@@ -232,8 +241,9 @@ func BezierSplineInterpolate2D(t float64, ranges [][2]float64, cPoints [][]Vec2)
 	panic("t is out of the range of all bezier curves in this spline")
 }
 
-// Does interpolation over a spline of several bezier curves. Each bezier curve must have a finite range,
-// though the spline may be disjoint. The bezier curves are not required to be in any particular order.
+// BezierSplineInterpolate3D does interpolation over a spline of several bezier
+// curves. Each bezier curve must have a finite range, though the spline may be
+// disjoint. The bezier curves are not required to be in any particular order.
 //
 // If t is out of the range of all given curves, this function will panic
 func BezierSplineInterpolate3D(t float64, ranges [][2]float64, cPoints [][]Vec3) Vec3 {
@@ -250,7 +260,7 @@ func BezierSplineInterpolate3D(t float64, ranges [][2]float64, cPoints [][]Vec3)
 	panic("t is out of the range of all bezier curves in this spline")
 }
 
-// Reticulates ALL the Splines
+// ReticulateSplines reticulates ALL the Splines.
 //
 // For the overly serious: the function is just for fun. It does nothing except prints a Maxis reference. Technically you could "reticulate splines"
 // by joining a bunch of splines together, but that ruins the joke.
@@ -262,7 +272,7 @@ func ReticulateSplines(ranges [][][2]float64, cPoints [][][]Vec2, withLlamas boo
 	}
 }
 
-// Transform from pixel coordinates to GL coordinates.
+// ScreenToGLCoords transforms from pixel coordinates to GL coordinates.
 //
 // This assumes that your pixel coordinate system considers its origin to be in the top left corner (GL's is in the bottom left).
 // The coordinates x and y may be out of the range [0,screenWidth-1] and [0,screeneHeight-1].
@@ -278,7 +288,7 @@ func ScreenToGLCoords(x, y int, screenWidth, screenHeight int) (xOut, yOut float
 	return
 }
 
-// Transform from GL's proportional system to pixel coordinates.
+// GLToScreenCoords transforms from GL's proportional system to pixel coordinates.
 //
 // Assumes the pixel coordinate system has its origin in the top left corner. (GL's is in the bottom left)
 //
