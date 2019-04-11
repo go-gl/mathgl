@@ -10,7 +10,7 @@ import (
 	"math"
 )
 
-// An arbitrary mxn matrix backed by a slice of floats.
+// MatMxN is an arbitrary mxn matrix backed by a slice of floats.
 //
 // This is emphatically not recommended for hardcore n-dimensional
 // linear algebra. For that purpose I recommend github.com/gonum/matrix or
@@ -29,7 +29,7 @@ type MatMxN struct {
 	dat  []float64
 }
 
-// Creates a matrix backed by a new slice of size m*n
+// NewMatrix creates a matrix backed by a new slice of size m*n
 func NewMatrix(m, n int) (mat *MatMxN) {
 	if shouldPool {
 		return &MatMxN{m: m, n: n, dat: grabFromPool(m * n)}
@@ -38,16 +38,15 @@ func NewMatrix(m, n int) (mat *MatMxN) {
 	}
 }
 
-// Returns a matrix with data specified by the data in src
+// NewMatrixFromData returns a matrix with data specified by the data in src
 //
 // For instance, to create a 3x3 MatMN from a Mat3
 //
 //    m1 := mgl32.Rotate3DX(3.14159)
 //    mat := mgl32.NewBackedMatrix(m1[:],3,3)
 //
-// will create an MN matrix matching the data in the original
-// rotation matrix. This matrix is NOT backed by the initial slice;
-// it's a copy of the data
+// will create an MN matrix matching the data in the original rotation matrix.
+// This matrix is NOT backed by the initial slice; it's a copy of the data
 //
 // If m*n > cap(src), this function will panic.
 func NewMatrixFromData(src []float64, m, n int) *MatMxN {
@@ -62,7 +61,7 @@ func NewMatrixFromData(src []float64, m, n int) *MatMxN {
 	return &MatMxN{m: m, n: n, dat: internal}
 }
 
-// Copies src into dst. This Reshapes dst
+// CopyMatMN copies src into dst. This Reshapes dst
 // to the same size as src.
 //
 // If dst or src is nil, this is a no-op
@@ -74,7 +73,7 @@ func CopyMatMN(dst, src *MatMxN) {
 	copy(dst.dat, src.dat)
 }
 
-// Stores the NxN identity matrix in dst, reallocating as necessary.
+// IdentN stores the NxN identity matrix in dst, reallocating as necessary.
 func IdentN(dst *MatMxN, n int) *MatMxN {
 	dst = dst.Reshape(n, n)
 
@@ -91,11 +90,12 @@ func IdentN(dst *MatMxN, n int) *MatMxN {
 	return dst
 }
 
-// Creates an NxN diagonal matrix seeded by the diagonal vector
-// diag. Meaning: for all entries, where i==j, dst.At(i,j) = diag[i]. Otherwise
+// DiagN creates an NxN diagonal matrix seeded by the diagonal vector diag.
+// Meaning: for all entries, where i==j, dst.At(i,j) = diag[i]. Otherwise
 // dst.At(i,j) = 0
 //
-// This reshapes dst to the correct size, returning/grabbing from the memory pool as necessary.
+// This reshapes dst to the correct size, returning/grabbing from the memory
+// pool as necessary.
 func DiagN(dst *MatMxN, diag *VecN) *MatMxN {
 	dst = dst.Reshape(len(diag.vec), len(diag.vec))
 	n := len(diag.vec)
@@ -113,7 +113,7 @@ func DiagN(dst *MatMxN, diag *VecN) *MatMxN {
 	return dst
 }
 
-// Reshapes the matrix to m by n and zeroes out all
+// Zero reshapes the matrix to m by n and zeroes out all
 // elements.
 func (mat *MatMxN) Zero(m, n int) {
 	if mat == nil {
@@ -126,7 +126,7 @@ func (mat *MatMxN) Zero(m, n int) {
 	}
 }
 
-// Returns the underlying matrix slice to the memory pool
+// destroy returns the underlying matrix slice to the memory pool
 func (mat *MatMxN) destroy() {
 	if mat == nil {
 		return
@@ -139,7 +139,7 @@ func (mat *MatMxN) destroy() {
 	mat.dat = nil
 }
 
-// Reshapes the matrix to the desired dimensions.
+// Reshape reshapes the matrix to the desired dimensions.
 // If the overall size of the new matrix (m*n) is bigger
 // than the current size, the underlying slice will
 // be grown, sending the current slice to the memory pool
@@ -171,12 +171,13 @@ func (mat *MatMxN) Reshape(m, n int) *MatMxN {
 	return mat
 }
 
-// Infers an MxN matrix from a constant matrix from this package. For instance,
-// a Mat2x3 inferred with this function will work just like NewMatrixFromData(m[:],2,3)
-// where m is the Mat2x3. This uses a type switch.
+// InferMatrix infers an MxN matrix from a constant matrix from this package.
+// For instance, a Mat2x3 inferred with this function will work just like
+// NewMatrixFromData(m[:],2,3) where m is the Mat2x3. This uses a type switch.
 //
-// I personally recommend using NewMatrixFromData, because it avoids a potentially costly type switch.
-// However, this is also more robust and less error prone if you change the size of your matrix somewhere.
+// I personally recommend using NewMatrixFromData, because it avoids a
+// potentially costly type switch. However, this is also more robust and less
+// error prone if you change the size of your matrix somewhere.
 //
 // If the value passed in is not recognized, it returns an InferMatrixError.
 func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
@@ -204,8 +205,8 @@ func (mat *MatMxN) InferMatrix(m interface{}) (*MatMxN, error) {
 	}
 }
 
-// Returns the trace of a square matrix (sum of all diagonal elements). If the matrix
-// is nil, or not square, the result will be NaN.
+// Trace returns the trace of a square matrix (sum of all diagonal elements). If
+// the matrix is nil, or not square, the result will be NaN.
 func (mat *MatMxN) Trace() float64 {
 	if mat == nil || mat.m != mat.n {
 		return float64(math.NaN())
@@ -219,7 +220,7 @@ func (mat *MatMxN) Trace() float64 {
 	return out
 }
 
-// Takes the transpose of mat and puts it in dst.
+// Transpose takes the transpose of mat and puts it in dst.
 //
 // If dst is not of the correct dimensions, it will be Reshaped,
 // if dst and mat are the same, a temporary matrix of the correct size will
@@ -261,7 +262,7 @@ func (mat *MatMxN) Transpose(dst *MatMxN) (t *MatMxN) {
 	return dst
 }
 
-// Returns the raw slice backing this matrix
+// Raw returns the raw slice backing this matrix
 func (mat *MatMxN) Raw() []float64 {
 	if mat == nil {
 		return nil
@@ -270,23 +271,23 @@ func (mat *MatMxN) Raw() []float64 {
 	return mat.dat
 }
 
-// Returns the number of rows in this matrix
+// NumRows returns the number of rows in this matrix
 func (mat *MatMxN) NumRows() int {
 	return mat.m
 }
 
-// Returns the number of columns in this matrix
+// NumCols returns the number of columns in this matrix
 func (mat *MatMxN) NumCols() int {
 	return mat.n
 }
 
-// Returns the number of rows and columns in this matrix
+// NumRowCols returns the number of rows and columns in this matrix
 // as a single operation
 func (mat *MatMxN) NumRowCols() (rows, cols int) {
 	return mat.m, mat.n
 }
 
-// Returns the element at the given row and column.
+// At returns the element at the given row and column.
 // This is garbage in/garbage out and does no bounds
 // checking. If the computation happens to lead to an invalid
 // element, it will be returned; or it may panic.
@@ -294,7 +295,7 @@ func (mat *MatMxN) At(row, col int) float64 {
 	return mat.dat[col*mat.m+row]
 }
 
-// Sets the element at the given row and column.
+// Set sets the element at the given row and column.
 // This is garbage in/garbage out and does no bounds
 // checking. If the computation happens to lead to an invalid
 // element, it will be set; or it may panic.
@@ -302,6 +303,7 @@ func (mat *MatMxN) Set(row, col int, val float64) {
 	mat.dat[col*mat.m+row] = val
 }
 
+// Add is the arithemtic + operator defined on a MatMxN.
 func (mat *MatMxN) Add(dst *MatMxN, addend *MatMxN) *MatMxN {
 	if mat == nil || addend == nil || mat.m != addend.m || mat.n != addend.n {
 		return nil
@@ -318,6 +320,7 @@ func (mat *MatMxN) Add(dst *MatMxN, addend *MatMxN) *MatMxN {
 	return dst
 }
 
+// Sub is the arithemtic - operator defined on a MatMxN.
 func (mat *MatMxN) Sub(dst *MatMxN, subtrahend *MatMxN) *MatMxN {
 	if mat == nil || subtrahend == nil || mat.m != subtrahend.m || mat.n != subtrahend.n {
 		return nil
@@ -334,13 +337,14 @@ func (mat *MatMxN) Sub(dst *MatMxN, subtrahend *MatMxN) *MatMxN {
 	return dst
 }
 
-// Performs matrix multiplication on MxN matrix mat and NxO matrix mul, storing the result in dst.
-// This returns dst, or nil if the operation is not able to be performed.
+// MulMxN performs matrix multiplication on MxN matrix mat and NxO matrix mul,
+// storing the result in dst. This returns dst, or nil if the operation is not
+// able to be performed.
 //
 // If mat == dst, or mul == dst a temporary matrix will be used.
 //
-// This uses the naive algorithm (though on smaller matrices,
-// this can actually be faster; about len(mat)+len(mul) < ~100)
+// This uses the naive algorithm (though on smaller matrices, this can actually
+// be faster; about len(mat)+len(mul) < ~100)
 func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 	if mat == nil || mul == nil || mat.n != mul.m {
 		return nil
@@ -379,7 +383,7 @@ func (mat *MatMxN) MulMxN(dst *MatMxN, mul *MatMxN) *MatMxN {
 	return dst
 }
 
-// Performs a scalar multiplication between mat and some constant c,
+// Mul performs a scalar multiplication between mat and some constant c,
 // storing the result in dst. Mat and dst can be equal. If dst is not the
 // correct size, a Reshape will occur.
 func (mat *MatMxN) Mul(dst *MatMxN, c float64) *MatMxN {
@@ -396,12 +400,12 @@ func (mat *MatMxN) Mul(dst *MatMxN, c float64) *MatMxN {
 	return dst
 }
 
-// Multiplies the matrix by a vector of size n. If mat or v is
-// nil, this returns nil. If the number of columns in mat does not match
-// the Size of v, this also returns nil.
+// MulNx1 multiplies the matrix by a vector of size n. If mat or v is nil, this
+// returns nil. If the number of columns in mat does not match the Size of v,
+// this also returns nil.
 //
-// Dst will be resized if it's not big enough. If dst == v; a temporary
-// vector will be allocated and returned via the realloc callback when complete.
+// Dst will be resized if it's not big enough. If dst == v; a temporary vector
+// will be allocated and returned via the realloc callback when complete.
 func (mat *MatMxN) MulNx1(dst, v *VecN) *VecN {
 	if mat == nil || v == nil || mat.n != len(v.vec) {
 		return nil
@@ -426,6 +430,8 @@ func (mat *MatMxN) MulNx1(dst, v *VecN) *VecN {
 	return dst
 }
 
+// ApproxEqual returns whether the two vectors are approximately equal (See
+// FloatEqual).
 func (mat *MatMxN) ApproxEqual(m2 *MatMxN) bool {
 	if mat == m2 {
 		return true
@@ -443,6 +449,8 @@ func (mat *MatMxN) ApproxEqual(m2 *MatMxN) bool {
 	return true
 }
 
+// ApproxEqualThreshold returns whether the two vectors are approximately equal
+// to within the given threshold given by "epsilon" (See ApproxEqualThreshold).
 func (mat *MatMxN) ApproxEqualThreshold(m2 *MatMxN, epsilon float64) bool {
 	if mat == m2 {
 		return true
@@ -460,6 +468,8 @@ func (mat *MatMxN) ApproxEqualThreshold(m2 *MatMxN, epsilon float64) bool {
 	return true
 }
 
+// ApproxEqualFunc returns whether the two vectors are approximately equal,
+// given a function which compares two scalar elements.
 func (mat *MatMxN) ApproxEqualFunc(m2 *MatMxN, comp func(float64, float64) bool) bool {
 	if mat == m2 {
 		return true
@@ -477,18 +487,25 @@ func (mat *MatMxN) ApproxEqualFunc(m2 *MatMxN, comp func(float64, float64) bool)
 	return true
 }
 
+// InferMatrixError may be returned by InferMatrix.
+//
+// Make sure you're using a constant matrix such as Mat3 from within the same
+// package (meaning: mgl32.MatMxN can't handle a mgl64.Mat2x3).
 type InferMatrixError struct{}
 
 func (me InferMatrixError) Error() string {
 	return "could not infer matrix. Make sure you're using a constant matrix such as Mat3 from within the same package (meaning: mgl32.MatMxN can't handle a mgl64.Mat2x3)."
 }
 
+// RectangularMatrixError is returned when a rectangular matrix was expected but
+// not given.
 type RectangularMatrixError struct{}
 
 func (mse RectangularMatrixError) Error() string {
 	return "the matrix was the wrong shape, needed a square matrix."
 }
 
+// NilMatrixError is returned when an operand to a function was unexpectedly 'nil'.
 type NilMatrixError struct{}
 
 func (me NilMatrixError) Error() string {

@@ -78,12 +78,12 @@ func (m Mat4) Mat3() Mat3 {
 	)
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat2) SetCol(col int, v Vec2) {
 	m[col*2+0], m[col*2+1] = v[0], v[1]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat2) SetRow(row int, v Vec2) {
 	m[row+0], m[row+2] = v[0], v[1]
 }
@@ -210,7 +210,7 @@ func (m1 Mat2) Transpose() Mat2 {
 	return Mat2{m1[0], m1[2], m1[1], m1[3]}
 }
 
-// The determinant of a matrix is a measure of a square matrix's
+// Det returns the determinant of a matrix. It is a measure of a square matrix's
 // singularity and invertability, among other things. In this library, the
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
@@ -263,7 +263,7 @@ func (m1 Mat2) ApproxEqualThreshold(m2 Mat2, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat2) ApproxFuncEqual(m2 Mat2, eq func(float32, float32) bool) bool {
@@ -357,12 +357,12 @@ func (m Mat2) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat2x3) SetCol(col int, v Vec2) {
 	m[col*2+0], m[col*2+1] = v[0], v[1]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat2x3) SetRow(row int, v Vec3) {
 	m[row+0], m[row+2], m[row+4] = v[0], v[1], v[2]
 }
@@ -487,7 +487,7 @@ func (m1 Mat2x3) ApproxEqualThreshold(m2 Mat2x3, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat2x3) ApproxFuncEqual(m2 Mat2x3, eq func(float32, float32) bool) bool {
@@ -575,12 +575,12 @@ func (m Mat2x3) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat2x4) SetCol(col int, v Vec2) {
 	m[col*2+0], m[col*2+1] = v[0], v[1]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat2x4) SetRow(row int, v Vec4) {
 	m[row+0], m[row+2], m[row+4], m[row+6] = v[0], v[1], v[2], v[3]
 }
@@ -705,7 +705,7 @@ func (m1 Mat2x4) ApproxEqualThreshold(m2 Mat2x4, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat2x4) ApproxFuncEqual(m2 Mat2x4, eq func(float32, float32) bool) bool {
@@ -793,12 +793,12 @@ func (m Mat2x4) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat3x2) SetCol(col int, v Vec3) {
 	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat3x2) SetRow(row int, v Vec2) {
 	m[row+0], m[row+3] = v[0], v[1]
 }
@@ -933,7 +933,7 @@ func (m1 Mat3x2) ApproxEqualThreshold(m2 Mat3x2, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat3x2) ApproxFuncEqual(m2 Mat3x2, eq func(float32, float32) bool) bool {
@@ -1021,12 +1021,12 @@ func (m Mat3x2) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat3) SetCol(col int, v Vec3) {
 	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat3) SetRow(row int, v Vec3) {
 	m[row+0], m[row+3], m[row+6] = v[0], v[1], v[2]
 }
@@ -1163,7 +1163,7 @@ func (m1 Mat3) Transpose() Mat3 {
 	return Mat3{m1[0], m1[3], m1[6], m1[1], m1[4], m1[7], m1[2], m1[5], m1[8]}
 }
 
-// The determinant of a matrix is a measure of a square matrix's
+// Det returns the determinant of a matrix. It is a measure of a square matrix's
 // singularity and invertability, among other things. In this library, the
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
@@ -1226,7 +1226,7 @@ func (m1 Mat3) ApproxEqualThreshold(m2 Mat3, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat3) ApproxFuncEqual(m2 Mat3, eq func(float32, float32) bool) bool {
@@ -1320,12 +1320,12 @@ func (m Mat3) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat3x4) SetCol(col int, v Vec3) {
 	m[col*3+0], m[col*3+1], m[col*3+2] = v[0], v[1], v[2]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat3x4) SetRow(row int, v Vec4) {
 	m[row+0], m[row+3], m[row+6], m[row+9] = v[0], v[1], v[2], v[3]
 }
@@ -1460,7 +1460,7 @@ func (m1 Mat3x4) ApproxEqualThreshold(m2 Mat3x4, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat3x4) ApproxFuncEqual(m2 Mat3x4, eq func(float32, float32) bool) bool {
@@ -1548,12 +1548,12 @@ func (m Mat3x4) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat4x2) SetCol(col int, v Vec4) {
 	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat4x2) SetRow(row int, v Vec2) {
 	m[row+0], m[row+4] = v[0], v[1]
 }
@@ -1698,7 +1698,7 @@ func (m1 Mat4x2) ApproxEqualThreshold(m2 Mat4x2, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat4x2) ApproxFuncEqual(m2 Mat4x2, eq func(float32, float32) bool) bool {
@@ -1786,12 +1786,12 @@ func (m Mat4x2) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat4x3) SetCol(col int, v Vec4) {
 	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat4x3) SetRow(row int, v Vec3) {
 	m[row+0], m[row+4], m[row+8] = v[0], v[1], v[2]
 }
@@ -1936,7 +1936,7 @@ func (m1 Mat4x3) ApproxEqualThreshold(m2 Mat4x3, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat4x3) ApproxFuncEqual(m2 Mat4x3, eq func(float32, float32) bool) bool {
@@ -2024,12 +2024,12 @@ func (m Mat4x3) String() string {
 	return buf.String()
 }
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat4) SetCol(col int, v Vec4) {
 	m[col*4+0], m[col*4+1], m[col*4+2], m[col*4+3] = v[0], v[1], v[2], v[3]
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *Mat4) SetRow(row int, v Vec4) {
 	m[row+0], m[row+4], m[row+8], m[row+12] = v[0], v[1], v[2], v[3]
 }
@@ -2176,7 +2176,7 @@ func (m1 Mat4) Transpose() Mat4 {
 	return Mat4{m1[0], m1[4], m1[8], m1[12], m1[1], m1[5], m1[9], m1[13], m1[2], m1[6], m1[10], m1[14], m1[3], m1[7], m1[11], m1[15]}
 }
 
-// The determinant of a matrix is a measure of a square matrix's
+// Det returns the determinant of a matrix. It is a measure of a square matrix's
 // singularity and invertability, among other things. In this library, the
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
@@ -2246,7 +2246,7 @@ func (m1 Mat4) ApproxEqualThreshold(m2 Mat4, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 Mat4) ApproxFuncEqual(m2 Mat4, eq func(float32, float32) bool) bool {
