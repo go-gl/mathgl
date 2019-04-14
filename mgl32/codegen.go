@@ -132,7 +132,7 @@ func genMgl64(destPath string) {
 
 		comment := fmt.Sprintf(
 			"// This file is generated from mgl32/%s; DO NOT EDIT\n\n",
-			source)
+			filepath.ToSlash(source))
 		if _, err = out.WriteString(comment); err != nil {
 			return err
 		}
