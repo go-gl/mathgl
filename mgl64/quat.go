@@ -10,10 +10,12 @@ import (
 	"math"
 )
 
-// A rotation order is the order in which
-// rotations will be transformed for the purposes of AnglesToQuat
+// RotationOrder is the order in which rotations will be transformed for the
+// purposes of AnglesToQuat.
 type RotationOrder int
 
+// The RotationOrder constants represent a series of rotations along the given
+// axes for the use of AnglesToQuat.
 const (
 	XYX RotationOrder = iota
 	XYZ
@@ -29,20 +31,20 @@ const (
 	ZXY
 )
 
-// A Quaternion is an extension of the imaginary numbers; there's all sorts of
-// interesting theory behind it. In 3D graphics we mostly use it as a cheap way of
-// representing rotation since quaternions are cheaper to multiply by, and easier to
-// interpolate than matrices.
+// Quat represents a Quaternion, which is an extension of the imaginary numbers;
+// there's all sorts of interesting theory behind it. In 3D graphics we mostly
+// use it as a cheap way of representing rotation since quaternions are cheaper
+// to multiply by, and easier to interpolate than matrices.
 //
-// A Quaternion has two parts: W, the so-called scalar component,
-// and "V", the vector component. The vector component is considered to
-// be the part in 3D space, while W (loosely interpreted) is its 4D coordinate.
+// A Quaternion has two parts: W, the so-called scalar component, and "V", the
+// vector component. The vector component is considered to be the part in 3D
+// space, while W (loosely interpreted) is its 4D coordinate.
 type Quat struct {
 	W float64
 	V Vec3
 }
 
-// The quaternion identity: W=1; V=(0,0,0).
+// QuatIdent returns the quaternion identity: W=1; V=(0,0,0).
 //
 // As with all identities, multiplying any quaternion by this will yield the same
 // quaternion you started with.
@@ -50,7 +52,7 @@ func QuatIdent() Quat {
 	return Quat{1., Vec3{0, 0, 0}}
 }
 
-// Creates an angle from an axis and an angle relative to that axis.
+// QuatRotate creates an angle from an axis and an angle relative to that axis.
 //
 // This is cheaper than HomogRotate3D.
 func QuatRotate(angle float64, axis Vec3) Quat {
@@ -61,63 +63,63 @@ func QuatRotate(angle float64, axis Vec3) Quat {
 	return Quat{c, axis.Mul(s)}
 }
 
-// A convenient alias for q.V[0]
+// X is a convenient alias for q.V[0]
 func (q Quat) X() float64 {
 	return q.V[0]
 }
 
-// A convenient alias for q.V[1]
+// Y is a convenient alias for q.V[1]
 func (q Quat) Y() float64 {
 	return q.V[1]
 }
 
-// A convenient alias for q.V[2]
+// Z is a convenient alias for q.V[2]
 func (q Quat) Z() float64 {
 	return q.V[2]
 }
 
-// Adds two quaternions. It's no more complicated than
+// Add adds two quaternions. It's no more complicated than
 // adding their W and V components.
 func (q1 Quat) Add(q2 Quat) Quat {
 	return Quat{q1.W + q2.W, q1.V.Add(q2.V)}
 }
 
-// Subtracts two quaternions. It's no more complicated than
+// Sub subtracts two quaternions. It's no more complicated than
 // subtracting their W and V components.
 func (q1 Quat) Sub(q2 Quat) Quat {
 	return Quat{q1.W - q2.W, q1.V.Sub(q2.V)}
 }
 
-// Multiplies two quaternions. This can be seen as a rotation. Note that
+// Mul multiplies two quaternions. This can be seen as a rotation. Note that
 // Multiplication is NOT commutative, meaning q1.Mul(q2) does not necessarily
 // equal q2.Mul(q1).
 func (q1 Quat) Mul(q2 Quat) Quat {
 	return Quat{q1.W*q2.W - q1.V.Dot(q2.V), q1.V.Cross(q2.V).Add(q2.V.Mul(q1.W)).Add(q1.V.Mul(q2.W))}
 }
 
-// Scales every element of the quaternion by some constant factor.
+// Scale every element of the quaternion by some constant factor.
 func (q1 Quat) Scale(c float64) Quat {
 	return Quat{q1.W * c, Vec3{q1.V[0] * c, q1.V[1] * c, q1.V[2] * c}}
 }
 
-// Returns the conjugate of a quaternion. Equivalent to
-// Quat{q1.W, q1.V.Mul(-1)}
+// Conjugate returns the conjugate of a quaternion. Equivalent to
+// Quat{q1.W, q1.V.Mul(-1)}.
 func (q1 Quat) Conjugate() Quat {
 	return Quat{q1.W, q1.V.Mul(-1)}
 }
 
-// Returns the Length of the quaternion, also known as its Norm. This is the same thing as
-// the Len of a Vec4
+// Len gives the Length of the quaternion, also known as its Norm. This is the
+// same thing as the Len of a Vec4.
 func (q1 Quat) Len() float64 {
 	return float64(math.Sqrt(float64(q1.W*q1.W + q1.V[0]*q1.V[0] + q1.V[1]*q1.V[1] + q1.V[2]*q1.V[2])))
 }
 
-// Norm() is an alias for Len() since both are very common terms.
+// Norm is an alias for Len() since both are very common terms.
 func (q1 Quat) Norm() float64 {
 	return q1.Len()
 }
 
-// Normalizes the quaternion, returning its versor (unit quaternion).
+// Normalize the quaternion, returning its versor (unit quaternion).
 //
 // This is the same as normalizing it as a Vec4.
 func (q1 Quat) Normalize() Quat {
@@ -136,7 +138,7 @@ func (q1 Quat) Normalize() Quat {
 	return Quat{q1.W * 1 / length, q1.V.Mul(1 / length)}
 }
 
-// The inverse of a quaternion. The inverse is equivalent
+// Inverse of a quaternion. The inverse is equivalent
 // to the conjugate divided by the square of the length.
 //
 // This method computes the square norm by directly adding the sum
@@ -146,7 +148,7 @@ func (q1 Quat) Inverse() Quat {
 	return q1.Conjugate().Scale(1 / q1.Dot(q1))
 }
 
-// Rotates a vector by the rotation this quaternion represents.
+// Rotate a vector by the rotation this quaternion represents.
 // This will result in a 3D vector. Strictly speaking, this is
 // equivalent to q1.v.q* where the "."" is quaternion multiplication and v is interpreted
 // as a quaternion with W 0 and V v. In code:
@@ -161,7 +163,8 @@ func (q1 Quat) Rotate(v Vec3) Vec3 {
 	return v.Add(cross.Mul(2 * q1.W)).Add(q1.V.Mul(2).Cross(cross))
 }
 
-// Returns the homogeneous 3D rotation matrix corresponding to the quaternion.
+// Mat4 returns the homogeneous 3D rotation matrix corresponding to the
+// quaternion.
 func (q1 Quat) Mat4() Mat4 {
 	w, x, y, z := q1.W, q1.V[0], q1.V[1], q1.V[2]
 	return Mat4{
@@ -172,30 +175,30 @@ func (q1 Quat) Mat4() Mat4 {
 	}
 }
 
-// The dot product between two quaternions, equivalent to if this was a Vec4
+// Dot product between two quaternions, equivalent to if this was a Vec4.
 func (q1 Quat) Dot(q2 Quat) float64 {
 	return q1.W*q2.W + q1.V[0]*q2.V[0] + q1.V[1]*q2.V[1] + q1.V[2]*q2.V[2]
 }
 
-// Returns whether the quaternions are approximately equal, as if
+// ApproxEqual returns whether the quaternions are approximately equal, as if
 // FloatEqual was called on each matching element
 func (q1 Quat) ApproxEqual(q2 Quat) bool {
 	return FloatEqual(q1.W, q2.W) && q1.V.ApproxEqual(q2.V)
 }
 
-// Returns whether the quaternions are approximately equal with a given tolerence, as if
+// ApproxEqualThreshold returns whether the quaternions are approximately equal with a given tolerence, as if
 // FloatEqualThreshold was called on each matching element with the given epsilon
 func (q1 Quat) ApproxEqualThreshold(q2 Quat, epsilon float64) bool {
 	return FloatEqualThreshold(q1.W, q2.W, epsilon) && q1.V.ApproxEqualThreshold(q2.V, epsilon)
 }
 
-// Returns whether the quaternions are approximately equal using the given comparison function, as if
+// ApproxEqualFunc returns whether the quaternions are approximately equal using the given comparison function, as if
 // the function had been called on each individual element
 func (q1 Quat) ApproxEqualFunc(q2 Quat, f func(float64, float64) bool) bool {
 	return f(q1.W, q2.W) && q1.V.ApproxFuncEqual(q2.V, f)
 }
 
-// Returns whether the quaternions represents the same orientation
+// OrientationEqual returns whether the quaternions represents the same orientation
 //
 // Different values can represent the same orientation (q == -q) because quaternions avoid singularities
 // and discontinuities involved with rotation in 3 dimensions by adding extra dimensions
@@ -203,12 +206,12 @@ func (q1 Quat) OrientationEqual(q2 Quat) bool {
 	return q1.OrientationEqualThreshold(q2, Epsilon)
 }
 
-// Returns whether the quaternions represents the same orientation with a given tolerence
+// OrientationEqualThreshold returns whether the quaternions represents the same orientation with a given tolerence
 func (q1 Quat) OrientationEqualThreshold(q2 Quat, epsilon float64) bool {
 	return Abs(q1.Normalize().Dot(q2.Normalize())) > 1-epsilon
 }
 
-// Slerp is *S*pherical *L*inear Int*erp*olation, a method of interpolating
+// QuatSlerp is *S*pherical *L*inear Int*erp*olation, a method of interpolating
 // between two quaternions. This always takes the straightest path on the sphere between
 // the two quaternions, and maintains constant velocity.
 //
@@ -232,14 +235,14 @@ func QuatSlerp(q1, q2 Quat, amount float64) Quat {
 	return q1.Scale(c).Add(rel.Scale(s))
 }
 
-// *L*inear Int*erp*olation between two Quaternions, cheap and simple.
+// QuatLerp is a *L*inear Int*erp*olation between two Quaternions, cheap and simple.
 //
 // Not excessively useful, but uses can be found.
 func QuatLerp(q1, q2 Quat, amount float64) Quat {
 	return q1.Add(q2.Sub(q1).Scale(amount))
 }
 
-// *Normalized* *L*inear Int*erp*olation between two Quaternions. Cheaper than Slerp
+// QuatNlerp is a *Normalized* *L*inear Int*erp*olation between two Quaternions. Cheaper than Slerp
 // and usually just as good. This is literally Lerp with Normalize() called on it.
 //
 // Unlike Slerp, constant velocity isn't maintained, but it's much faster and
@@ -250,7 +253,7 @@ func QuatNlerp(q1, q2 Quat, amount float64) Quat {
 	return QuatLerp(q1, q2, amount).Normalize()
 }
 
-// Performs a rotation in the specified order. If the order is not
+// AnglesToQuat performs a rotation in the specified order. If the order is not
 // a valid RotationOrder, this function will panic
 //
 // The rotation "order" is more of an axis descriptor. For instance XZX would
