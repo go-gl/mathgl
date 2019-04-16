@@ -135,6 +135,11 @@ func (v1 Vec2) Len() float64 {
 
 }
 
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec2) LenSqr() float64 {
+	return v1[0]*v1[0] + v1[1]*v1[1]
+}
+
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
 // making this equivalent to v.Scale(1/v.Len()). If the len is 0.0,
 // this function will return an infinite value for all elements due
@@ -286,6 +291,11 @@ func (v1 Vec3) Len() float64 {
 
 	return float64(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])))
 
+}
+
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec3) LenSqr() float64 {
+	return v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2]
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
@@ -447,6 +457,11 @@ func (v1 Vec4) Len() float64 {
 
 	return float64(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3])))
 
+}
+
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec4) LenSqr() float64 {
+	return v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3]
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,

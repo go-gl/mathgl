@@ -139,6 +139,11 @@ func (v1 <<$type>>) Len() float32 {
 	<<end>>
 }
 
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 <<$type>>) LenSqr() float32 {
+	return <<repeat $m "v1[%d]*v1[%d]" "+">>
+}
+
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
 // making this equivalent to v.Scale(1/v.Len()). If the len is 0.0,
 // this function will return an infinite value for all elements due

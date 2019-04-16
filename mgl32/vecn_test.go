@@ -5,6 +5,7 @@
 package mgl32
 
 import (
+	"math"
 	"testing"
 )
 
@@ -119,5 +120,26 @@ func TestVecNOuterProd(t *testing.T) {
 
 	if !correctN.ApproxEqualThreshold(result, 1e-4) {
 		t.Errorf("VecN outer product is incorrect. Got: %v; Expected: %v", result, correctN)
+	}
+}
+
+func TestVecNLenSqr(t *testing.T) {
+	v1 := Vec3{3, -5, 9}
+	v2 := Vec4{10, 11, 3, -7}
+
+	v1n := NewVecNFromData(v1[:])
+	v2n := NewVecNFromData(v2[:])
+
+	tests := map[*VecN]float64{
+		nil:        math.NaN(),
+		NewVecN(0): 0,
+		v1n:        115,
+		v2n:        279,
+	}
+	for input, want := range tests {
+		result := input.LenSqr()
+		if float64(result) != want && (math.IsNaN(float64(result)) != math.IsNaN(want)) {
+			t.Errorf("VecN square length is incorred. Got: %v; Expected: %v", result, want)
+		}
 	}
 }
