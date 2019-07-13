@@ -113,6 +113,24 @@ func TestAnglesToQuatZYX(t *testing.T) {
 	}
 }
 
+func TestQuatToAngles(t *testing.T) {
+	t.Parallel()
+
+	a_x := float32(math.Pi / 16.0)
+	a_y := float32(math.Pi / 8.0)
+	a_z := float32(math.Pi / 4.0)
+	a1, a2, a3 := QuatToAngles(AnglesToQuat(a_x, a_y, a_z, XYZ), XYZ)
+	if !FloatEqualThreshold(a1, a_z, 1e-6) {
+		t.Errorf("Angle1 incorrect. Got: %f Expected: %f", a1, a_z)
+	}
+	if !FloatEqualThreshold(a2, a_y, 1e-6) {
+		t.Errorf("Angle1 incorrect. Got: %f Expected: %f", a2, a_y)
+	}
+	if !FloatEqualThreshold(a3, a_x, 1e-6) {
+		t.Errorf("Angle1 incorrect. Got: %f Expected: %f", a3, a_x)
+	}
+}
+
 func TestQuatMatRotateY(t *testing.T) {
 	t.Parallel()
 
