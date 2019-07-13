@@ -87,6 +87,12 @@ func (v1 Vec3) Cross(v2 Vec3) Vec3 {
 	return Vec3{v1[1]*v2[2] - v1[2]*v2[1], v1[2]*v2[0] - v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}
 }
 
+// Quat reinterprets this vector as a quaternion, with the individual elements
+// staying the same.
+func (v Vec4) Quat() Quat {
+	return Quat{v[3], Vec3{v[0], v[1], v[2]}}
+}
+
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
 // over every element of v1 and adding the corresponding element of v2 to it.
 func (v1 Vec2) Add(v2 Vec2) Vec2 {
