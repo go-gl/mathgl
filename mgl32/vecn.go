@@ -8,7 +8,7 @@ import (
 	"math"
 )
 
-// A vector of N elements backed by a slice
+// VecN represents a vector of N elements backed by a slice.
 //
 // As with MatMxN, this is not for hardcore linear algebra with large dimensions. Use github.com/gonum/matrix
 // or something like BLAS/LAPACK for that. This is for corner cases in 3D math where you require
@@ -21,7 +21,7 @@ type VecN struct {
 	vec []float32
 }
 
-// Creates a new vector with a backing slice filled with the contents
+// NewVecNFromData creates a new vector with a backing slice filled with the contents
 // of initial. It is NOT backed by initial, but rather a slice with cap
 // 2^p where p is Ceil(log_2(len(initial))), with the data from initial copied into
 // it.
@@ -39,7 +39,7 @@ func NewVecNFromData(initial []float32) *VecN {
 	return &VecN{vec: internal}
 }
 
-// Creates a new vector with a backing slice of
+// NewVecN creates a new vector with a backing slice of
 // 2^p where p = Ceil(log_2(n))
 func NewVecN(n int) *VecN {
 	if shouldPool {
@@ -49,7 +49,7 @@ func NewVecN(n int) *VecN {
 	}
 }
 
-// Returns the raw slice backing the VecN
+// Raw returns the raw slice backing the VecN
 //
 // This may be sent back to the memory pool at any time
 // and you aren't advised to rely on this value
@@ -57,13 +57,13 @@ func (vn VecN) Raw() []float32 {
 	return vn.vec
 }
 
-// Gets the element at index i from the vector.
-// This does not bounds check, and will panic if i is
-// out of range.
+// Get the element at index i from the vector. This does not bounds check, and
+// will panic if i is out of range.
 func (vn VecN) Get(i int) float32 {
 	return vn.vec[i]
 }
 
+// Set the element at index i to val.
 func (vn *VecN) Set(i int, val float32) {
 	vn.vec[i] = val
 }
@@ -80,11 +80,12 @@ func (vn *VecN) destroy() {
 	vn.vec = nil
 }
 
-// Resizes the underlying slice to the desired amount, reallocating or retrieving from the pool
-// if necessary. The values after a Resize cannot be expected to be related to the values before a Resize.
+// Resize the underlying slice to the desired amount, reallocating or retrieving
+// from the pool if necessary. The values after a Resize cannot be expected to
+// be related to the values before a Resize.
 //
-// If the caller is a nil pointer, this returns a value as if NewVecN(n) had been called,
-// otherwise it simply returns the caller.
+// If the caller is a nil pointer, this returns a value as if NewVecN(n) had
+// been called, otherwise it simply returns the caller.
 func (vn *VecN) Resize(n int) *VecN {
 	if vn == nil {
 		return NewVecN(n)
@@ -107,25 +108,25 @@ func (vn *VecN) Resize(n int) *VecN {
 	return vn
 }
 
-// Sets the vector's backing slice to the given
+// SetBackingSlice sets the vector's backing slice to the given
 // new one.
 func (vn *VecN) SetBackingSlice(newSlice []float32) {
 	vn.vec = newSlice
 }
 
-// Return the len of the vector's underlying slice.
+// Size returns the len of the vector's underlying slice.
 // This is not titled Len because it conflicts the package's
 // convention of calling the Norm the Len.
 func (vn *VecN) Size() int {
 	return len(vn.vec)
 }
 
-// Returns the cap of the vector's underlying slice.
+// Cap Returns the cap of the vector's underlying slice.
 func (vn *VecN) Cap() int {
 	return cap(vn.vec)
 }
 
-// Sets the vector's size to n and zeroes out the vector.
+// Zero sets the vector's size to n and zeroes out the vector.
 // If n is bigger than the vector's size, it will realloc.
 func (vn *VecN) Zero(n int) {
 	vn.Resize(n)
@@ -134,7 +135,7 @@ func (vn *VecN) Zero(n int) {
 	}
 }
 
-// Adds vn and addend, storing the result in dst.
+// Add adds vn and addend, storing the result in dst.
 // If dst does not have sufficient size it will be resized
 // Dst may be one of the other arguments. If dst is nil, it will be allocated.
 // The value returned is dst, for easier method chaining
@@ -155,7 +156,7 @@ func (vn *VecN) Add(dst *VecN, subtrahend *VecN) *VecN {
 	return dst
 }
 
-// Subtracts addend from vn, storing the result in dst.
+// Sub subtracts addend from vn, storing the result in dst.
 // If dst does not have sufficient size it will be resized
 // Dst may be one of the other arguments. If dst is nil, it will be allocated.
 // The value returned is dst, for easier method chaining
@@ -176,7 +177,7 @@ func (vn *VecN) Sub(dst *VecN, addend *VecN) *VecN {
 	return dst
 }
 
-// Takes the binary cross product of vn and other, and stores it in dst.
+// Cross takes the binary cross product of vn and other, and stores it in dst.
 // If either vn or other are not of size 3 this function will panic
 //
 // If dst is not of sufficient size, or is nil, a new slice is allocated.
@@ -203,7 +204,7 @@ func intMin(a, b int) int {
 	return b
 }
 
-// Computes the dot product of two VecNs, if
+// Dot computes the dot product of two VecNs, if
 // the two vectors are not of the same length -- this
 // will return NaN.
 func (vn *VecN) Dot(other *VecN) float32 {
@@ -219,7 +220,7 @@ func (vn *VecN) Dot(other *VecN) float32 {
 	return result
 }
 
-// Computes the vector length (also called the Norm) of the
+// Len computes the vector length (also called the Norm) of the
 // vector. Equivalent to math.Sqrt(vn.Dot(vn)) with the appropriate
 // type conversions.
 //
@@ -235,7 +236,19 @@ func (vn *VecN) Len() float32 {
 	return float32(math.Sqrt(float64(vn.Dot(vn))))
 }
 
-// Normalizes the vector and stores the result in dst, which
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (vn *VecN) LenSqr() float32 {
+	if vn == nil {
+		return float32(math.NaN())
+	}
+	if len(vn.vec) == 0 {
+		return 0
+	}
+
+	return vn.Dot(vn)
+}
+
+// Normalize the vector and stores the result in dst, which
 // will be returned. Dst will be appropraitely resized to the
 // size of vn.
 //
@@ -250,9 +263,8 @@ func (vn *VecN) Normalize(dst *VecN) *VecN {
 	return vn.Mul(dst, 1/vn.Len())
 }
 
-// Multiplied the vector by some scalar value and stores the result in dst, which
-// will be returned. Dst will be appropraitely resized to the
-// size of vn.
+// Mul multiplies the vector by some scalar value and stores the result in dst,
+// which will be returned. Dst will be appropriately resized to the size of vn.
 //
 // The destination can be vn itself and nothing will go wrong.
 func (vn *VecN) Mul(dst *VecN, c float32) *VecN {
@@ -268,7 +280,7 @@ func (vn *VecN) Mul(dst *VecN, c float32) *VecN {
 	return dst
 }
 
-// Performs the vector outer product between vn and v2.
+// OuterProd performs the vector outer product between vn and v2.
 // The outer product is like a "reverse" dot product. Where the dot product
 // aligns both vectors with the "sized" part facing "inward" (Vec3*Vec3=Mat1x3*Mat3x1=Mat1x1=Scalar).
 // The outer product multiplied them with it facing "outward"
@@ -292,6 +304,8 @@ func (vn *VecN) OuterProd(dst *MatMxN, v2 *VecN) *MatMxN {
 	return dst
 }
 
+// ApproxEqual returns whether the two vectors are approximately equal (See
+// FloatEqual).
 func (vn *VecN) ApproxEqual(vn2 *VecN) bool {
 	if vn == nil || vn2 == nil || len(vn.vec) != len(vn2.vec) {
 		return false
@@ -306,6 +320,8 @@ func (vn *VecN) ApproxEqual(vn2 *VecN) bool {
 	return true
 }
 
+// ApproxEqualThreshold returns whether the two vectors are approximately equal
+// to within the given threshold given by "epsilon" (See ApproxEqualThreshold).
 func (vn *VecN) ApproxEqualThreshold(vn2 *VecN, epsilon float32) bool {
 	if vn == nil || vn2 == nil || len(vn.vec) != len(vn2.vec) {
 		return false
@@ -320,6 +336,8 @@ func (vn *VecN) ApproxEqualThreshold(vn2 *VecN, epsilon float32) bool {
 	return true
 }
 
+// ApproxEqualFunc returns whether the two vectors are approximately equal,
+// given a function which compares two scalar elements.
 func (vn *VecN) ApproxEqualFunc(vn2 *VecN, comp func(float32, float32) bool) bool {
 	if vn == nil || vn2 == nil || len(vn.vec) != len(vn2.vec) {
 		return false
@@ -334,16 +352,19 @@ func (vn *VecN) ApproxEqualFunc(vn2 *VecN, comp func(float32, float32) bool) boo
 	return true
 }
 
+// Vec2 constructs a 2-dimensional vector by discarding coordinates.
 func (vn *VecN) Vec2() Vec2 {
 	raw := vn.Raw()
 	return Vec2{raw[0], raw[1]}
 }
 
+// Vec3 constructs a 3-dimensional vector by discarding coordinates.
 func (vn *VecN) Vec3() Vec3 {
 	raw := vn.Raw()
 	return Vec3{raw[0], raw[1], raw[2]}
 }
 
+// Vec4 constructs a 4-dimensional vector by discarding coordinates.
 func (vn *VecN) Vec4() Vec4 {
 	raw := vn.Raw()
 	return Vec4{raw[0], raw[1], raw[2], raw[3]}

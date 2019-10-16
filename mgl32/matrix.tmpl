@@ -83,12 +83,12 @@ func (m Mat4) Mat3() Mat3 {
 <<range $m := enum 2 3 4>><<range $n := enum 2 3 4>>
 <<$type := typename $m $n>>
 
-// Sets a Column within the Matrix, so it mutates the calling matrix.
+// SetCol sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *<<$type>>) SetCol(col int, v <<typename $m 1>>) {
 	<<range $i := iter 0 $m>><<sep "," $i>>m[col*<<$m>>+<<$i>>]<<end>> = <<repeat $m "v[%d]" ",">>
 }
 
-// Sets a Row within the Matrix, so it mutates the calling matrix.
+// SetRow sets a Row within the Matrix, so it mutates the calling matrix.
 func (m *<<$type>>) SetRow(row int, v <<typename $n 1>>) {
 	<<range $i := iter 0 $n>><<sep "," $i>>m[row+<<mul $m $i>>]<<end>> = <<repeat $n "v[%d]" ",">>
 }
@@ -178,7 +178,7 @@ func (m1 <<$type>>) Transpose() <<typename $n $m>> {
 }
 
 <<if eq $m $n>>
-// The determinant of a matrix is a measure of a square matrix's
+// Det returns the determinant of a matrix. It is a measure of a square matrix's
 // singularity and invertability, among other things. In this library, the
 // determinant is hard coded based on pre-computed cofactor expansion, and uses
 // no loops. Of course, the addition and multiplication must still be done.
@@ -271,7 +271,7 @@ func (m1 <<$type>>) ApproxEqualThreshold(m2 <<$type>>, threshold float32) bool {
 	return true
 }
 
-// ApproxEqualFunc performs an element-wise approximate equality test between two matrices
+// ApproxFuncEqual performs an element-wise approximate equality test between two matrices
 // with a given equality functions, intended to be used with FloatEqualFunc; although and comparison
 // function may be used in practice.
 func (m1 <<$type>>) ApproxFuncEqual(m2 <<$type>>, eq func(float32, float32) bool) bool {
