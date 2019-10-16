@@ -491,6 +491,13 @@ func (v1 Vec3) Project(a, b Vec3) Vec3 {
 	return p
 }
 
+// PlaneIntersect returns the point of the intersection with the
+// Plane giving through the arguments
+func (v1 Vec3) PlaneIntersect(rayPos, normal, planePos Vec3) Vec3 {
+	w := planePos.Sub(rayPos)
+	return rayPos.Add(v1.Mul(w.Dot(normal) / v1.Dot(normal)))
+}
+
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
 // over every element of v1 and adding the corresponding element of v2 to it.
 func (v1 Vec4) Add(v2 Vec4) Vec4 {
