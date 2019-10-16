@@ -23,7 +23,7 @@ import (
 // are being executed when you change this.
 var Epsilon float64 = 1e-10
 
-// A direct copy of the math package's Abs. This is here for the mgl32
+// Abs is a direct copy of the math package's Abs. This is here for the mgl32
 // package, to prevent rampant type conversions during equality tests.
 func Abs(a float64) float64 {
 	if a < 0 {
@@ -52,6 +52,7 @@ func FloatEqualFunc(epsilon float64) func(float64, float64) bool {
 	}
 }
 
+// Various useful constants.
 var (
 	MinNormal = float64(1.1754943508222875e-38) // 1 / 2**(127 - 1)
 	MinValue  = float64(math.SmallestNonzeroFloat64)
@@ -106,26 +107,27 @@ func ClampFunc(low, high float64) func(float64) float64 {
 	}
 }
 
-/* The IsClamped functions use strict equality (meaning: not the FloatEqual function)
-there shouldn't be any major issues with this since clamp is often used to fix minor errors*/
-
-// Checks if a is clamped between low and high as if
+// IsClamped checks if a is clamped between low and high as if
 // Clamp(a, low, high) had been called.
 //
 // In most cases it's probably better to just call Clamp
 // without checking this since it's relatively cheap.
+//
+// The IsClamped functions use strict equality (meaning: not the FloatEqual
+// function) there shouldn't be any major issues with this since clamp is often
+// used to fix minor errors
 func IsClamped(a, low, high float64) bool {
 	return a >= low && a <= high
 }
 
-// If a > b, then a will be set to the value of b.
+// SetMin sets a to b if a > b.
 func SetMin(a, b *float64) {
 	if *b < *a {
 		*a = *b
 	}
 }
 
-// If a < b, then a will be set to the value of b.
+// SetMax sets a to b if a < b.
 func SetMax(a, b *float64) {
 	if *a < *b {
 		*a = *b

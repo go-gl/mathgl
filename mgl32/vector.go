@@ -8,35 +8,41 @@
 package mgl32
 
 import (
-	"golang.org/x/image/math/f32"
 	"math"
-	"strconv"
+
+	"golang.org/x/image/math/f32"
 )
 
 type Vec2 f32.Vec2
 type Vec3 f32.Vec3
 type Vec4 f32.Vec4
 
+// Vec3 constructs a 3-dimensional vector by appending the given coordinates.
 func (v Vec2) Vec3(z float32) Vec3 {
 	return Vec3{v[0], v[1], z}
 }
 
+// Vec4 constructs a 4-dimensional vector by appending the given coordinates.
 func (v Vec2) Vec4(z, w float32) Vec4 {
 	return Vec4{v[0], v[1], z, w}
 }
 
-func (v Vec3) Vec2() Vec2 {
-	return Vec2{v[0], v[1]}
-}
-
+// Vec4 constructs a 4-dimensional vector by appending the given coordinates.
 func (v Vec3) Vec4(w float32) Vec4 {
 	return Vec4{v[0], v[1], v[2], w}
 }
 
+// Vec2 constructs a 2-dimensional vector by discarding coordinates.
+func (v Vec3) Vec2() Vec2 {
+	return Vec2{v[0], v[1]}
+}
+
+// Vec2 constructs a 2-dimensional vector by discarding coordinates.
 func (v Vec4) Vec2() Vec2 {
 	return Vec2{v[0], v[1]}
 }
 
+// Vec3 constructs a 3-dimensional vector by discarding coordinates.
 func (v Vec4) Vec3() Vec3 {
 	return Vec3{v[0], v[1], v[2]}
 }
@@ -56,27 +62,36 @@ func (v Vec4) Elem() (x, y, z, w float32) {
 	return v[0], v[1], v[2], v[3]
 }
 
-// The vector cross product is an operation only defined on 3D vectors. It is equivalent to
-// Vec3{v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}.
-// Another interpretation is that it's the vector whose magnitude is |v1||v2|sin(theta)
-// where theta is the angle between v1 and v2.
+// Cross is the vector cross product. This operation is only defined on 3D
+// vectors. It is equivalent to Vec3{v1[1]*v2[2]-v1[2]*v2[1],
+// v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}. Another interpretation
+// is that it's the vector whose magnitude is |v1||v2|sin(theta) where theta is
+// the angle between v1 and v2.
 //
-// The cross product is most often used for finding surface normals. The cross product of vectors
-// will generate a vector that is perpendicular to the plane they form.
+// The cross product is most often used for finding surface normals. The cross
+// product of vectors will generate a vector that is perpendicular to the plane
+// they form.
 //
 // Technically, a generalized cross product exists as an "(N-1)ary" operation
-// (that is, the 4D cross product requires 3 4D vectors). But the binary
-// 3D (and 7D) cross product is the most important. It can be considered
-// the area of a parallelogram with sides v1 and v2.
+// (that is, the 4D cross product requires 3 4D vectors). But the binary 3D (and
+// 7D) cross product is the most important. It can be considered the area of a
+// parallelogram with sides v1 and v2.
 //
-// Like the dot product, the cross product is roughly a measure of directionality.
-// Two normalized perpendicular vectors will return a vector with a magnitude of
-// 1.0 or -1.0 and two parallel vectors will return a vector with magnitude 0.0.
-// The cross product is "anticommutative" meaning v1.Cross(v2) = -v2.Cross(v1),
-// this property can be useful to know when finding normals,
-// as taking the wrong cross product can lead to the opposite normal of the one you want.
+// Like the dot product, the cross product is roughly a measure of
+// directionality. Two normalized perpendicular vectors will return a vector
+// with a magnitude of 1.0 or -1.0 and two parallel vectors will return a vector
+// with magnitude 0.0. The cross product is "anticommutative" meaning
+// v1.Cross(v2) = -v2.Cross(v1), this property can be useful to know when
+// finding normals, as taking the wrong cross product can lead to the opposite
+// normal of the one you want.
 func (v1 Vec3) Cross(v2 Vec3) Vec3 {
 	return Vec3{v1[1]*v2[2] - v1[2]*v2[1], v1[2]*v2[0] - v1[0]*v2[2], v1[0]*v2[1] - v1[1]*v2[0]}
+}
+
+// Quat reinterprets this vector as a quaternion, with the individual elements
+// staying the same.
+func (v Vec4) Quat() Quat {
+	return Quat{v[3], Vec3{v[0], v[1], v[2]}}
 }
 
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
@@ -135,17 +150,14 @@ func (v1 Vec2) Dot(v2 Vec2) float32 {
 // root of the sum of the squares of all elements. E.G. for a Vec2 it's
 // math.Hypot(v[0], v[1]).
 func (v1 Vec2) Len() float32 {
-	return float32(math.Sqrt(float64(v1.Len2())))
+
+	return float32(math.Hypot(float64(v1[0]), float64(v1[1])))
+
 }
 
-// Len returns the squared length of the vector
-func (v1 Vec2) Len2() float32 {
-	return float32(float64(v1[0]*v1[0] + v1[1]*v1[1]))
-}
-
-// Angle returns the angle of the vector in radians
-func (v1 Vec2) Angle() float32 {
-	return Atan2(v1[1], v1[0])
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec2) LenSqr() float32 {
+	return v1[0]*v1[0] + v1[1]*v1[1]
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
@@ -162,8 +174,8 @@ func (v1 Vec2) Normalize() Vec2 {
 	return Vec2{v1[0] * l, v1[1] * l}
 }
 
-// ApproxEqual takes in a vector and does an element-wise
-// approximate float comparison as if FloatEqual had been used
+// ApproxEqual takes in a vector and does an element-wise approximate float
+// comparison as if FloatEqual had been used
 func (v1 Vec2) ApproxEqual(v2 Vec2) bool {
 	for i := range v1 {
 		if !FloatEqual(v1[i], v2[i]) {
@@ -173,8 +185,8 @@ func (v1 Vec2) ApproxEqual(v2 Vec2) bool {
 	return true
 }
 
-// ApproxThresholdEq takes in a threshold for comparing two floats, and uses it to do an
-// element-wise comparison of the vector to another.
+// ApproxEqualThreshold takes in a threshold for comparing two floats, and uses
+// it to do an element-wise comparison of the vector to another.
 func (v1 Vec2) ApproxEqualThreshold(v2 Vec2, threshold float32) bool {
 	for i := range v1 {
 		if !FloatEqualThreshold(v1[i], v2[i], threshold) {
@@ -184,7 +196,7 @@ func (v1 Vec2) ApproxEqualThreshold(v2 Vec2, threshold float32) bool {
 	return true
 }
 
-// ApproxFuncEq takes in a func that compares two floats, and uses it to do an element-wise
+// ApproxFuncEqual takes in a func that compares two floats, and uses it to do an element-wise
 // comparison of the vector to another. This is intended to be used with FloatEqualFunc
 func (v1 Vec2) ApproxFuncEqual(v2 Vec2, eq func(float32, float32) bool) bool {
 	for i := range v1 {
@@ -195,7 +207,7 @@ func (v1 Vec2) ApproxFuncEqual(v2 Vec2, eq func(float32, float32) bool) bool {
 	return true
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// X is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -203,7 +215,7 @@ func (v Vec2) X() float32 {
 	return v[0]
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// Y is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -211,7 +223,7 @@ func (v Vec2) Y() float32 {
 	return v[1]
 }
 
-// Does the vector outer product
+// OuterProd2 does the vector outer product
 // of two vectors. The outer product produces an
 // 2x2 matrix. E.G. a Vec2 * Vec2 = Mat2.
 //
@@ -226,7 +238,7 @@ func (v1 Vec2) OuterProd2(v2 Vec2) Mat2 {
 	return Mat2{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1]}
 }
 
-// Does the vector outer product
+// OuterProd3 does the vector outer product
 // of two vectors. The outer product produces an
 // 2x3 matrix. E.G. a Vec2 * Vec3 = Mat2x3.
 //
@@ -241,7 +253,7 @@ func (v1 Vec2) OuterProd3(v2 Vec3) Mat2x3 {
 	return Mat2x3{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[0] * v2[2], v1[1] * v2[2]}
 }
 
-// Does the vector outer product
+// OuterProd4 does the vector outer product
 // of two vectors. The outer product produces an
 // 2x4 matrix. E.G. a Vec2 * Vec4 = Mat2x4.
 //
@@ -254,20 +266,6 @@ func (v1 Vec2) OuterProd3(v2 Vec3) Mat2x3 {
 // = Mat2x1*Mat1x3 = Mat2x3.
 func (v1 Vec2) OuterProd4(v2 Vec4) Mat2x4 {
 	return Mat2x4{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[0] * v2[3], v1[1] * v2[3]}
-}
-
-func (v1 Vec2) String() string {
-	return "(" + strconv.FormatFloat(float64(v1[0]), 'f', 3, 32) + ";" +
-		strconv.FormatFloat(float64(v1[1]), 'f', 3, 32) + ")"
-}
-
-// Projects v1 onto the line from a to b
-func (v1 Vec2) Project(a, b Vec2) Vec2 {
-	var p Vec2
-	a1 := v1.Sub(a)
-	b1 := b.Sub(a).Normalize()
-	p = b1.Mul(a1.Dot(b1)).Add(a)
-	return p
 }
 
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
@@ -326,12 +324,14 @@ func (v1 Vec3) Dot(v2 Vec3) float32 {
 // root of the sum of the squares of all elements. E.G. for a Vec2 it's
 // math.Hypot(v[0], v[1]).
 func (v1 Vec3) Len() float32 {
-	return float32(math.Sqrt(float64(v1.Len2())))
+
+	return float32(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])))
+
 }
 
-// Len returns the squared length of the vector
-func (v1 Vec3) Len2() float32 {
-	return float32(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2]))
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec3) LenSqr() float32 {
+	return v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2]
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
@@ -348,8 +348,8 @@ func (v1 Vec3) Normalize() Vec3 {
 	return Vec3{v1[0] * l, v1[1] * l, v1[2] * l}
 }
 
-// ApproxEqual takes in a vector and does an element-wise
-// approximate float comparison as if FloatEqual had been used
+// ApproxEqual takes in a vector and does an element-wise approximate float
+// comparison as if FloatEqual had been used
 func (v1 Vec3) ApproxEqual(v2 Vec3) bool {
 	for i := range v1 {
 		if !FloatEqual(v1[i], v2[i]) {
@@ -359,8 +359,8 @@ func (v1 Vec3) ApproxEqual(v2 Vec3) bool {
 	return true
 }
 
-// ApproxThresholdEq takes in a threshold for comparing two floats, and uses it to do an
-// element-wise comparison of the vector to another.
+// ApproxEqualThreshold takes in a threshold for comparing two floats, and uses
+// it to do an element-wise comparison of the vector to another.
 func (v1 Vec3) ApproxEqualThreshold(v2 Vec3, threshold float32) bool {
 	for i := range v1 {
 		if !FloatEqualThreshold(v1[i], v2[i], threshold) {
@@ -370,7 +370,7 @@ func (v1 Vec3) ApproxEqualThreshold(v2 Vec3, threshold float32) bool {
 	return true
 }
 
-// ApproxFuncEq takes in a func that compares two floats, and uses it to do an element-wise
+// ApproxFuncEqual takes in a func that compares two floats, and uses it to do an element-wise
 // comparison of the vector to another. This is intended to be used with FloatEqualFunc
 func (v1 Vec3) ApproxFuncEqual(v2 Vec3, eq func(float32, float32) bool) bool {
 	for i := range v1 {
@@ -381,7 +381,7 @@ func (v1 Vec3) ApproxFuncEqual(v2 Vec3, eq func(float32, float32) bool) bool {
 	return true
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// X is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -389,7 +389,7 @@ func (v Vec3) X() float32 {
 	return v[0]
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// Y is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -397,7 +397,7 @@ func (v Vec3) Y() float32 {
 	return v[1]
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// Z is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -405,7 +405,7 @@ func (v Vec3) Z() float32 {
 	return v[2]
 }
 
-// Does the vector outer product
+// OuterProd2 does the vector outer product
 // of two vectors. The outer product produces an
 // 3x2 matrix. E.G. a Vec3 * Vec2 = Mat3x2.
 //
@@ -420,7 +420,7 @@ func (v1 Vec3) OuterProd2(v2 Vec2) Mat3x2 {
 	return Mat3x2{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1]}
 }
 
-// Does the vector outer product
+// OuterProd3 does the vector outer product
 // of two vectors. The outer product produces an
 // 3x3 matrix. E.G. a Vec3 * Vec3 = Mat3.
 //
@@ -435,7 +435,7 @@ func (v1 Vec3) OuterProd3(v2 Vec3) Mat3 {
 	return Mat3{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2]}
 }
 
-// Does the vector outer product
+// OuterProd4 does the vector outer product
 // of two vectors. The outer product produces an
 // 3x4 matrix. E.G. a Vec3 * Vec4 = Mat3x4.
 //
@@ -448,28 +448,6 @@ func (v1 Vec3) OuterProd3(v2 Vec3) Mat3 {
 // = Mat2x1*Mat1x3 = Mat2x3.
 func (v1 Vec3) OuterProd4(v2 Vec4) Mat3x4 {
 	return Mat3x4{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[0] * v2[3], v1[1] * v2[3], v1[2] * v2[3]}
-}
-
-func (v1 Vec3) String() string {
-	return "(" +
-		strconv.FormatFloat(float64(v1[0]), 'f', 3, 32) + ";" +
-		strconv.FormatFloat(float64(v1[1]), 'f', 3, 32) + ";" +
-		strconv.FormatFloat(float64(v1[2]), 'f', 3, 32) +
-		")"
-}
-
-// Projects v1 onto the line from a to b
-func (v1 Vec3) Project(a, b Vec3) Vec3 {
-	var p Vec3
-	a1 := v1.Sub(a)
-	b1 := b.Sub(a).Normalize()
-	p = b1.Mul(a1.Dot(b1)).Add(a)
-	return p
-}
-
-func (v1 Vec3) PlaneIntersect(rayPos, normal, planePos Vec3) Vec3 {
-	w := planePos.Sub(rayPos)
-	return rayPos.Add(v1.Mul(w.Dot(normal) / v1.Dot(normal)))
 }
 
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
@@ -528,12 +506,14 @@ func (v1 Vec4) Dot(v2 Vec4) float32 {
 // root of the sum of the squares of all elements. E.G. for a Vec2 it's
 // math.Hypot(v[0], v[1]).
 func (v1 Vec4) Len() float32 {
-	return float32(math.Sqrt(float64(v1.Len2())))
+
+	return float32(math.Sqrt(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3])))
+
 }
 
-// Len returns the squared length of the vector
-func (v1 Vec4) Len2() float32 {
-	return float32(float64(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3]))
+// LenSqr returns the vector's square length. This is equivalent to the sum of the squares of all elements.
+func (v1 Vec4) LenSqr() float32 {
+	return v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2] + v1[3]*v1[3]
 }
 
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
@@ -550,8 +530,8 @@ func (v1 Vec4) Normalize() Vec4 {
 	return Vec4{v1[0] * l, v1[1] * l, v1[2] * l, v1[3] * l}
 }
 
-// ApproxEqual takes in a vector and does an element-wise
-// approximate float comparison as if FloatEqual had been used
+// ApproxEqual takes in a vector and does an element-wise approximate float
+// comparison as if FloatEqual had been used
 func (v1 Vec4) ApproxEqual(v2 Vec4) bool {
 	for i := range v1 {
 		if !FloatEqual(v1[i], v2[i]) {
@@ -561,8 +541,8 @@ func (v1 Vec4) ApproxEqual(v2 Vec4) bool {
 	return true
 }
 
-// ApproxThresholdEq takes in a threshold for comparing two floats, and uses it to do an
-// element-wise comparison of the vector to another.
+// ApproxEqualThreshold takes in a threshold for comparing two floats, and uses
+// it to do an element-wise comparison of the vector to another.
 func (v1 Vec4) ApproxEqualThreshold(v2 Vec4, threshold float32) bool {
 	for i := range v1 {
 		if !FloatEqualThreshold(v1[i], v2[i], threshold) {
@@ -572,7 +552,7 @@ func (v1 Vec4) ApproxEqualThreshold(v2 Vec4, threshold float32) bool {
 	return true
 }
 
-// ApproxFuncEq takes in a func that compares two floats, and uses it to do an element-wise
+// ApproxFuncEqual takes in a func that compares two floats, and uses it to do an element-wise
 // comparison of the vector to another. This is intended to be used with FloatEqualFunc
 func (v1 Vec4) ApproxFuncEqual(v2 Vec4, eq func(float32, float32) bool) bool {
 	for i := range v1 {
@@ -583,7 +563,7 @@ func (v1 Vec4) ApproxFuncEqual(v2 Vec4, eq func(float32, float32) bool) bool {
 	return true
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// X is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -591,7 +571,7 @@ func (v Vec4) X() float32 {
 	return v[0]
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// Y is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -599,7 +579,7 @@ func (v Vec4) Y() float32 {
 	return v[1]
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// Z is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -607,7 +587,7 @@ func (v Vec4) Z() float32 {
 	return v[2]
 }
 
-// This is an element access func, it is equivalent to v[n] where
+// W is an element access func, it is equivalent to v[n] where
 // n is some valid index. The mappings are XYZW (X=0, Y=1 etc). Benchmarks
 // show that this is more or less as fast as direct acces, probably due to
 // inlining, so use v[0] or v.X() depending on personal preference.
@@ -615,7 +595,7 @@ func (v Vec4) W() float32 {
 	return v[3]
 }
 
-// Does the vector outer product
+// OuterProd2 does the vector outer product
 // of two vectors. The outer product produces an
 // 4x2 matrix. E.G. a Vec4 * Vec2 = Mat4x2.
 //
@@ -630,7 +610,7 @@ func (v1 Vec4) OuterProd2(v2 Vec2) Mat4x2 {
 	return Mat4x2{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1]}
 }
 
-// Does the vector outer product
+// OuterProd3 does the vector outer product
 // of two vectors. The outer product produces an
 // 4x3 matrix. E.G. a Vec4 * Vec3 = Mat4x3.
 //
@@ -645,7 +625,7 @@ func (v1 Vec4) OuterProd3(v2 Vec3) Mat4x3 {
 	return Mat4x3{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[3] * v2[2]}
 }
 
-// Does the vector outer product
+// OuterProd4 does the vector outer product
 // of two vectors. The outer product produces an
 // 4x4 matrix. E.G. a Vec4 * Vec4 = Mat4.
 //
@@ -658,14 +638,4 @@ func (v1 Vec4) OuterProd3(v2 Vec3) Mat4x3 {
 // = Mat2x1*Mat1x3 = Mat2x3.
 func (v1 Vec4) OuterProd4(v2 Vec4) Mat4 {
 	return Mat4{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[3] * v2[2], v1[0] * v2[3], v1[1] * v2[3], v1[2] * v2[3], v1[3] * v2[3]}
-}
-
-func (v1 Vec4) String() string {
-	return "(" +
-		strconv.FormatFloat(float64(v1[0]), 'f', 3, 32) + ";" +
-		strconv.FormatFloat(float64(v1[1]), 'f', 3, 32) + ";" +
-		strconv.FormatFloat(float64(v1[2]), 'f', 3, 32) + ";" +
-		strconv.FormatFloat(float64(v1[3]), 'f', 3, 32) +
-
-		")"
 }
