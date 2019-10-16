@@ -162,6 +162,11 @@ func (v1 Vec2) LenSqr() float64 {
 	return v1[0]*v1[0] + v1[1]*v1[1]
 }
 
+// Angle returns the angle of the vector relative to [1,0]
+func (v1 Vec2) Angle() float64 {
+	return Atan2(v1[1], v1[0])
+}
+
 // Normalize normalizes the vector. Normalization is (1/|v|)*v,
 // making this equivalent to v.Scale(1/v.Len()). If the len is 0.0,
 // this function will return an infinite value for all elements due
