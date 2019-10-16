@@ -284,6 +284,15 @@ func (v1 Vec2) String() string {
 		")"
 }
 
+// Project projects v1 onto the line from a to b
+func (v1 Vec2) Project(a, b Vec2) Vec2 {
+	var p Vec2
+	a1 := v1.Sub(a)
+	b1 := b.Sub(a).Normalize()
+	p = b1.Mul(a1.Dot(b1)).Add(a)
+	return p
+}
+
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
 // over every element of v1 and adding the corresponding element of v2 to it.
 func (v1 Vec3) Add(v2 Vec3) Vec3 {
@@ -473,6 +482,15 @@ func (v1 Vec3) String() string {
 		strconv.FormatFloat(v1[1], 'f', 3, 64) + ";" +
 		strconv.FormatFloat(v1[2], 'f', 3, 64) +
 		")"
+}
+
+// Project projects v1 onto the line from a to b
+func (v1 Vec3) Project(a, b Vec3) Vec3 {
+	var p Vec3
+	a1 := v1.Sub(a)
+	b1 := b.Sub(a).Normalize()
+	p = b1.Mul(a1.Dot(b1)).Add(a)
+	return p
 }
 
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
