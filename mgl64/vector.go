@@ -11,6 +11,7 @@ package mgl64
 
 import (
 	"math"
+	"strconv"
 
 	"golang.org/x/image/math/f64"
 )
@@ -275,6 +276,14 @@ func (v1 Vec2) OuterProd4(v2 Vec4) Mat2x4 {
 	return Mat2x4{v1[0] * v2[0], v1[1] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[0] * v2[3], v1[1] * v2[3]}
 }
 
+// String returns a string representation of Vec2
+func (v1 Vec2) String() string {
+	return "(" +
+		strconv.FormatFloat(v1[0], 'f', 3, 64) + ";" +
+		strconv.FormatFloat(v1[1], 'f', 3, 64) +
+		")"
+}
+
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
 // over every element of v1 and adding the corresponding element of v2 to it.
 func (v1 Vec3) Add(v2 Vec3) Vec3 {
@@ -455,6 +464,15 @@ func (v1 Vec3) OuterProd3(v2 Vec3) Mat3 {
 // = Mat2x1*Mat1x3 = Mat2x3.
 func (v1 Vec3) OuterProd4(v2 Vec4) Mat3x4 {
 	return Mat3x4{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[0] * v2[3], v1[1] * v2[3], v1[2] * v2[3]}
+}
+
+// String returns a string representation of Vec3
+func (v1 Vec3) String() string {
+	return "(" +
+		strconv.FormatFloat(v1[0], 'f', 3, 64) + ";" +
+		strconv.FormatFloat(v1[1], 'f', 3, 64) + ";" +
+		strconv.FormatFloat(v1[2], 'f', 3, 64) +
+		")"
 }
 
 // Add performs element-wise addition between two vectors. It is equivalent to iterating
@@ -645,4 +663,14 @@ func (v1 Vec4) OuterProd3(v2 Vec3) Mat4x3 {
 // = Mat2x1*Mat1x3 = Mat2x3.
 func (v1 Vec4) OuterProd4(v2 Vec4) Mat4 {
 	return Mat4{v1[0] * v2[0], v1[1] * v2[0], v1[2] * v2[0], v1[3] * v2[0], v1[0] * v2[1], v1[1] * v2[1], v1[2] * v2[1], v1[3] * v2[1], v1[0] * v2[2], v1[1] * v2[2], v1[2] * v2[2], v1[3] * v2[2], v1[0] * v2[3], v1[1] * v2[3], v1[2] * v2[3], v1[3] * v2[3]}
+}
+
+// String returns a string representation of Vec4
+func (v1 Vec4) String() string {
+	return "(" +
+		strconv.FormatFloat(v1[0], 'f', 3, 64) + ";" +
+		strconv.FormatFloat(v1[1], 'f', 3, 64) + ";" +
+		strconv.FormatFloat(v1[2], 'f', 3, 64) + ";" +
+		strconv.FormatFloat(v1[3], 'f', 3, 64) +
+		")"
 }
