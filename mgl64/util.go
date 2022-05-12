@@ -139,7 +139,7 @@ func SetMax(a, b *float64) {
 func Round(v float64, precision int) float64 {
 	p := float64(precision)
 	t := float64(v) * math.Pow(10, p)
-	if t > 0 {
+	if t >= 0 {
 		return float64(math.Floor(t+0.5) / math.Pow(10, p))
 	}
 	return float64(math.Ceil(t-0.5) / math.Pow(10, p))
