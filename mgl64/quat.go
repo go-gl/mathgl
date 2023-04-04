@@ -219,7 +219,7 @@ func (q1 Quat) OrientationEqualThreshold(q2 Quat, epsilon float64) bool {
 func QuatSlerp(q1, q2 Quat, amount float64) Quat {
 	q1, q2 = q1.Normalize(), q2.Normalize()
 	dot := q1.Dot(q2)
-	
+
 	// Make sure we take the shortest path in case dot product is negative.
 	if dot < 0.0 {
 		q2 = q2.Scale(-1)

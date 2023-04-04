@@ -223,7 +223,7 @@ func QuatSlerp(q1, q2 Quat, amount float32) Quat {
 		q2 = q2.Scale(-1)
 		dot = -dot
 	}
-	
+
 	// If the inputs are too close for comfort, linearly interpolate and normalize the result.
 	if dot > 0.9995 {
 		return QuatNlerp(q1, q2, amount)
