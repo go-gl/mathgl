@@ -210,13 +210,19 @@ func (q1 Quat) OrientationEqualThreshold(q2 Quat, epsilon float32) bool {
 }
 
 // QuatSlerp is *S*pherical *L*inear Int*erp*olation, a method of interpolating
-// between two quaternions. This always takes the straightest path on the sphere between
+// between two quaternions. This always takes the straightest and shortest path on the sphere between
 // the two quaternions, and maintains constant velocity.
 //
 // However, it's expensive and QuatSlerp(q1,q2) is not the same as QuatSlerp(q2,q1)
 func QuatSlerp(q1, q2 Quat, amount float32) Quat {
 	q1, q2 = q1.Normalize(), q2.Normalize()
 	dot := q1.Dot(q2)
+
+	// Make sure we take the shortest path in case dot product is negative.
+	if dot < 0.0 {
+		q2 = q2.Scale(-1)
+		dot = -dot
+	}
 
 	// If the inputs are too close for comfort, linearly interpolate and normalize the result.
 	if dot > 0.9995 {
