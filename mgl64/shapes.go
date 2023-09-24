@@ -88,7 +88,9 @@ func CubicBezierCurve2D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec2) Vec2
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
 
-	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
+	sum14 := cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint4.Mul(t * t * t))
+	sum23 := cPoint2.Mul(3 * (1 - t) * (1 - t) * t).Add(cPoint3.Mul(3 * (1 - t) * t * t))
+	return sum14.Add(sum23)
 }
 
 // CubicBezierCurve3D interpolates the point t on the given bezier curve.
@@ -97,7 +99,9 @@ func CubicBezierCurve3D(t float64, cPoint1, cPoint2, cPoint3, cPoint4 Vec3) Vec3
 		panic("Can't interpolate on bezier curve with t out of range [0.0,1.0]")
 	}
 
-	return cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint2.Mul(3 * (1 - t) * (1 - t) * t)).Add(cPoint3.Mul(3 * (1 - t) * t * t)).Add(cPoint4.Mul(t * t * t))
+	sum14 := cPoint1.Mul((1 - t) * (1 - t) * (1 - t)).Add(cPoint4.Mul(t * t * t))
+	sum23 := cPoint2.Mul(3 * (1 - t) * (1 - t) * t).Add(cPoint3.Mul(3 * (1 - t) * t * t))
+	return sum14.Add(sum23)
 }
 
 // BezierCurve2D returns the point at point t along an n-control point Bezier curve
