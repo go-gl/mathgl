@@ -283,6 +283,16 @@ func (m1 <<$type>>) ApproxFuncEqual(m2 <<$type>>, eq func(float32, float32) bool
 	return true
 }
 
+// NumRows returns the number of rows in this matrix
+func (m <<$type>>) NumRows() int {
+	return <<$m>>
+}
+
+// NumCols returns the number of columns in this matrix
+func (m <<$type>>) NumCols() int {
+	return <<$n>>
+}
+
 // At returns the matrix element at the given row and column.
 // This is equivalent to mat[col * numRow + row] where numRow is constant
 // (E.G. for a Mat3x2 it's equal to 3)
