@@ -278,6 +278,16 @@ func (m1 Mat2) ApproxFuncEqual(m2 Mat2, eq func(float64, float64) bool) bool {
 	return true
 }
 
+// NumRows returns the number of rows in this matrix
+func (m Mat2) NumRows() int {
+	return 2
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat2) NumCols() int {
+	return 2
+}
+
 // At returns the matrix element at the given row and column.
 // This is equivalent to mat[col * numRow + row] where numRow is constant
 // (E.G. for a Mat3x2 it's equal to 3)
@@ -502,6 +512,16 @@ func (m1 Mat2x3) ApproxFuncEqual(m2 Mat2x3, eq func(float64, float64) bool) bool
 	return true
 }
 
+// NumRows returns the number of rows in this matrix
+func (m Mat2x3) NumRows() int {
+	return 2
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat2x3) NumCols() int {
+	return 3
+}
+
 // At returns the matrix element at the given row and column.
 // This is equivalent to mat[col * numRow + row] where numRow is constant
 // (E.G. for a Mat3x2 it's equal to 3)
@@ -718,6 +738,16 @@ func (m1 Mat2x4) ApproxFuncEqual(m2 Mat2x4, eq func(float64, float64) bool) bool
 		}
 	}
 	return true
+}
+
+// NumRows returns the number of rows in this matrix
+func (m Mat2x4) NumRows() int {
+	return 2
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat2x4) NumCols() int {
+	return 4
 }
 
 // At returns the matrix element at the given row and column.
@@ -946,6 +976,16 @@ func (m1 Mat3x2) ApproxFuncEqual(m2 Mat3x2, eq func(float64, float64) bool) bool
 		}
 	}
 	return true
+}
+
+// NumRows returns the number of rows in this matrix
+func (m Mat3x2) NumRows() int {
+	return 3
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat3x2) NumCols() int {
+	return 2
 }
 
 // At returns the matrix element at the given row and column.
@@ -1241,6 +1281,16 @@ func (m1 Mat3) ApproxFuncEqual(m2 Mat3, eq func(float64, float64) bool) bool {
 	return true
 }
 
+// NumRows returns the number of rows in this matrix
+func (m Mat3) NumRows() int {
+	return 3
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat3) NumCols() int {
+	return 3
+}
+
 // At returns the matrix element at the given row and column.
 // This is equivalent to mat[col * numRow + row] where numRow is constant
 // (E.G. for a Mat3x2 it's equal to 3)
@@ -1473,6 +1523,16 @@ func (m1 Mat3x4) ApproxFuncEqual(m2 Mat3x4, eq func(float64, float64) bool) bool
 		}
 	}
 	return true
+}
+
+// NumRows returns the number of rows in this matrix
+func (m Mat3x4) NumRows() int {
+	return 3
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat3x4) NumCols() int {
+	return 4
 }
 
 // At returns the matrix element at the given row and column.
@@ -1713,6 +1773,16 @@ func (m1 Mat4x2) ApproxFuncEqual(m2 Mat4x2, eq func(float64, float64) bool) bool
 	return true
 }
 
+// NumRows returns the number of rows in this matrix
+func (m Mat4x2) NumRows() int {
+	return 4
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat4x2) NumCols() int {
+	return 2
+}
+
 // At returns the matrix element at the given row and column.
 // This is equivalent to mat[col * numRow + row] where numRow is constant
 // (E.G. for a Mat3x2 it's equal to 3)
@@ -1949,6 +2019,16 @@ func (m1 Mat4x3) ApproxFuncEqual(m2 Mat4x3, eq func(float64, float64) bool) bool
 		}
 	}
 	return true
+}
+
+// NumRows returns the number of rows in this matrix
+func (m Mat4x3) NumRows() int {
+	return 4
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat4x3) NumCols() int {
+	return 3
 }
 
 // At returns the matrix element at the given row and column.
@@ -2259,6 +2339,16 @@ func (m1 Mat4) ApproxFuncEqual(m2 Mat4, eq func(float64, float64) bool) bool {
 		}
 	}
 	return true
+}
+
+// NumRows returns the number of rows in this matrix
+func (m Mat4) NumRows() int {
+	return 4
+}
+
+// NumCols returns the number of columns in this matrix
+func (m Mat4) NumCols() int {
+	return 4
 }
 
 // At returns the matrix element at the given row and column.
