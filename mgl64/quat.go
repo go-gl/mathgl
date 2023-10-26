@@ -58,7 +58,8 @@ func QuatIdent() Quat {
 func QuatRotate(angle float64, axis Vec3) Quat {
 	// angle = (float32(math.Pi) * angle) / 180.0
 
-	c, s := float64(math.Cos(float64(angle/2))), float64(math.Sin(float64(angle/2)))
+	sn, cs := math.Sincos(float64(angle / 2))
+	s, c := float64(sn), float64(cs)
 
 	return Quat{c, axis.Mul(s)}
 }
@@ -235,7 +236,8 @@ func QuatSlerp(q1, q2 Quat, amount float64) Quat {
 	dot = Clamp(dot, -1, 1)
 
 	theta := float64(math.Acos(float64(dot))) * amount
-	c, s := float64(math.Cos(float64(theta))), float64(math.Sin(float64(theta)))
+	sn, cs := math.Sincos(float64(theta))
+	s, c := float64(sn), float64(cs)
 	rel := q2.Sub(q1.Scale(dot)).Normalize()
 
 	return q1.Scale(c).Add(rel.Scale(s))

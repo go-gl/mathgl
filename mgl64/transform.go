@@ -13,7 +13,8 @@ import "math"
 // see HomogRotate2D
 func Rotate2D(angle float64) Mat2 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 	return Mat2{cos, sin, -sin, cos}
 }
 
@@ -26,7 +27,8 @@ func Rotate2D(angle float64) Mat2 {
 //	[0 s c ]
 func Rotate3DX(angle float64) Mat3 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 	return Mat3{1, 0, 0, 0, cos, sin, 0, -sin, cos}
 }
 
@@ -39,7 +41,8 @@ func Rotate3DX(angle float64) Mat3 {
 //	[s 0 c ]
 func Rotate3DY(angle float64) Mat3 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 	return Mat3{cos, 0, -sin, 0, 1, 0, sin, 0, cos}
 }
 
@@ -52,7 +55,8 @@ func Rotate3DY(angle float64) Mat3 {
 //	[0 0 1 ]
 func Rotate3DZ(angle float64) Mat3 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 	return Mat3{cos, sin, 0, -sin, cos, 0, 0, 0, 1}
 }
 
@@ -79,14 +83,16 @@ func Translate3D(Tx, Ty, Tz float64) Mat4 {
 // HomogRotate2D is the same as Rotate2D, except homogeneous (3x3 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate2D(angle float64) Mat3 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 	return Mat3{cos, sin, 0, -sin, cos, 0, 0, 0, 1}
 }
 
 // HomogRotate3DX is the same as Rotate3DX, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DX(angle float64) Mat4 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 
 	return Mat4{1, 0, 0, 0, 0, cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1}
 }
@@ -94,14 +100,16 @@ func HomogRotate3DX(angle float64) Mat4 {
 // HomogRotate3DY is the same as Rotate3DY, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DY(angle float64) Mat4 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 	return Mat4{cos, 0, -sin, 0, 0, 1, 0, 0, sin, 0, cos, 0, 0, 0, 0, 1}
 }
 
 // HomogRotate3DZ is the same as Rotate3DZ, except homogeneous (4x4 with the extra row/col being all zeroes with a one in the bottom right)
 func HomogRotate3DZ(angle float64) Mat4 {
 	//angle = (angle * math.Pi) / 180.0
-	sin, cos := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	sin, cos := float64(sn), float64(cs)
 	return Mat4{cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}
 }
 
@@ -160,7 +168,8 @@ func ShearZ3D(shearX, shearY float64) Mat4 {
 //	[[ 0         , 0         , 0         , 1 ]]
 func HomogRotate3D(angle float64, axis Vec3) Mat4 {
 	x, y, z := axis[0], axis[1], axis[2]
-	s, c := float64(math.Sin(float64(angle))), float64(math.Cos(float64(angle)))
+	sn, cs := math.Sincos(float64(angle))
+	s, c := float64(sn), float64(cs)
 	k := 1 - c
 
 	return Mat4{x*x*k + c, x*y*k + z*s, x*z*k - y*s, 0, x*y*k - z*s, y*y*k + c, y*z*k + x*s, 0, x*z*k + y*s, y*z*k - x*s, z*z*k + c, 0, 0, 0, 0, 1}
