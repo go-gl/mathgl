@@ -13,19 +13,17 @@ import (
 	"bytes"
 	"fmt"
 	"text/tabwriter"
-
-	"golang.org/x/image/math/f64"
 )
 
-type Mat2 [4]float64
-type Mat2x3 [6]float64
-type Mat2x4 [8]float64
-type Mat3x2 [6]float64
-type Mat3 f64.Mat3
-type Mat3x4 [12]float64
-type Mat4x2 [8]float64
-type Mat4x3 [12]float64
-type Mat4 f64.Mat4
+type Mat2 [2 * 2]float64
+type Mat2x3 [2 * 3]float64
+type Mat2x4 [2 * 4]float64
+type Mat3x2 [3 * 2]float64
+type Mat3 [3 * 3]float64
+type Mat3x4 [3 * 4]float64
+type Mat4x2 [4 * 2]float64
+type Mat4x3 [4 * 3]float64
+type Mat4 [4 * 4]float64
 
 func (m Mat2) Mat3() Mat3 {
 	col0, col1 := m.Cols()
