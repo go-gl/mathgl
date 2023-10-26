@@ -11,13 +11,11 @@ package mgl64
 
 import (
 	"math"
-
-	"golang.org/x/image/math/f64"
 )
 
-type Vec2 f64.Vec2
-type Vec3 f64.Vec3
-type Vec4 f64.Vec4
+type Vec2 [2]float64
+type Vec3 [3]float64
+type Vec4 [4]float64
 
 // Vec3 constructs a 3-dimensional vector by appending the given coordinates.
 func (v Vec2) Vec3(z float64) Vec3 {

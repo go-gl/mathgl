@@ -10,19 +10,18 @@ package mgl32
 import (
 	"bytes"
 	"fmt"
-	"golang.org/x/image/math/f32"
 	"text/tabwriter"
 )
 
-type Mat2 [4]float32
-type Mat2x3 [6]float32
-type Mat2x4 [8]float32
-type Mat3x2 [6]float32
-type Mat3 f32.Mat3
-type Mat3x4 [12]float32
-type Mat4x2 [8]float32
-type Mat4x3 [12]float32
-type Mat4 f32.Mat4
+type Mat2 [2 * 2]float32
+type Mat2x3 [2 * 3]float32
+type Mat2x4 [2 * 4]float32
+type Mat3x2 [3 * 2]float32
+type Mat3 [3 * 3]float32
+type Mat3x4 [3 * 4]float32
+type Mat4x2 [4 * 2]float32
+type Mat4x3 [4 * 3]float32
+type Mat4 [4 * 4]float32
 
 func (m Mat2) Mat3() Mat3 {
 	col0, col1 := m.Cols()

@@ -8,13 +8,12 @@
 package mgl32
 
 import (
-	"golang.org/x/image/math/f32"
 	"math"
 )
 
-type Vec2 f32.Vec2
-type Vec3 f32.Vec3
-type Vec4 f32.Vec4
+type Vec2 [2]float32
+type Vec3 [3]float32
+type Vec4 [4]float32
 
 // Vec3 constructs a 3-dimensional vector by appending the given coordinates.
 func (v Vec2) Vec3(z float32) Vec3 {
