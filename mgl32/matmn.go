@@ -40,8 +40,8 @@ func NewMatrix(m, n int) (mat *MatMxN) {
 //
 // For instance, to create a 3x3 MatMN from a Mat3
 //
-//    m1 := mgl32.Rotate3DX(3.14159)
-//    mat := mgl32.NewBackedMatrix(m1[:],3,3)
+//	m1 := mgl32.Rotate3DX(3.14159)
+//	mat := mgl32.NewBackedMatrix(m1[:],3,3)
 //
 // will create an MN matrix matching the data in the original rotation matrix.
 // This matrix is NOT backed by the initial slice; it's a copy of the data

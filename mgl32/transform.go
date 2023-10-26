@@ -18,47 +18,47 @@ func Rotate2D(angle float32) Mat2 {
 // Rotate3DX returns a 3x3 (non-homogeneous) Matrix that rotates by angle about the X-axis
 //
 // Where c is cos(angle) and s is sin(angle)
-//    [1 0 0]
-//    [0 c -s]
-//    [0 s c ]
+//
+//	[1 0 0]
+//	[0 c -s]
+//	[0 s c ]
 func Rotate3DX(angle float32) Mat3 {
 	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float32(math.Sin(float64(angle))), float32(math.Cos(float64(angle)))
-
 	return Mat3{1, 0, 0, 0, cos, sin, 0, -sin, cos}
 }
 
 // Rotate3DY returns a 3x3 (non-homogeneous) Matrix that rotates by angle about the Y-axis
 //
 // Where c is cos(angle) and s is sin(angle)
-//    [c 0 s]
-//    [0 1 0]
-//    [s 0 c ]
+//
+//	[c 0 s]
+//	[0 1 0]
+//	[s 0 c ]
 func Rotate3DY(angle float32) Mat3 {
 	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float32(math.Sin(float64(angle))), float32(math.Cos(float64(angle)))
-
 	return Mat3{cos, 0, -sin, 0, 1, 0, sin, 0, cos}
 }
 
 // Rotate3DZ returns a 3x3 (non-homogeneous) Matrix that rotates by angle about the Z-axis
 //
 // Where c is cos(angle) and s is sin(angle)
-//    [c -s 0]
-//    [s c 0]
-//    [0 0 1 ]
+//
+//	[c -s 0]
+//	[s c 0]
+//	[0 0 1 ]
 func Rotate3DZ(angle float32) Mat3 {
 	//angle = (angle * math.Pi) / 180.0
 	sin, cos := float32(math.Sin(float64(angle))), float32(math.Cos(float64(angle)))
-
 	return Mat3{cos, sin, 0, -sin, cos, 0, 0, 0, 1}
 }
 
 // Translate2D returns a homogeneous (3x3 for 2D-space) Translation matrix that moves a point by Tx units in the x-direction and Ty units in the y-direction
 //
-//    [[1, 0, Tx]]
-//    [[0, 1, Ty]]
-//    [[0, 0, 1 ]]
+//	[[1, 0, Tx]]
+//	[[0, 1, Ty]]
+//	[[0, 0, 1 ]]
 func Translate2D(Tx, Ty float32) Mat3 {
 	return Mat3{1, 0, 0, 0, 1, 0, float32(Tx), float32(Ty), 1}
 }
@@ -66,10 +66,10 @@ func Translate2D(Tx, Ty float32) Mat3 {
 // Translate3D returns a homogeneous (4x4 for 3D-space) Translation matrix that moves a point by Tx units in the x-direction, Ty units in the y-direction,
 // and Tz units in the z-direction
 //
-//    [[1, 0, 0, Tx]]
-//    [[0, 1, 0, Ty]]
-//    [[0, 0, 1, Tz]]
-//    [[0, 0, 0, 1 ]]
+//	[[1, 0, 0, Tx]]
+//	[[0, 1, 0, Ty]]
+//	[[0, 0, 1, Tz]]
+//	[[0, 0, 0, 1 ]]
 func Translate3D(Tx, Ty, Tz float32) Mat4 {
 	return Mat4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, float32(Tx), float32(Ty), float32(Tz), 1}
 }
@@ -152,10 +152,10 @@ func ShearZ3D(shearX, shearY float32) Mat4 {
 //
 // Where c is cos(angle) and s is sin(angle), and x, y, and z are the first, second, and third elements of the axis vector (respectively):
 //
-//    [[ x^2(1-c)+c, xy(1-c)-zs, xz(1-c)+ys, 0 ]]
-//    [[ xy(1-c)+zs, y^2(1-c)+c, yz(1-c)-xs, 0 ]]
-//    [[ xz(1-c)-ys, yz(1-c)+xs, z^2(1-c)+c, 0 ]]
-//    [[ 0         , 0         , 0         , 1 ]]
+//	[[ x^2(1-c)+c, xy(1-c)-zs, xz(1-c)+ys, 0 ]]
+//	[[ xy(1-c)+zs, y^2(1-c)+c, yz(1-c)-xs, 0 ]]
+//	[[ xz(1-c)-ys, yz(1-c)+xs, z^2(1-c)+c, 0 ]]
+//	[[ 0         , 0         , 0         , 1 ]]
 func HomogRotate3D(angle float32, axis Vec3) Mat4 {
 	x, y, z := axis[0], axis[1], axis[2]
 	s, c := float32(math.Sin(float64(angle))), float32(math.Cos(float64(angle)))
@@ -194,9 +194,10 @@ func Mat4Normal(m Mat4) Mat3 {
 // This is similar to saying you're transforming and projecting a point.
 //
 // This is effectively equivalent to the GLSL code
-//     vec4 r = (m * vec4(v,1.));
-//     r = r/r.w;
-//     vec3 newV = r.xyz;
+//
+//	vec4 r = (m * vec4(v,1.));
+//	r = r/r.w;
+//	vec3 newV = r.xyz;
 func TransformCoordinate(v Vec3, m Mat4) Vec3 {
 	t := v.Vec4(1)
 	t = m.Mul4x1(t)
@@ -213,8 +214,9 @@ func TransformCoordinate(v Vec3, m Mat4) Vec3 {
 // but translating a direction or normal is meaningless.
 //
 // This is effectively equivalent to the GLSL code
-//    vec4 r = (m * vec4(v,0.));
-//    vec3 newV = r.xyz
+//
+//	vec4 r = (m * vec4(v,0.));
+//	vec3 newV = r.xyz
 func TransformNormal(v Vec3, m Mat4) Vec3 {
 	t := v.Vec4(0)
 	t = m.Mul4x1(t)

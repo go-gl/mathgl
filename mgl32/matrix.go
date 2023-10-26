@@ -203,9 +203,9 @@ func (m1 Mat2) Mul2x4(m2 Mat2x4) Mat2x4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat2) Transpose() Mat2 {
 	return Mat2{m1[0], m1[2], m1[1], m1[3]}
 }
@@ -458,9 +458,9 @@ func (m1 Mat2x3) Mul3x4(m2 Mat3x4) Mat2x4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat2x3) Transpose() Mat3x2 {
 	return Mat3x2{m1[0], m1[2], m1[4], m1[1], m1[3], m1[5]}
 }
@@ -676,9 +676,9 @@ func (m1 Mat2x4) Mul4(m2 Mat4) Mat2x4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat2x4) Transpose() Mat4x2 {
 	return Mat4x2{m1[0], m1[2], m1[4], m1[6], m1[1], m1[3], m1[5], m1[7]}
 }
@@ -904,9 +904,9 @@ func (m1 Mat3x2) Mul2x4(m2 Mat2x4) Mat3x4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat3x2) Transpose() Mat2x3 {
 	return Mat2x3{m1[0], m1[3], m1[1], m1[4], m1[2], m1[5]}
 }
@@ -1156,9 +1156,9 @@ func (m1 Mat3) Mul3x4(m2 Mat3x4) Mat3x4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat3) Transpose() Mat3 {
 	return Mat3{m1[0], m1[3], m1[6], m1[1], m1[4], m1[7], m1[2], m1[5], m1[8]}
 }
@@ -1431,9 +1431,9 @@ func (m1 Mat3x4) Mul4(m2 Mat4) Mat3x4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat3x4) Transpose() Mat4x3 {
 	return Mat4x3{m1[0], m1[3], m1[6], m1[9], m1[1], m1[4], m1[7], m1[10], m1[2], m1[5], m1[8], m1[11]}
 }
@@ -1669,9 +1669,9 @@ func (m1 Mat4x2) Mul2x4(m2 Mat2x4) Mat4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat4x2) Transpose() Mat2x4 {
 	return Mat2x4{m1[0], m1[4], m1[1], m1[5], m1[2], m1[6], m1[3], m1[7]}
 }
@@ -1907,9 +1907,9 @@ func (m1 Mat4x3) Mul3x4(m2 Mat3x4) Mat4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat4x3) Transpose() Mat3x4 {
 	return Mat3x4{m1[0], m1[4], m1[8], m1[1], m1[5], m1[9], m1[2], m1[6], m1[10], m1[3], m1[7], m1[11]}
 }
@@ -2169,9 +2169,9 @@ func (m1 Mat4) Mul4(m2 Mat4) Mat4 {
 // the transpose is an NxM matrix with the rows swapped with the columns. For instance
 // the transpose of the Mat3x2 is a Mat2x3 like so:
 //
-//    [[a b]]    [[a c e]]
-//    [[c d]] =  [[b d f]]
-//    [[e f]]
+//	[[a b]]    [[a c e]]
+//	[[c d]] =  [[b d f]]
+//	[[e f]]
 func (m1 Mat4) Transpose() Mat4 {
 	return Mat4{m1[0], m1[4], m1[8], m1[12], m1[1], m1[5], m1[9], m1[13], m1[2], m1[6], m1[10], m1[14], m1[3], m1[7], m1[11], m1[15]}
 }
