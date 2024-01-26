@@ -49,7 +49,7 @@ func LookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ float64) 
 // space.
 func LookAtV(eye, center, up Vec3) Mat4 {
 	f := center.Sub(eye).Normalize()
-	s := f.Cross(up.Normalize()).Normalize()
+	s := f.Cross(up).Normalize()
 	u := s.Cross(f)
 
 	M := Mat4{
